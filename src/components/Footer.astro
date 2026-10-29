@@ -1,5 +1,4 @@
 ---
-import Monument from './Monument.astro';
 import profile from '../../content/profile.json';
 import { t, url, type Lang } from '../i18n';
 
@@ -11,35 +10,14 @@ const s = t[lang];
 ---
 
 <footer class="site-footer">
-	<Monument />
-	<p class="footer-invite">{s.invite}</p>
-	<div class="footer-row">
-		<div class="footer-places">
-			{profile.links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
-		</div>
-		<div class="footer-cols">
-			<div>
-				<span>{s.site}</span>
-				<a href={url(`/${lang}/#games`)}>{s.nav.games}</a>
-				<a href={url(`/${lang}/#projects`)}>{s.nav.projects}</a>
-				<a href={url(`/${lang}/#lab`)}>{s.nav.lab}</a>
-				<a href={url(`/${lang}/blog/`)}>{s.nav.blog}</a>
-			</div>
-			<div>
-				<span>{s.follow}</span>
-				<a href={url(`/${lang}/rss.xml`)}>RSS</a>
-				<a href={url(`/${lang}/links/`)}>{s.nav.links}</a>
-			</div>
-			<div>
-				<span>{s.languageLabel}</span>
-				<a href={url('/es/')} hreflang="es" lang="es">Español</a>
-				<a href={url('/en/')} hreflang="en" lang="en">English</a>
-			</div>
-		</div>
-	</div>
-	<div class="footer-legal">
+	<nav class="footer-links" aria-label={s.follow}>
+		{profile.links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
+		<a href={url(`/${lang}/rss.xml`)}>RSS</a>
+		<a href={url(`/${lang}/links/`)}>{s.nav.links}</a>
+	</nav>
+	<p class="footer-legal">
 		<span>© {new Date().getFullYear()} Daniel Rodriguez Aires</span>
 		<span>{s.iconCredit} <a href="https://github.com/godotengine/godot/blob/master/LICENSE.txt">Godot Engine (MIT)</a></span>
-		<a href="#top">{s.top} ↑</a>
-	</div>
+		<span><a href={url('/es/')} hreflang="es" lang="es">Español</a> · <a href={url('/en/')} hreflang="en" lang="en">English</a></span>
+	</p>
 </footer>

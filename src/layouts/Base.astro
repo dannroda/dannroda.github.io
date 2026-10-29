@@ -41,20 +41,21 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 		<link rel="alternate" hreflang={alt} href={new URL(url(`/${alt}/${path}`), Astro.site)} />
 		<link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
 		<link rel="alternate" type="application/rss+xml" title={`dann · ${s.blog}`} href={url(`/${lang}/rss.xml`)} />
-		<link rel="preconnect" href="https://api.fontshare.com" />
-		<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
-		<link href="https://api.fontshare.com/v2/css?f[]=panchang@700&f[]=switzer@400,500&display=swap" rel="stylesheet" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
 		{
-			mode === 'page' && (
+			mode !== 'bare' && (
 				<header class="bar">
 					<a class="wordmark" href={url(`/${lang}/`)}>dann</a>
 					<nav class="nav" aria-label={s.navLabel}>
-						<a href={url(`/${lang}/#games`)}>{s.nav.games}</a>
-						<a href={url(`/${lang}/#projects`)}>{s.nav.projects}</a>
+						<a href={url(`/${lang}/#work`)}>{s.nav.work}</a>
+						<a href={url(`/${lang}/#jams`)}>{s.nav.jams}</a>
 						<a href={url(`/${lang}/#lab`)}>{s.nav.lab}</a>
+						<a href={url(`/${lang}/#about`)}>{s.about}</a>
 						<a href={url(`/${lang}/blog/`)}>{s.nav.blog}</a>
 						<a href={url(`/${alt}/${path}`)} hreflang={alt} lang={alt}>{alt.toUpperCase()}</a>
 					</nav>
