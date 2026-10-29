@@ -41,7 +41,20 @@ async function get(url, as = 'json', retries = 3) {
 	return as === 'json' ? res.json() : as === 'text' ? res.text() : Buffer.from(await res.arrayBuffer());
 }
 
-async function steam(appid) {
+// Steam sometimes answers datacenter IPs (GitHub's runners among them) with a web page instead of JSON.
+// That is Steam refusing, not a broken listing: the last sync stays and the run only warns.
+export async function steam(appid) {
+	try {
+		return await steamData(appid);
+	} catch (e) {
+		if (!(e instanceof SyntaxError)) throw e;
+		console.log(`· steam ${appid}: the store sent a web page instead of data, keeps the last sync`);
+		if (process.env.GITHUB_ACTIONS) console.log(`::warning::Steam ${appid} sent a web page instead of data; the site keeps its last sync`);
+		return [];
+	}
+}
+
+async function steamData(appid) {
 	const listing = async (l) => {
 		const r = (await get(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=${l}&cc=us`))[appid];
 		if (!r?.success) throw new Error(`steam ${appid} (${l}): no data`);
