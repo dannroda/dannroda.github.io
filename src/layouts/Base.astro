@@ -43,7 +43,7 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 		<link rel="alternate" type="application/rss+xml" title={`dann · ${s.blog}`} href={url(`/${lang}/rss.xml`)} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 		<script is:inline>document.documentElement.classList.add('js');</script>
 	</head>
 	<body>
@@ -55,7 +55,7 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 						<a href={url(`/${lang}/#work`)}>{s.nav.work}</a>
 						<a href={url(`/${lang}/#jams`)}>{s.nav.jams}</a>
 						<a href={url(`/${lang}/#lab`)}>{s.nav.lab}</a>
-						<a href={url(`/${lang}/#about`)}>{s.about}</a>
+						<a href={url(`/${lang}/#contact`)}>{s.contact}</a>
 						<a href={url(`/${lang}/blog/`)}>{s.nav.blog}</a>
 						<a href={url(`/${alt}/${path}`)} hreflang={alt} lang={alt}>{alt.toUpperCase()}</a>
 					</nav>
@@ -74,7 +74,7 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 				el.style.setProperty('--d', `${i * 80}ms`);
 				io.observe(el);
 			});
-			// Provenance filter: dims the works that don't match.
+			// Provenance filter: hides the works that don't match.
 			document.querySelectorAll('[data-filter]').forEach((b, _, all) => {
 				b.closest('[hidden]')?.removeAttribute('hidden');
 				b.addEventListener('click', () => {

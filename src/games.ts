@@ -33,3 +33,12 @@ export const storeName = { steam: 'Steam', itch: 'itch.io', github: 'GitHub', as
 
 // itch "More information" rows are strings or string lists.
 export const list = (v: unknown) => (Array.isArray(v) ? v.join(', ') : typeof v === 'string' ? v : null);
+
+// When a work came out, from whichever date its source gives; jams on itch carry none.
+export const dateOf = (g: Game) => {
+	const ms = Date.parse(g.data.release_date ?? g.data.created ?? '');
+	return Number.isNaN(ms) ? null : ms;
+};
+
+// The one line a list shows for a work: my own summary, then the store's text.
+export const blurb = (g: Game, lang: 'es' | 'en') => g.own?.summary?.[lang] || g.data.short?.[lang] || g.data.short?.en || g.data.description || null;

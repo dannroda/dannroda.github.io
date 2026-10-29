@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import AiTag from '../../components/AiTag.astro';
 import profile from '../../../content/profile.json';
-import { games, list, storeName, isCard, type Game } from '../../games';
+import { games, list, storeName, isCard, dateOf, blurb, type Game } from '../../games';
 import { t, url, langPaths, type Lang } from '../../i18n';
 
 export const getStaticPaths = langPaths;
@@ -13,112 +13,143 @@ const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
 const year = (g: Game) => (g.data.release_date ?? g.data.created)?.match(/\d{4}/)?.[0];
 // What a work was made with, as the store reports it: itch's "Made with" or the repo's language.
 const made = (g: Game) => [list(g.data.info?.['Made with'])?.split(', '), g.data.language].flat().filter(Boolean) as string[];
-const sub = (g: Game) => [storeName[g.data.source], year(g)].filter(Boolean).join(' · ');
-const rank = (g: Game) => g.data.jam?.results?.Overall && `#${g.data.jam.results.Overall.rank}${g.data.jam.entries ? ` ${s.of} ${g.data.jam.entries}` : ''}`;
+const sub = (g: Game) => [storeName[g.data.source], ...made(g), year(g)].filter(Boolean).join(' · ');
+const rank = (g: Game) => {
+	const r = g.data.jam?.results?.Overall?.rank;
+	return r && `${s.rank} ${r}${g.data.jam?.entries ? ` ${s.of} ${g.data.jam.entries}` : ''}`;
+};
+const ai = (g: Game) => g.own?.ai || 'none';
 
 const work = [...published, ...otherGames, ...projects];
-// The languages I name myself, then whatever the stores say the work was made with.
-const tools = [...new Set([...s.facts[2][1].split(' · '), ...[...work, ...jams, ...lab].flatMap(made)])];
+const everything = [...work, ...jams, ...lab];
+// The first screen shows the newest dated work, whatever it is, so it changes as new work comes out.
+const newest = everything.filter((g) => dateOf(g) !== null).sort((a, b) => dateOf(b)! - dateOf(a)!)[0];
+
+const levels = ['hand', 'assisted', 'vibe'] as const;
+const count = Object.fromEntries(levels.map((k) => [k, everything.filter((g) => ai(g) === k).length]));
+const filters = [
+	['all', s.filterAll],
+	['hand', s.filterHand],
+	['assisted', s.filterAssisted],
+	['vibe', s.filterVibe]
+] as const;
+const itch = profile.links.find((l) => l.url.includes('itch.io'));
 ---
 
 <Base lang={lang} mode="home">
 	<div class="home">
-		<section class="hero" aria-labelledby="h-hero" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
-			<div class="hero-bg" aria-hidden="true"></div>
-			<h1 id="h-hero" data-rise>Daniel Rodriguez Aires</h1>
-			<p class="hero-role" data-rise>{s.heroRole}</p>
-			<p class="hero-line" data-rise>{s.heroLine}</p>
-			<p class="pills hero-actions" data-rise>
-				<a class="pill primary" href="#work">{s.workTitle} ↓</a>
-				{published[0] && <a class="pill" href={published[0].data.url}>{published[0].data.title} · {storeName[published[0].data.source]} ↗</a>}
-			</p>
-		</section>
-
-		<section id="work" class="band" aria-labelledby="h-work">
-			<h2 id="h-work" data-rise>{s.workTitle}</h2>
-			<div class="cards">
-				{work.map((g) => (
-					<a class="card" href={href(g)} data-rise>
-						<span class="card-img">
-							{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="640" height="360" />}
-							<span class="card-over">
-								<AiTag lang={lang} level={g.own?.ai} />
-								{made(g).length > 0 && <span class="chips">{made(g).map((m) => <span>{m}</span>)}</span>}
-							</span>
-						</span>
-						<span class="card-title">{g.data.title}</span>
-						<span class="small">{sub(g)}</span>
-					</a>
-				))}
+		<section class="hero" aria-labelledby="h-hero">
+			<div class="hero-text">
+				<h1 id="h-hero" data-rise>{s.heroTitle}</h1>
+				<p class="hero-intro" data-rise>{s.heroIntro}</p>
+				<p class="pills" data-rise>
+					<a class="pill primary" href="#work">{s.seeWork} ↓</a>
+					{itch && <a class="pill" href={itch.url}>{itch.label} ↗</a>}
+				</p>
 			</div>
-		</section>
-
-		{
-			jams.length > 0 && (
-				<section id="jams" class="band" aria-labelledby="h-jams">
-					<h2 id="h-jams" data-rise>{s.jams}</h2>
-					<p class="band-lead" data-rise>{s.jamsHeading}</p>
-					<div class="shelf" data-rise>
-						{jams.map((g) => (
-							<a class="slice" href={href(g)}>
-								{g.data.local_images.cover && <img src={url(g.data.local_images.cover)} alt="" loading="lazy" width="630" height="500" />}
-								<span class="slice-text">
-									<span class="card-title">{g.data.title}</span>
-									<span>{[g.data.jam?.name, rank(g)].filter(Boolean).join(' · ')}</span>
-									<AiTag lang={lang} level={g.own?.ai} />
-								</span>
-							</a>
-						))}
-					</div>
-				</section>
-			)
-		}
-
-		<section id="lab" class="band" aria-labelledby="h-lab">
-			<h2 id="h-lab" data-rise>{s.nav.lab}</h2>
-			<p class="band-lead" data-rise>{s.labIntro}</p>
 			{
-				lab.length > 0 ? (
-					<div class="cards small-cards">
-						{lab.map((g) => (
-							<a class="card" href={href(g)} data-rise>
-								<span class="card-img">
-									{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="640" height="360" />}
-								</span>
-								<span class="card-title">{g.data.title}</span>
-								<span class="small">{sub(g)}</span>
-							</a>
-						))}
-					</div>
-				) : (
-					<p class="band-lead">{s.labEmpty}</p>
+				newest && (
+					<figure class="hero-newest" data-rise>
+						<a href={href(newest)}>
+							{newest.data.local_images.cover && <img class:list={{ gh: isCard(newest) }} src={url(newest.data.local_images.cover)} alt={newest.data.title} width="1120" height="700" />}
+						</a>
+						<figcaption>
+							<span><strong>{s.newest}: <a href={href(newest)}>{newest.data.title}</a>.</strong> {blurb(newest, lang)}</span>
+							<span class="muted">{year(newest)}</span>
+						</figcaption>
+					</figure>
 				)
 			}
 		</section>
 
-		<section id="about" class="band about" aria-labelledby="h-about">
-			<div class="about-text">
-				<h2 id="h-about" data-rise>{s.about}</h2>
-				{s.aboutText.map((p) => <p data-rise>{p}</p>)}
-				<p class="legend-line" data-rise>
-					{s.legendLead}
-					{(['hand', 'assisted', 'vibe'] as const).map((k) => <AiTag lang={lang} level={k} />)}
-				</p>
-				<a class="pill primary" href="#contact" data-rise>{s.writeMe}</a>
+		<section id="work" class="block filterable" aria-labelledby="h-work">
+			<div class="block-head">
+				<div>
+					<h2 id="h-work" data-rise>{s.workTitle}</h2>
+					<p class="count" data-rise>
+						<span data-for="all"><strong>{everything.length} {s.works}:</strong> {count.hand} {s.counts.hand}, {count.assisted} {s.counts.assisted} {s.and} {count.vibe} {s.counts.vibe}.</span>
+						{levels.map((k) => <span data-for={k}><strong>{count[k]} {s.of} {everything.length}:</strong> {s.legend[k][1]}</span>)}
+					</p>
+				</div>
+				<div class="filter" role="group" aria-label={s.filterGroup} hidden>
+					{filters.map(([k, label]) => <button type="button" data-filter={k} aria-pressed={String(k === 'all')}>{label}</button>)}
+				</div>
 			</div>
-			<div class="about-tools">
-				<h3 data-rise>{s.tools}</h3>
-				<ul class="tools" data-rise>{tools.map((x) => <li>{x}</li>)}</ul>
+			<div class="work-rows">
+				{
+					work.map((g) => (
+						<article class="work-row" data-ai={ai(g)} data-rise>
+							<a class="work-img" href={href(g)} tabindex="-1" aria-hidden="true">
+								{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="960" height="540" />}
+							</a>
+							<div class="work-text">
+								<h3><a href={href(g)}>{g.data.title}</a></h3>
+								{blurb(g, lang) && <p>{blurb(g, lang)}</p>}
+								<p class="meta"><span class="muted">{sub(g)}</span><AiTag lang={lang} level={g.own?.ai} /></p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+			<p class="empty">{s.emptyFilter}</p>
+		</section>
+
+		{
+			jams.length > 0 && (
+				<section id="jams" class="block filterable" aria-labelledby="h-jams">
+					<div class="block-head">
+						<h2 id="h-jams" data-rise>{s.jams}</h2>
+						<p class="block-lead" data-rise>{s.jamsLead}</p>
+					</div>
+					<div class="jam-rows">
+						{jams.map((g) => (
+							<a class="jam-row" href={href(g)} data-ai={ai(g)} data-rise>
+								{g.data.local_images.cover && <img src={url(g.data.local_images.cover)} alt="" loading="lazy" width="320" height="200" />}
+								<span class="jam-name">
+									<span class="jam-title">{g.data.title}</span>
+									<span>{g.data.jam?.name}{g.data.jam?.theme && ` · ${s.theme}: “${g.data.jam.theme}”`}</span>
+								</span>
+								<span class="jam-result">{rank(g)}</span>
+								<AiTag lang={lang} level={g.own?.ai} />
+							</a>
+						))}
+					</div>
+					<p class="empty">{s.emptyFilter}</p>
+				</section>
+			)
+		}
+
+		<section id="lab" class="block lab filterable" aria-labelledby="h-lab">
+			<div class="lab-head">
+				<h2 id="h-lab" data-rise>{s.nav.lab}</h2>
+				<p data-rise>{s.labIntro}</p>
+			</div>
+			<div class="lab-items">
+				{
+					lab.length > 0 ? (
+						lab.map((g) => (
+							<a class="lab-item" href={href(g)} data-ai={ai(g)} data-rise>
+								{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="640" height="480" />}
+								<span class="lab-title">{g.data.title}</span>
+								<span class="meta"><span class="muted">{sub(g)}</span><AiTag lang={lang} level={g.own?.ai} /></span>
+							</a>
+						))
+					) : (
+						<p>{s.labEmpty}</p>
+					)
+				}
+				<p class="empty">{s.emptyFilter}</p>
 			</div>
 		</section>
 
-		<section id="contact" class="contact" aria-labelledby="h-contact" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
-			<div class="hero-bg" aria-hidden="true"></div>
-			<h2 id="h-contact" data-rise>{s.contact}</h2>
-			<p data-rise>{s.invite}</p>
-			<ul class="contact-links" data-rise>
-				{profile.links.map((l) => <li><a href={l.url}>{l.label} ↗</a></li>)}
-			</ul>
+		<section id="contact" class="block contact" aria-labelledby="h-contact">
+			<div>
+				<h2 id="h-contact" data-rise>{s.contactTitle}</h2>
+				<p data-rise>{s.invite}</p>
+			</div>
+			<nav class="contact-links" aria-label={s.elsewhere} data-rise>
+				{profile.links.map((l, i) => <a class:list={['pill', { primary: i === profile.links.length - 1 }]} href={l.url}>{l.label} ↗</a>)}
+			</nav>
 		</section>
 	</div>
 </Base>
