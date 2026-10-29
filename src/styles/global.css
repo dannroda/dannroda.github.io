@@ -82,6 +82,13 @@ p { margin: 0; }
 .hero-newest { flex: 1 1 560px; min-width: 0; margin: 0; }
 .hero-newest img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
 .hero-newest figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; padding-top: 14px; font-size: var(--step-small); }
+/* Godot's node icons drifting diagonally behind the first screen and the contact block, across the full window width
+   (turned 45°, sliding one tile, so the loop is seamless). */
+.hero, .contact { position: relative; isolation: isolate; }
+.hero-bg { position: absolute; z-index: -1; inset: calc(var(--gap) / -2) calc(50% - 50vw); overflow: hidden; pointer-events: none; }
+.hero .hero-bg { top: -120px; }
+.hero-bg::before { content: ''; position: absolute; inset: -100%; background: var(--pattern) 0 0 / 288px; opacity: 0.07; transform: rotate(-45deg); animation: pattern-drift 40s linear infinite; }
+@keyframes pattern-drift { to { transform: rotate(-45deg) translateX(288px); } }
 img.gh { object-fit: contain !important; background: #fff !important; }
 
 .block-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px 48px; margin-bottom: 56px; }
@@ -206,6 +213,7 @@ thead th { border-top: 0; font-size: var(--step-small); font-weight: 500; color:
 	html { scroll-behavior: auto; }
 	.js [data-rise] { transform: none; transition: opacity 0.4s; }
 	.work-img img, .pill { transition: none; }
+	.hero-bg::before { animation: none !important; }
 }
 
 /* ---------- Phone ---------- */

@@ -38,7 +38,8 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 
 <Base lang={lang} mode="home">
 	<div class="home">
-		<section class="hero" aria-labelledby="h-hero">
+		<section class="hero" aria-labelledby="h-hero" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+			<div class="hero-bg" aria-hidden="true"></div>
 			<div class="hero-text">
 				<h1 id="h-hero" data-rise>{s.heroTitle}</h1>
 				<p class="hero-intro" data-rise>{s.heroIntro}</p>
@@ -142,7 +143,8 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 			</div>
 		</section>
 
-		<section id="contact" class="block contact" aria-labelledby="h-contact">
+		<section id="contact" class="block contact" aria-labelledby="h-contact" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+			<div class="hero-bg" aria-hidden="true"></div>
 			<div>
 				<h2 id="h-contact" data-rise>{s.contactTitle}</h2>
 				<p data-rise>{s.invite}</p>
