@@ -1,6 +1,6 @@
 {
   "ai": "vibe",
-  "featured": true,
+  "featured": false,
   "hidden": false,
   "landing": "godot-agent",
   "role": {
