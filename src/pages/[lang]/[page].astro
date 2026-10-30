@@ -7,7 +7,7 @@ import { url, other, langs, type Lang } from '../../i18n';
 
 export async function getStaticPaths() {
 	// These names are already routes; a CMS page with one of them would be silently shadowed.
-	const taken = ['blog', 'games', 'wiki', 'links'];
+	const taken = ['blog', 'games', 'wiki', 'links', 'godot-agent'];
 	const titles = new Map((await games()).all.map((g) => [g.id, g.data.title]));
 	const paths = [];
 	for (const lang of langs) {

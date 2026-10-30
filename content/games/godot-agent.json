@@ -2,6 +2,7 @@
   "ai": "vibe",
   "featured": true,
   "hidden": false,
+  "landing": "godot-agent",
   "role": {
     "es": "",
     "en": ""

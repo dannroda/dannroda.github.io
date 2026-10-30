@@ -1,9 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
 import { t, url, langs } from '../i18n';
+const base = url('/');
 ---
 
 <!-- GitHub Pages serves this for any missing path, so it speaks both languages. -->
+<script is:inline define:vars={{ base, langs }}>
+	// A path without a language (/links/) goes to the same path in the system language, like the root does.
+	const rest = location.pathname.startsWith(base) ? location.pathname.slice(base.length) : null;
+	if (rest !== null && !langs.some((l) => rest === l || rest.startsWith(`${l}/`))) {
+		const lang = navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
+		location.replace(`${base}${lang}/${rest}${location.search}${location.hash}`);
+	}
+</script>
 <Base lang="es" title="404" mode="bare">
 	<div class="links-page" style="justify-content: center">
 		<p class="wordmark">404</p>
