@@ -4,21 +4,26 @@
   ],
   "itch": [
     {
-      "url": "https://emarod.itch.io/mr-duck"
+      "url": "https://emarod.itch.io/mr-duck",
+      "repo": ""
     },
     {
-      "url": "https://dannroda.itch.io/robot-factory"
+      "url": "https://dannroda.itch.io/robot-factory",
+      "repo": ""
     },
     {
-      "url": "https://emarod.itch.io/little-eyes"
+      "url": "https://emarod.itch.io/little-eyes",
+      "repo": ""
     },
     {
-      "url": "https://emarod.itch.io/rescue-signal"
+      "url": "https://emarod.itch.io/rescue-signal",
+      "repo": ""
     }
   ],
   "github": [
     "dannroda/dannroda.github.io",
     "dannroda/godot-agent",
+    "dannroda/godot-agent-plugins",
     "dannroda/Asteroids",
     "dannroda/scope-compass",
     "dannroda/project-epiphany",
