@@ -9,7 +9,6 @@ const lang = Astro.params.lang as Lang;
 const game = (await games()).all.find((g) => g.id === 'godot-agent');
 
 const repo = 'https://github.com/dannroda/godot-agent';
-const version = 'v0.1.11';
 // Loaded from the repo so they follow tests/docs_shots.sh, which regenerates them in both languages.
 const shot = (name: string) => `https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/${lang}/${name}.png`;
 
@@ -45,7 +44,7 @@ const copy = {
 		description: 'Your coding agent, inside the Godot editor: Claude Code, Codex, Google Antigravity or any ACP agent, with the editor’s own tools, undo and permissions you choose.',
 		h1: 'Your coding agent, <em>inside</em> the Godot editor.',
 		intro: 'An editor addon for Godot 4. The agent reads and edits scenes and scripts with the editor’s own tools, with undo, runs the game and tests it. Every change goes through permissions you choose. Free and MIT licensed.',
-		download: `Download ${version}`,
+		download: 'Download (GitHub)',
 		wiki: 'Read the wiki',
 		wikiHome: `${repo}/wiki`,
 		anyAcp: 'any ACP agent',
@@ -79,6 +78,17 @@ const copy = {
 			['Tilemaps & animation', 'Turn a texture into an atlas, paint terrains, build AnimationPlayer tracks and SpriteFrames from a sheet.'],
 			['Files & Asset Store', 'Moves keep the uid and rewrite every <code>res://</code> reference. Assets install into <code>addons/</code> without overwriting.']
 		],
+		playtestEyebrow: 'Review mode · Playtest',
+		playtestH: 'A verdict only counts if the agent played.',
+		playtestP: 'Say what to check by playing. The agent runs the game, sends input and captures frames, then answers passed, failed or could not test. It doesn’t change the project.',
+		playtest: [
+			['Checked verdict', 'Without playing the game, or without a captured frame when the verdict depends on how something looks, it counts as could not test. It also lists what may have changed in the running game without playing.', ['game_set', 'game_call', 'game_script']],
+			['In-game detectors', 'They report what the agent wasn’t looking at, with a picture of the moment: NaN transforms, bodies out of the world, long falls, long frames and a HUD past its maximum.', ['NaN', '8 s falling', 'frame > 0.75 s', '12/10']],
+			['Real clicks, exact frames', 'Menus are used with real clicks instead of guessed pixels. It can play turn by turn with exact physics frames, or run a short script inside the game to react in the same frame.', ['game_ui_act', 'game_step', 'game_script']],
+			['Check, reach, explore', 'Verify something, reach a goal or go through a level and say what looks wrong. A script error doesn’t end the run: the game goes on and the error is listed.', ['passed', 'failed', 'could not test', 'explored']],
+			['Findings to act on', 'Findings go to the panel, and one marked as not a bug doesn’t come back. Run the last playtest again as it was, or play the recording in the editor.', ['Show in the scene', 'Verify a fix', 'Not a bug']],
+			['Memory between runs', 'Playtests keep what they verified about your game and which files changed since, so the next one rechecks what may be out of date.', ['res://.godot_agent/playtests/']]
+		],
 		oneshotEyebrow: 'One-shot screen · next to 2D / 3D / Script',
 		oneshotH: 'Give it a whole game. Get a branch back.',
 		oneshotP: '“A 2-player Pong with score.” The agent writes a spec, plans, builds, playtests and reports. A separate evaluator plays the result before anything counts as done. It never merges.',
@@ -87,7 +97,7 @@ const copy = {
 			['Plan', 'Tasks with live durations. Edit the plan while it runs; the agent rereads it after each turn.'],
 			['Build and verify', 'Edit, <code>run_scene</code>, look at frames, read errors, report checks as pass, fail or pending.'],
 			['Checkpoints', 'One <code>cpN</code> commit per task on <code>agent/&lt;date&gt;</code>. Restore any of them and resume from there.'],
-			['QA', 'A new session that never saw the builder’s chat plays the game and scores playability, function, feel and code. It can’t edit.'],
+			['QA', 'A new session that never saw the builder’s chat plays the game and scores playability, function, feel and code. It can’t edit, or pass a check it could not test.'],
 			['Report', 'What the harness measured, not what the agent claims: time per task, tools, failures, loops, quota pauses.']
 		],
 		oneshotAlt: 'The One-shot screen running an asteroid shooter goal, task 2 of 3: quota, time, tokens and playtest bars, the plan, the activity log, the last playtest frame, two passed checks and one pending, and checkpoints cp1 to cp3 with Restore here.',
@@ -125,7 +135,7 @@ const copy = {
 		skillsFine: 'MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Three steps to the first prompt.',
 		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Linux, macOS and Windows. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
-		downloadZip: `Download ${version} (zip)`,
+		downloadZip: 'Download (GitHub)',
 		gettingStarted: 'Getting started',
 		gettingStartedUrl: `${repo}/wiki/Getting-started`,
 		install: [
@@ -142,7 +152,7 @@ const copy = {
 		description: 'Tu agente de código, dentro del editor de Godot: Claude Code, Codex, Google Antigravity o cualquier agente ACP, con las herramientas del propio editor, deshacer y los permisos que elegís.',
 		h1: 'Tu agente de código, <em>dentro</em> del editor de Godot.',
 		intro: 'Un addon de editor para Godot 4. El agente lee y edita escenas y scripts con las herramientas del propio editor, con deshacer, corre el juego y lo prueba. Cada cambio pasa por los permisos que elegís. Gratis y con licencia MIT.',
-		download: `Descargar ${version}`,
+		download: 'Descargar (GitHub)',
 		wiki: 'Leer la wiki',
 		wikiHome: `${repo}/wiki/Inicio`,
 		anyAcp: 'cualquier agente ACP',
@@ -176,6 +186,17 @@ const copy = {
 			['TileMaps y animación', 'Convierte una textura en atlas, pinta terrenos y arma pistas de AnimationPlayer y SpriteFrames desde una hoja.'],
 			['Archivos y Asset Store', 'Mover conserva el uid y reescribe cada referencia <code>res://</code>. Los assets se instalan en <code>addons/</code> sin sobrescribir nada.']
 		],
+		playtestEyebrow: 'Modo Revisar · Playtest',
+		playtestH: 'Un veredicto solo cuenta si el agente jugó.',
+		playtestP: 'Decile qué comprobar jugando. El agente corre el juego, manda input y captura frames, y contesta pasó, falló o no se pudo probar. No cambia el proyecto.',
+		playtest: [
+			['Veredicto contrastado', 'Si no jugó, o si el veredicto depende de cómo se ve algo y no capturó ningún frame, cuenta como no se pudo probar. También lista lo que puede haber cambiado en el juego sin jugar.', ['game_set', 'game_call', 'game_script']],
+			['Detectores en el juego', 'Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas sin fin, frames largos y un HUD por encima de su máximo.', ['NaN', '8 s cayendo', 'frame > 0,75 s', '12/10']],
+			['Clics reales, frames exactos', 'Usa los menús con clics reales, sin adivinar píxeles. Puede jugar por turnos con frames de física exactos, o correr un script corto adentro del juego para reaccionar en el mismo frame.', ['game_ui_act', 'game_step', 'game_script']],
+			['Verificar, lograr, explorar', 'Verificá algo, pedile un objetivo o que recorra un nivel y diga qué se ve mal. Un error de script no termina la corrida: el juego sigue y el error queda en la lista.', ['pasó', 'falló', 'no se pudo probar', 'explorado']],
+			['Hallazgos para actuar', 'Van al panel de hallazgos, y uno marcado como que no es un bug no vuelve. Repetí el último playtest tal cual, o reproducí la grabación en el editor.', ['Mostrar en la escena', 'Verificar un arreglo', 'No es un bug']],
+			['Memoria entre corridas', 'Los playtests guardan lo que verificaron de tu juego y qué archivos cambiaron desde entonces, para que el siguiente vuelva a comprobar lo que puede haber quedado viejo.', ['res://.godot_agent/playtests/']]
+		],
 		oneshotEyebrow: 'Pantalla One-shot · al lado de 2D / 3D / Script',
 		oneshotH: 'Pedile un juego entero. Recibí una rama.',
 		oneshotP: '«Un Pong de 2 jugadores con puntaje.» El agente escribe una spec, planifica, construye, prueba y reporta. Un evaluador aparte juega el resultado antes de darlo por terminado. Nunca hace merge.',
@@ -184,7 +205,7 @@ const copy = {
 			['Plan', 'Tareas con su duración en vivo. Editá el plan mientras corre; el agente lo relee después de cada turno.'],
 			['Construir y verificar', 'Edita, <code>run_scene</code>, mira capturas, lee errores y reporta checks como pass, fail o pending.'],
 			['Checkpoints', 'Un commit <code>cpN</code> por tarea en <code>agent/&lt;fecha&gt;</code>. Restaurá cualquiera y seguí desde ahí.'],
-			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega y puntúa jugabilidad, funcionalidad, sensación y código. No puede editar.'],
+			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega y puntúa jugabilidad, funcionalidad, sensación y código. No puede editar ni aprobar un check que no pudo probar.'],
 			['Reporte', 'Lo que midió el harness, no lo que dice el agente: tiempo por tarea, herramientas, fallas, loops y pausas por cuota.']
 		],
 		oneshotAlt: 'La pantalla One-shot con el objetivo de un shooter de asteroides, tarea 2 de 3: barras de cuota, tiempo, tokens y playtests, el plan, la actividad, el frame del último playtest, dos checks pasados y uno pendiente, y los checkpoints cp1 a cp3.',
@@ -222,7 +243,7 @@ const copy = {
 		skillsFine: 'MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Tres pasos hasta el primer prompt.',
 		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Linux, macOS y Windows. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
-		downloadZip: `Descargar ${version} (zip)`,
+		downloadZip: 'Descargar (GitHub)',
 		gettingStarted: 'Primeros pasos',
 		gettingStartedUrl: `${repo}/wiki/Primeros-pasos`,
 		install: [
@@ -309,6 +330,23 @@ const release = `${repo}/releases/latest`;
 						<h3>{name}</h3>
 						<p set:html={what} />
 						<div class="ga-names">{toolNames[i].map((n) => <span>{n}</span>)}</div>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section id="playtest" class="ga-section" aria-labelledby="h-playtest">
+			<div class="ga-head">
+				<span class="ga-eyebrow">{copy.playtestEyebrow}</span>
+				<h2 id="h-playtest">{copy.playtestH}</h2>
+				<p>{copy.playtestP}</p>
+			</div>
+			<div class="ga-tools">
+				{copy.playtest.map(([name, what, labels]) => (
+					<div class="ga-tool">
+						<h3>{name}</h3>
+						<p>{what}</p>
+						<div class="ga-names">{(labels as string[]).map((n) => <span>{n}</span>)}</div>
 					</div>
 				))}
 			</div>
@@ -412,7 +450,7 @@ const release = `${repo}/releases/latest`;
 					{copy.install.map((step) => <li set:html={step} />)}
 				</ol>
 			</div>
-			<p class="small ga-fine">Godot Agent Harness {version} · MIT · <a href={copy.privacyUrl}>{copy.privacy}</a> · {copy.noTelemetry}</p>
+			<p class="small ga-fine">Godot Agent Harness · MIT · <a href={copy.privacyUrl}>{copy.privacy}</a> · {copy.noTelemetry}</p>
 		</section>
 	</div>
 </Base>
