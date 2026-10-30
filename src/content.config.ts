@@ -67,6 +67,8 @@ const games = defineCollection({
 		ai: z.enum(aiLevels).or(z.literal('')).nullish(),
 		featured: z.boolean().default(false),
 		hidden: z.boolean().default(false),
+		// its landing page: a page of this site without the language ("godot-agent") or a full https:// link
+		landing: z.string().trim().nullish(),
 		role: text,
 		summary: text,
 		authorship: z

@@ -77,6 +77,12 @@ collections:
           - { label: Vibe-coded, value: vibe }
       - { name: featured, label: Destacado, widget: boolean, default: false }
       - { name: hidden, label: Oculto, widget: boolean, default: false }
+      - name: landing
+        label: Landing page
+        widget: string
+        required: false
+        hint: 'Opcional. Una página del sitio sin el idioma (por ejemplo godot-agent, que abre /es/godot-agent/ o /en/godot-agent/) o un link completo https://…; la ficha muestra «Página del proyecto».'
+        pattern: ['^\s*(https://\S+|[a-z0-9][a-z0-9/-]*)\s*$', 'Un nombre de página como godot-agent, o un link que empiece con https://']
       - name: role
         label: Mi rol
         widget: object
