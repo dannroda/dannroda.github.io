@@ -74,14 +74,17 @@ p { margin: 0; }
 .home { max-width: 1376px; margin: 0 auto; padding: 0 var(--m) var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
 .home h2 { font-size: var(--step-head); letter-spacing: -0.035em; line-height: 1; }
 
-/* First screen: who and what on one side, the newest work on the other. */
+/* First screen: who and what on one side, the featured work on the other, if any. */
 .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 48px 64px; padding-top: clamp(24px, 4vw, 72px); }
 .hero-text { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
 .hero h1 { font-size: var(--step-display); line-height: 0.94; letter-spacing: -0.045em; }
 .hero-intro { max-width: 30em; font-size: var(--step-lead); }
-.hero-newest { flex: 1 1 560px; min-width: 0; margin: 0; }
-.hero-newest img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
-.hero-newest figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; padding-top: 14px; font-size: var(--step-small); }
+.hero-featured { flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.hero-track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+.hero-track figure { min-width: 0; margin: 0; scroll-snap-align: start; }
+.hero-track img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
+.hero-track figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; padding-top: 14px; font-size: var(--step-small); }
+.hero-nav button { border: 0; font-family: inherit; cursor: pointer; }
 /* Godot's node icons drifting diagonally behind the first screen and the contact block, across the full window width
    (turned 45°, sliding one tile, so the loop is seamless). */
 .hero, .contact { position: relative; isolation: isolate; }
@@ -211,7 +214,7 @@ thead th { border-top: 0; font-size: var(--step-small); font-weight: 500; color:
 .js [data-rise].in { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
-	html { scroll-behavior: auto; }
+	html, .hero-track { scroll-behavior: auto; }
 	.js [data-rise] { transform: none; transition: opacity 0.4s; }
 	.work-img img, .pill { transition: none; }
 	.hero-bg::before { animation: none !important; }

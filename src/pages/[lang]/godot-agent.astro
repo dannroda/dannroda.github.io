@@ -30,6 +30,14 @@ const toolNames = [
 	['tileset_add_atlas', 'tilemap_paint_terrain', 'animation_set_track'],
 	['move_file', 'create_resource', 'asset_search', 'asset_install']
 ];
+const pluginsRepo = 'https://github.com/dannroda/godot-agent-plugins';
+const commands = ['npx skills add dannroda/godot-agent-plugins', '/plugin marketplace add dannroda/godot-agent-plugins'];
+const skillPlugins = [
+	['gdscript', ['godot-architecture', 'godot-communication', 'godot-patterns', 'godot-data-driven', 'godot-code-review']],
+	['shaders', ['godot-shader-techniques']],
+	['blender', ['blender-scripting', 'blender-to-godot']],
+	['godot-video', ['godot-capture', 'godot-trailer', 'godot-gdd', 'godot-gamedev']]
+] as const;
 
 const copy = {
 	en: {
@@ -101,6 +109,20 @@ const copy = {
 			['Listen beyond your machine', 'The MCP server binds to 127.0.0.1 with a token that changes on every start.'],
 			['Ship in your game', 'Nothing from the addon reaches an exported build.']
 		],
+		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
+		skillsH: 'Godot skills for any agent.',
+		skillsP: 'Four plugins for working on Godot 4 games: architecture, shaders, assets and video. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon.',
+		skills: [
+			'Design and review GDScript: where code and data live, signals and autoloads, state machines, components, pools, Resources, saves and mods.',
+			'Non-trivial shaders in Godot 4.6+: spaces and matrices, custom <code>light()</code>, normal maps, procedural shapes, post-processing and ray marching.',
+			'Build and check assets with headless Blender 5 Python, then bring them to Godot with the right axes, collisions, materials and animations.',
+			'Videos from real footage of your game: repeatable capture, trailers, design document checks and development films. Needs only Godot and ffmpeg.'
+		],
+		commandLabels: ['Any agent', 'Claude Code'],
+		copy: 'Copy',
+		copied: 'Copied',
+		pluginsRepo: 'See the repo',
+		skillsFine: 'MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Three steps to the first prompt.',
 		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Linux, macOS and Windows. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
 		downloadZip: `Download ${version} (zip)`,
@@ -184,6 +206,20 @@ const copy = {
 			['Escuchar fuera de tu máquina', 'El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque.'],
 			['Viajar en tu juego', 'Nada del addon llega a un juego exportado.']
 		],
+		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
+		skillsH: 'Skills de Godot para cualquier agente.',
+		skillsP: 'Cuatro plugins para trabajar en juegos de Godot 4: arquitectura, shaders, assets y video. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él.',
+		skills: [
+			'Diseñar y revisar GDScript: dónde viven el código y los datos, señales y autoloads, máquinas de estado, componentes, pools, Resources, saves y mods.',
+			'Shaders no triviales en Godot 4.6+: espacios y matrices, <code>light()</code> propio, normal maps, formas procedurales, post-procesado y ray marching.',
+			'Armar y verificar assets con Python en Blender 5 headless, y llevarlos a Godot con los ejes, colisiones, materiales y animaciones correctos.',
+			'Videos con imágenes reales de tu juego: captura repetible, trailers, chequeos del documento de diseño y películas de desarrollo. Solo necesita Godot y ffmpeg.'
+		],
+		commandLabels: ['Cualquier agente', 'Claude Code'],
+		copy: 'Copiar',
+		copied: 'Copiado',
+		pluginsRepo: 'Ver el repo',
+		skillsFine: 'MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Tres pasos hasta el primer prompt.',
 		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Linux, macOS y Windows. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
 		downloadZip: `Descargar ${version} (zip)`,
@@ -329,6 +365,38 @@ const release = `${repo}/releases/latest`;
 			</div>
 		</section>
 
+		<section id="skills" class="ga-section" aria-labelledby="h-skills">
+			<div class="ga-head">
+				<span class="ga-eyebrow">{copy.skillsEyebrow}</span>
+				<h2 id="h-skills">{copy.skillsH}</h2>
+				<p>{copy.skillsP}</p>
+			</div>
+			<div class="ga-tools ga-skills">
+				{skillPlugins.map(([name, skills], i) => (
+					<div class="ga-tool">
+						<h3>{name}</h3>
+						<p set:html={copy.skills[i]} />
+						<div class="ga-names">{skills.map((n) => <span>{n}</span>)}</div>
+					</div>
+				))}
+			</div>
+			<div class="ga-get">
+				<div class="ga-cmds">
+					{commands.map((command, i) => (
+						<div class="ga-cmd">
+							<span class="small">{copy.commandLabels[i]}</span>
+							<div class="ga-cmd-row">
+								<code tabindex="0">{command}</code>
+								<button type="button" data-copy={copy.copy} data-copied={copy.copied}>{copy.copy}</button>
+							</div>
+						</div>
+					))}
+				</div>
+				<a class="pill" href={pluginsRepo}>{copy.pluginsRepo}</a>
+			</div>
+			<p class="small ga-fine" set:html={copy.skillsFine} />
+		</section>
+
 		<section id="install" class="ga-section ga-install-wrap" aria-labelledby="h-install" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
 			<div class="hero-bg" aria-hidden="true"></div>
 			<div class="ga-install">
@@ -348,6 +416,22 @@ const release = `${repo}/releases/latest`;
 		</section>
 	</div>
 </Base>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+		button.addEventListener('click', async () => {
+			const code = button.previousElementSibling!;
+			try {
+				await navigator.clipboard.writeText(code.textContent ?? '');
+				button.textContent = button.dataset.copied!;
+				setTimeout(() => { button.textContent = button.dataset.copy!; }, 1500);
+			} catch {
+				// No clipboard access: leave the command selected for Ctrl+C
+				getSelection()?.selectAllChildren(code);
+			}
+		});
+	});
+</script>
 
 <style>
 	/* One column of wide bands on the site's tokens; the editor's own colours only where the page quotes the editor. */
@@ -444,6 +528,22 @@ const release = `${repo}/releases/latest`;
 	.ga-rule b { font-family: var(--display); font-size: 1.25rem; line-height: 1.15; }
 	.ga-rule span { color: var(--muted); font-size: var(--step-small); }
 
+	/* 4, 2 or 1 columns: all divide the four plugins */
+	.ga-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	@media (max-width: 1100px) { .ga-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 600px) { .ga-skills { grid-template-columns: minmax(0, 1fr); } }
+	.ga-skills h3 { font-family: var(--mono); font-weight: 500; letter-spacing: -0.01em; }
+	.ga-skills .ga-names { margin-top: auto; }
+	.ga-get { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 48px; align-items: end; }
+	@media (max-width: 860px) { .ga-get { grid-template-columns: minmax(0, 1fr); } }
+	.ga-get .pill { white-space: nowrap; width: fit-content; }
+	.ga-cmds { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+	.ga-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+	.ga-cmd-row { display: flex; align-items: stretch; background: var(--surface); border-radius: 8px; min-width: 0; }
+	.ga-cmd-row code { flex: 1; min-width: 0; padding: 14px 16px; font-size: 14px; white-space: pre; overflow-x: auto; }
+	.ga-cmd-row button { flex: none; min-width: 84px; border: 0; border-left: 1px solid var(--surface-3); border-radius: 0 8px 8px 0; background: none; color: var(--muted); font: 500 13px var(--text); cursor: pointer; }
+	.ga-cmd-row button:hover { color: var(--accent); }
+
 	.ga-install { background: var(--accent); color: var(--accent-ink); border-radius: 14px; padding: clamp(28px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; }
 	@media (max-width: 860px) { .ga-install { grid-template-columns: minmax(0, 1fr); } }
 	.ga-install-left { display: flex; flex-direction: column; gap: 24px; }
@@ -454,5 +554,5 @@ const release = `${repo}/releases/latest`;
 	.ga-install .pill:hover { background: var(--ink); color: var(--bg); }
 	.ga-install .pill.ghost { background: transparent; color: var(--accent-ink); box-shadow: inset 0 0 0 2px var(--accent-ink); }
 	.ga-install .pill.ghost:hover { background: var(--accent-ink); color: var(--accent); }
-	.ga-fine a { text-decoration: underline; }
+	.ga-fine :global(a) { text-decoration: underline; }
 </style>

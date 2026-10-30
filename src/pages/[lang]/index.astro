@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import AiTag from '../../components/AiTag.astro';
 import profile from '../../../content/profile.json';
-import { games, list, storeName, isCard, dateOf, blurb, type Game } from '../../games';
+import { games, list, storeName, isCard, blurb, type Game } from '../../games';
 import { t, url, langPaths, type Lang } from '../../i18n';
 
 export const getStaticPaths = langPaths;
@@ -22,8 +22,8 @@ const ai = (g: Game) => g.own?.ai || 'none';
 
 const work = [...published, ...otherGames, ...projects];
 const everything = [...work, ...jams, ...lab];
-// The first screen shows the newest dated work, whatever it is, so it changes as new work comes out.
-const newest = everything.filter((g) => dateOf(g) !== null).sort((a, b) => dateOf(b)! - dateOf(a)!)[0];
+// The first screen shows what the CMS marks as featured: nothing, one work, or a carousel of several.
+const featured = everything.filter((g) => g.own?.featured);
 
 const levels = ['hand', 'assisted', 'vibe'] as const;
 const count = Object.fromEntries(levels.map((k) => [k, everything.filter((g) => ai(g) === k).length]));
@@ -49,16 +49,28 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 				</p>
 			</div>
 			{
-				newest && (
-					<figure class="hero-newest" data-rise>
-						<a href={href(newest)}>
-							{newest.data.local_images.cover && <img class:list={{ gh: isCard(newest) }} src={url(newest.data.local_images.cover)} alt={newest.data.title} width="1120" height="700" />}
-						</a>
-						<figcaption>
-							<span><strong>{s.newest}: <a href={href(newest)}>{newest.data.title}</a>.</strong> {blurb(newest, lang)}</span>
-							<span class="muted">{year(newest)}</span>
-						</figcaption>
-					</figure>
+				featured.length > 0 && (
+					<div class="hero-featured" data-rise>
+						<div class="hero-track">
+							{featured.map((g) => (
+								<figure>
+									<a href={href(g)}>
+										{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt={g.data.title} width="1120" height="700" />}
+									</a>
+									<figcaption>
+										<span><strong><a href={href(g)}>{g.data.title}</a>.</strong> {blurb(g, lang)}</span>
+										<span class="muted">{year(g)}</span>
+									</figcaption>
+								</figure>
+							))}
+						</div>
+						{featured.length > 1 && (
+							<p class="pills hero-nav" hidden>
+								<button type="button" class="pill" data-slide="-1" aria-label={s.previous}>←</button>
+								<button type="button" class="pill" data-slide="1" aria-label={s.next}>→</button>
+							</p>
+						)}
+					</div>
 				)
 			}
 		</section>
@@ -155,3 +167,19 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 		</section>
 	</div>
 </Base>
+
+<script>
+	// Without this script the carousel still scrolls by touch or trackpad; the buttons only appear with it.
+	const track = document.querySelector<HTMLElement>('.hero-track');
+	const nav = document.querySelector<HTMLElement>('.hero-nav');
+	if (track && nav) {
+		nav.hidden = false;
+		nav.querySelectorAll<HTMLButtonElement>('[data-slide]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const count = track.children.length;
+				const current = Math.round(track.scrollLeft / track.clientWidth);
+				track.scrollLeft = ((current + Number(button.dataset.slide) + count) % count) * track.clientWidth;
+			});
+		});
+	}
+</script>
