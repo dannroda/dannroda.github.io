@@ -11,6 +11,7 @@ const game = (await games()).all.find((g) => g.id === 'godot-agent');
 const repo = 'https://github.com/dannroda/godot-agent';
 // Loaded from the repo so they follow tests/docs_shots.sh, which regenerates them in both languages.
 const shot = (name: string) => `https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/${lang}/${name}.png`;
+// shortcut: playtest.png is a copy in public/godot-agent/, it won't follow docs_shots.sh; use shot('playtest') once it is on the repo's main.
 
 type D = 'allow' | 'ask' | 'deny';
 const matrix: [string, D[], string?][] = [
@@ -81,6 +82,8 @@ const copy = {
 		playtestEyebrow: 'Review mode · Playtest',
 		playtestH: 'A verdict only counts if the agent played.',
 		playtestP: 'Say what to check by playing. The agent runs the game, sends input and captures frames, then answers passed, failed or could not test. It doesn’t change the project.',
+		playtestAlt: 'The Agent dock after a playtest. A failed verdict: asteroids stop getting faster after wave 3, with the evidence, a game_set that may have changed the game without playing, the detector’s HUD.Wave at 12/10 and the steps to reproduce it. Above, the finding with Show in the scene, Verify a fix and Not a bug.',
+		playtestCap: 'A failed verdict in the dock: the evidence, what may have changed without playing, what the detectors saw and how to reproduce it.',
 		playtest: [
 			['Checked verdict', 'Without playing the game, or without a captured frame when the verdict depends on how something looks, it counts as could not test. It also lists what may have changed in the running game without playing.', ['game_set', 'game_call', 'game_script']],
 			['In-game detectors', 'They report what the agent wasn’t looking at, with a picture of the moment: NaN transforms, bodies out of the world, long falls, long frames and a HUD past its maximum.', ['NaN', '8 s falling', 'frame > 0.75 s', '12/10']],
@@ -189,6 +192,8 @@ const copy = {
 		playtestEyebrow: 'Modo Revisar · Playtest',
 		playtestH: 'Un veredicto solo cuenta si el agente jugó.',
 		playtestP: 'Decile qué comprobar jugando. El agente corre el juego, manda input y captura frames, y contesta pasó, falló o no se pudo probar. No cambia el proyecto.',
+		playtestAlt: 'El dock Agent después de un playtest. Un veredicto que falló: los asteroides dejan de acelerar después de la oleada 3, con la evidencia, un game_set que puede haber cambiado el juego sin jugar, el detector con HUD.Wave en 12/10 y los pasos para reproducirlo. Arriba, el hallazgo con Mostrar en la escena, Verificar un arreglo y No es un bug.',
+		playtestCap: 'Un veredicto que falló en el dock: la evidencia, lo que pudo cambiar sin jugar, lo que vieron los detectores y cómo reproducirlo.',
 		playtest: [
 			['Veredicto contrastado', 'Si no jugó, o si el veredicto depende de cómo se ve algo y no capturó ningún frame, cuenta como no se pudo probar. También lista lo que puede haber cambiado en el juego sin jugar.', ['game_set', 'game_call', 'game_script']],
 			['Detectores en el juego', 'Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas sin fin, frames largos y un HUD por encima de su máximo.', ['NaN', '8 s cayendo', 'frame > 0,75 s', '12/10']],
@@ -341,14 +346,20 @@ const release = `${repo}/releases/latest`;
 				<h2 id="h-playtest">{copy.playtestH}</h2>
 				<p>{copy.playtestP}</p>
 			</div>
-			<div class="ga-tools">
-				{copy.playtest.map(([name, what, labels]) => (
-					<div class="ga-tool">
-						<h3>{name}</h3>
-						<p>{what}</p>
-						<div class="ga-names">{(labels as string[]).map((n) => <span>{n}</span>)}</div>
-					</div>
-				))}
+			<div class="ga-modes">
+				<figure class="ga-shot ga-perm">
+					<img src={url(`/godot-agent/${lang}/playtest.png`)} width="480" height="1108" loading="lazy" alt={copy.playtestAlt} />
+					<figcaption>{copy.playtestCap}</figcaption>
+				</figure>
+				<div class="ga-tools ga-playtest">
+					{copy.playtest.map(([name, what, labels]) => (
+						<div class="ga-tool">
+							<h3>{name}</h3>
+							<p>{what}</p>
+							<div class="ga-names">{(labels as string[]).map((n) => <span>{n}</span>)}</div>
+						</div>
+					))}
+				</div>
 			</div>
 		</section>
 
@@ -565,6 +576,10 @@ const release = `${repo}/releases/latest`;
 	.ga-rule { display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 2px solid var(--accent); }
 	.ga-rule b { font-family: var(--display); font-size: 1.25rem; line-height: 1.15; }
 	.ga-rule span { color: var(--muted); font-size: var(--step-small); }
+
+	/* 2 or 1 columns beside the screenshot: both divide the six groups */
+	.ga-playtest { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	@media (max-width: 600px) { .ga-playtest { grid-template-columns: minmax(0, 1fr); } }
 
 	/* 4, 2 or 1 columns: all divide the four plugins */
 	.ga-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); }
