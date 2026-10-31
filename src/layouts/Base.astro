@@ -51,7 +51,10 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 			mode !== 'bare' && (
 				<header class="bar">
 					<a class="wordmark" href={url(`/${lang}/`)}>dann</a>
-					<nav class="nav" aria-label={s.navLabel}>
+					<button type="button" class="menu-button" aria-label={s.menu} aria-expanded="false" aria-controls="site-nav">
+						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+					</button>
+					<nav id="site-nav" class="nav" aria-label={s.navLabel}>
 						<a href={url(`/${lang}/#work`)}>{s.nav.work}</a>
 						<a href={url(`/${lang}/#jams`)}>{s.nav.jams}</a>
 						<a href={url(`/${lang}/#lab`)}>{s.nav.lab}</a>
@@ -74,6 +77,11 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 				el.style.setProperty('--d', `${i * 80}ms`);
 				io.observe(el);
 			});
+			// Phone menu: any click outside the button closes it, links included. Without this script the links just show.
+			const menu = document.querySelector('.menu-button');
+			const setMenu = (open) => { menu?.setAttribute('aria-expanded', String(open)); menu?.parentElement.classList.toggle('open', open); };
+			document.addEventListener('click', (e) => setMenu(!!menu?.contains(e.target) && menu.getAttribute('aria-expanded') !== 'true'));
+			document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 			// Provenance filter: hides the works that don't match.
 			document.querySelectorAll('[data-filter]').forEach((b, _, all) => {
 				b.closest('[hidden]')?.removeAttribute('hidden');
