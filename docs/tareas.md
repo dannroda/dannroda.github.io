@@ -1,7 +1,7 @@
 # Tareas — dann.com.ar
 
 > Export de `compass/`, que es la fuente de verdad. No editar: los cambios se hacen en `compass/` o con `scompass`, y este archivo se regenera.
-> Generado: 2026-10-21
+> Generado: 2026-10-29
 
 ## M0 — Base del sitio  (5/5)
 
@@ -221,7 +221,7 @@ Dirección 'name-as-monument' (taste-skill): DANN a todo el ancho, grafito y nar
 
 **Notas:** Quedan avisos por contenido: fichas de itch/GitHub con 1-2 imágenes, blog sin posts, sin video (Steam solo da HLS).
 
-## M5 — Dominio propio  (1/2)
+## M5 — Dominio propio  (2/2)
 
 El sitio en un dominio propio en lugar de github.io.
 
@@ -236,6 +236,10 @@ Candidatos libres: dannroda.com, dannroda.dev, dann.games, dannroda.games; dann.
 
 **Notas:** Comprado dann.com.ar; DNS en Cloudflare (pat/jim.ns.cloudflare.com).
 
-### 5.2 CNAME y DNS hacia GitHub Pages · En curso
+### 5.2 CNAME y DNS hacia GitHub Pages · Hecho
 
-**Tamaño:** S · **Etiquetas:** `infra`
+**Terminada:** 2026-10-29 · **Tamaño:** S · **Etiquetas:** `infra`
+
+**Prueba:** curl: https://dann.com.ar/ responde 200 con certificado válido; http:// redirige 301 a https://; https://www.dann.com.ar/ y cualquier subdominio redirigen 301 a https://dann.com.ar conservando ruta y query.
+
+**Notas:** DNS en Cloudflare, todo proxied: dann.com.ar CNAME dannroda.github.io; www y * CNAME dann.com.ar. El dominio propio está en los ajustes de Pages del repo (el deploy es por Actions, no hay archivo CNAME). Pages solo tiene certificado para dann.com.ar, así que www y * daban 526 con SSL Full (strict): una Redirect Rule de Cloudflare (http.host ne "dann.com.ar" → 301 a https://dann.com.ar + ruta, con query) los manda al dominio principal antes de llegar a GitHub. Queda pendiente: content/store/dannroda.github.io.json todavía muestra https://dannroda.github.io/ como homepage (viene del sync de GitHub).

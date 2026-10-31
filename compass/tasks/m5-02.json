@@ -2,16 +2,17 @@
   "checklist": [],
   "code": "5.2",
   "created_at": "2026-10-21T20:26:33.675Z",
+  "done_at": "2026-10-30T00:15:52.242Z",
   "milestone": "m05",
-  "notes": "",
+  "notes": "DNS en Cloudflare, todo proxied: dann.com.ar CNAME dannroda.github.io; www y * CNAME dann.com.ar. El dominio propio está en los ajustes de Pages del repo (el deploy es por Actions, no hay archivo CNAME). Pages solo tiene certificado para dann.com.ar, así que www y * daban 526 con SSL Full (strict): una Redirect Rule de Cloudflare (http.host ne \"dann.com.ar\" → 301 a https://dann.com.ar + ruta, con query) los manda al dominio principal antes de llegar a GitHub. Queda pendiente: content/store/dannroda.github.io.json todavía muestra https://dannroda.github.io/ como homepage (viene del sync de GitHub).",
   "order": 2,
   "refs": [],
   "size": "s",
-  "status": "doing",
+  "status": "done",
   "tags": [
     "infra"
   ],
-  "test": "",
+  "test": "curl: https://dann.com.ar/ responde 200 con certificado válido; http:// redirige 301 a https://; https://www.dann.com.ar/ y cualquier subdominio redirigen 301 a https://dann.com.ar conservando ruta y query.",
   "title": "CNAME y DNS hacia GitHub Pages",
-  "updated_at": "2026-10-22T00:02:32.212Z"
+  "updated_at": "2026-10-30T02:07:30.002Z"
 }
