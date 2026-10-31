@@ -69,7 +69,7 @@ const copy = {
 		decisions: { allow: 'Allow', ask: 'Ask', deny: 'Deny' },
 		matrixNote: '* In Auto, read-only and build commands on the allowlist run on their own; <code>rm</code>, <code>git push</code>, <code>curl</code> and installers always ask. In any mode, writing a <code>.tscn</code> by hand or a project file from the shell is rejected: scenes change only through the editor.',
 		toolsEyebrow: 'MCP on 127.0.0.1',
-		toolsH: '60+ editor tools. The agent uses Godot, not a text editor.',
+		toolsH: '70+ editor tools. The agent uses Godot, not a text editor.',
 		toolsP: 'Scene edits are steps in Godot’s own undo. Open scripts and unsaved buffers are respected. When the agent runs Godot from the shell, it uses the same binary as your editor.',
 		tools: [
 			['Read the project', 'Scene trees with non-default properties, one node in detail, editor state, and the API of any class in your exact Godot version.'],
@@ -100,7 +100,7 @@ const copy = {
 			['Plan', 'Tasks with live durations. Edit the plan while it runs; the agent rereads it after each turn.'],
 			['Build and verify', 'Edit, <code>run_scene</code>, look at frames, read errors, report checks as pass, fail or pending.'],
 			['Checkpoints', 'One <code>cpN</code> commit per task on <code>agent/&lt;date&gt;</code>. Restore any of them and resume from there.'],
-			['QA', 'A new session that never saw the builder’s chat plays the game and scores playability, function, feel and code. It can’t edit, or pass a check it could not test.'],
+			['QA', 'A new session that never saw the builder’s chat plays the game and scores playability, function, visuals and feel, and code. It can’t edit, or pass a check it could not test.'],
 			['Report', 'What the harness measured, not what the agent claims: time per task, tools, failures, loops, quota pauses.']
 		],
 		oneshotAlt: 'The One-shot screen running an asteroid shooter goal, task 2 of 3: quota, time, tokens and playtest bars, the plan, the activity log, the last playtest frame, two passed checks and one pending, and checkpoints cp1 to cp3 with Restore here.',
@@ -116,7 +116,7 @@ const copy = {
 		rulesEyebrow: 'Ground rules',
 		rulesH: 'What it will never do.',
 		rules: [
-			['Merge or push', 'One-shot works on its own branch. You review and you merge.'],
+			['Merge or push without your OK', 'One-shot works on its own branch. You review and you merge.'],
 			['Store your API keys', 'Profiles name an environment variable; the value is read at request time.'],
 			['Read the agent’s credentials', 'Sign-in runs the agent’s own login. Pasted codes never reach the log.'],
 			['Listen beyond your machine', 'The MCP server binds to 127.0.0.1 with a token that changes on every start.'],
@@ -179,7 +179,7 @@ const copy = {
 		decisions: { allow: 'Permitir', ask: 'Preguntar', deny: 'Denegar' },
 		matrixNote: '* En Auto, los comandos de lectura y compilación de la lista permitida corren solos; <code>rm</code>, <code>git push</code>, <code>curl</code> y los instaladores siempre preguntan. En cualquier modo, escribir un <code>.tscn</code> a mano o un archivo del proyecto desde la shell se rechaza: las escenas solo cambian a través del editor.',
 		toolsEyebrow: 'MCP en 127.0.0.1',
-		toolsH: 'Más de 60 herramientas. El agente usa Godot, no un editor de texto.',
+		toolsH: 'Más de 70 herramientas. El agente usa Godot, no un editor de texto.',
 		toolsP: 'Cada edición de escena es un paso del deshacer de Godot. Respeta los scripts abiertos y lo que no guardaste. Cuando el agente corre Godot desde la shell, usa el mismo binario que tu editor.',
 		tools: [
 			['Leer el proyecto', 'Árboles de escena con sus propiedades, un nodo en detalle, el estado del editor y la API de cualquier clase en tu versión exacta de Godot.'],
@@ -196,7 +196,7 @@ const copy = {
 		playtestCap: 'Un veredicto que falló en el dock: la evidencia, lo que pudo cambiar sin jugar, lo que vieron los detectores y cómo reproducirlo.',
 		playtest: [
 			['Veredicto contrastado', 'Si no jugó, o si el veredicto depende de cómo se ve algo y no capturó ningún frame, cuenta como no se pudo probar. También lista lo que puede haber cambiado en el juego sin jugar.', ['game_set', 'game_call', 'game_script']],
-			['Detectores en el juego', 'Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas sin fin, frames largos y un HUD por encima de su máximo.', ['NaN', '8 s cayendo', 'frame > 0,75 s', '12/10']],
+			['Detectores en el juego', 'Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas largas, frames largos y un HUD por encima de su máximo.', ['NaN', '8 s cayendo', 'frame > 0,75 s', '12/10']],
 			['Clics reales, frames exactos', 'Usa los menús con clics reales, sin adivinar píxeles. Puede jugar por turnos con frames de física exactos, o correr un script corto adentro del juego para reaccionar en el mismo frame.', ['game_ui_act', 'game_step', 'game_script']],
 			['Verificar, lograr, explorar', 'Verificá algo, pedile un objetivo o que recorra un nivel y diga qué se ve mal. Un error de script no termina la corrida: el juego sigue y el error queda en la lista.', ['pasó', 'falló', 'no se pudo probar', 'explorado']],
 			['Hallazgos para actuar', 'Van al panel de hallazgos, y uno marcado como que no es un bug no vuelve. Repetí el último playtest tal cual, o reproducí la grabación en el editor.', ['Mostrar en la escena', 'Verificar un arreglo', 'No es un bug']],
@@ -210,7 +210,7 @@ const copy = {
 			['Plan', 'Tareas con su duración en vivo. Editá el plan mientras corre; el agente lo relee después de cada turno.'],
 			['Construir y verificar', 'Edita, <code>run_scene</code>, mira capturas, lee errores y reporta checks como pass, fail o pending.'],
 			['Checkpoints', 'Un commit <code>cpN</code> por tarea en <code>agent/&lt;fecha&gt;</code>. Restaurá cualquiera y seguí desde ahí.'],
-			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega y puntúa jugabilidad, funcionalidad, sensación y código. No puede editar ni aprobar un check que no pudo probar.'],
+			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega y puntúa jugabilidad, funcionalidad, visual y sensación, y código. No puede editar ni aprobar un check que no pudo probar.'],
 			['Reporte', 'Lo que midió el harness, no lo que dice el agente: tiempo por tarea, herramientas, fallas, loops y pausas por cuota.']
 		],
 		oneshotAlt: 'La pantalla One-shot con el objetivo de un shooter de asteroides, tarea 2 de 3: barras de cuota, tiempo, tokens y playtests, el plan, la actividad, el frame del último playtest, dos checks pasados y uno pendiente, y los checkpoints cp1 a cp3.',
@@ -226,7 +226,7 @@ const copy = {
 		rulesEyebrow: 'Reglas',
 		rulesH: 'Lo que nunca va a hacer.',
 		rules: [
-			['Hacer merge o push', 'One-shot trabaja en su propia rama. Vos revisás y vos hacés el merge.'],
+			['Hacer merge o push sin tu aprobación', 'One-shot trabaja en su propia rama. Vos revisás y vos hacés el merge.'],
 			['Guardar tus API keys', 'Los perfiles nombran una variable de entorno; el valor se lee en cada pedido.'],
 			['Leer las credenciales del agente', 'El inicio de sesión usa el login del propio agente. Los códigos pegados nunca llegan al log.'],
 			['Escuchar fuera de tu máquina', 'El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque.'],
@@ -283,7 +283,11 @@ const release = `${repo}/releases/latest`;
 				</div>
 			</div>
 			<figure class="ga-shot">
-				<img src={shot('overview')} width="1920" height="1200" alt={copy.overviewAlt} />
+				<picture>
+					{/* The whole editor is unreadable on a phone: there, only the dock. */}
+					<source media="(max-width: 860px)" srcset={shot('chat')} width="480" height="1108" />
+					<img src={shot('overview')} width="1920" height="1200" alt={copy.overviewAlt} />
+				</picture>
 				<figcaption>{copy.overviewCap}</figcaption>
 			</figure>
 		</section>

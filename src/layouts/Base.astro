@@ -52,13 +52,13 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 				<header class="bar">
 					<a class="wordmark" href={url(`/${lang}/`)}>dann</a>
 					<button type="button" class="menu-button" aria-label={s.menu} aria-expanded="false" aria-controls="site-nav">
-						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18" /><path d="M3 12h18" /><path d="M3 18h18" /></svg>
 					</button>
 					<nav id="site-nav" class="nav" aria-label={s.navLabel}>
 						<a href={url(`/${lang}/#work`)}>{s.nav.work}</a>
 						<a href={url(`/${lang}/#jams`)}>{s.nav.jams}</a>
 						<a href={url(`/${lang}/#lab`)}>{s.nav.lab}</a>
-						<a href={url(`/${lang}/#contact`)}>{s.contact}</a>
+						<a href="#contact">{s.contact}</a>
 						<a href={url(`/${lang}/blog/`)}>{s.nav.blog}</a>
 						<a href={url(`/${alt}/${path}`)} hreflang={alt} lang={alt}>{alt.toUpperCase()}</a>
 					</nav>

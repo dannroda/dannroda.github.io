@@ -31,7 +31,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--t
 a { color: inherit; text-decoration: none; transition: color 0.2s, opacity 0.2s, background-color 0.2s; }
 a:hover { color: var(--accent); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-img { max-width: 100%; display: block; }
+/* height: auto so the width/height attributes don't defeat aspect-ratio and crop the covers */
+img { max-width: 100%; height: auto; display: block; }
 h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
 p { margin: 0; }
 .small { font-size: var(--step-small); color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -45,6 +46,10 @@ p { margin: 0; }
 .nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .nav a { padding: 10px 0; }
 .menu-button { display: none; width: 48px; height: 48px; margin-right: -12px; align-items: center; justify-content: center; border: 0; background: none; color: inherit; cursor: pointer; }
+.menu-button path { transform-box: fill-box; transform-origin: center; }
+.menu-button[aria-expanded='true'] path:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-button[aria-expanded='true'] path:nth-child(2) { opacity: 0; }
+.menu-button[aria-expanded='true'] path:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 .page { padding: 48px var(--m) var(--gap); display: flex; flex-direction: column; gap: 72px; max-width: 1440px; margin: 0 auto; }
 
@@ -63,7 +68,6 @@ p { margin: 0; }
 .tag.assisted { background: var(--surface-3); color: var(--ink); }
 .tag.assisted::before { content: '◧'; }
 .tag.vibe { padding-left: 0; color: var(--ink); font-style: italic; font-weight: 500; }
-.tag.vibe::before { content: '□'; }
 .tag.other { background: var(--surface); color: var(--muted); }
 /* What each label means, on hover; inside a card the label sits at the right edge, so the tip opens leftward. */
 .tag[data-tip] { position: relative; cursor: help; }
@@ -89,12 +93,14 @@ p { margin: 0; }
 /* Godot's node icons drifting diagonally behind the first screen and the contact block, across the full window width
    (turned 45°, sliding one tile, so the loop is seamless). */
 .hero, .contact { position: relative; isolation: isolate; }
-.hero-bg { position: absolute; z-index: -1; inset: calc(var(--gap) / -2) calc(50% - 50vw); overflow: hidden; pointer-events: none; }
+.hero-bg { position: absolute; z-index: -1; inset: calc(var(--gap) / -2) calc(50% - 50vw); overflow: hidden; pointer-events: none; mask-image: linear-gradient(transparent, #000 120px, #000 calc(100% - 120px), transparent); }
 .hero .hero-bg { top: -120px; }
 /* A square wider than the box's diagonal at any window size, so the turned pattern always reaches every corner. */
 .hero-bg::before { content: ''; position: absolute; left: 50%; top: 50%; width: 200vmax; height: 200vmax; background: var(--pattern) 0 0 / 288px; opacity: 0.07; transform: translate(-50%, -50%) rotate(-45deg); animation: pattern-drift 40s linear infinite; }
 @keyframes pattern-drift { to { transform: translate(-50%, -50%) rotate(-45deg) translateX(288px); } }
 img.gh { object-fit: contain !important; background: #fff !important; }
+/* Steam capsules carry the logo edge to edge: keep their own proportion so it isn't cropped. */
+img.steam { aspect-ratio: 460 / 215 !important; }
 
 .block-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px 48px; margin-bottom: 56px; }
 .block-head > div:first-child { flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
@@ -149,7 +155,9 @@ html[data-show='vibe'] .filterable:not(:has([data-ai='vibe'])) .empty { display:
 .lab-title { font-family: var(--display); font-weight: 700; font-size: clamp(1.375rem, 1.1rem + 0.7vw, 1.625rem); line-height: 1.1; transition: color 0.2s; }
 .lab .empty { grid-column: 1 / -1; }
 
+.site-contact { max-width: 1376px; margin: 0 auto; padding: 0 var(--m); }
 .contact { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px 48px; }
+.contact h2 { font-size: var(--step-head); letter-spacing: -0.035em; line-height: 1; }
 .contact > div { flex: 1 1 420px; display: flex; flex-direction: column; gap: 12px; }
 .contact p { max-width: 30em; }
 .contact-links { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -225,6 +233,8 @@ thead th { border-top: 0; font-size: var(--step-small); font-weight: 500; color:
 @media (max-width: 760px) {
 	.jam-row img { flex-basis: 100%; width: 100%; height: auto; aspect-ratio: 16 / 9; }
 	.bar { padding-block: 8px; }
+	.filter { flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+	.filter button { flex: none; white-space: nowrap; }
 	.js .menu-button { display: inline-flex; }
 	.js .nav { display: none; }
 	.js .bar.open .nav { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; padding-bottom: 8px; background: var(--bg); border-bottom: 1px solid var(--surface-3); }

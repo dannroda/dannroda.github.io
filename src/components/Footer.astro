@@ -9,9 +9,21 @@ const { lang } = Astro.props;
 const s = t[lang];
 ---
 
+<div class="site-contact">
+	<section id="contact" class="contact" aria-labelledby="h-contact" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+		<div class="hero-bg" aria-hidden="true"></div>
+		<div>
+			<h2 id="h-contact" data-rise>{s.contactTitle}</h2>
+			<p data-rise>{s.invite}</p>
+		</div>
+		<nav class="contact-links" aria-label={s.elsewhere} data-rise>
+			{profile.links.map((l, i) => <a class:list={['pill', { primary: i === profile.links.length - 1 }]} href={l.url}>{l.label} ↗</a>)}
+		</nav>
+	</section>
+</div>
+
 <footer class="site-footer">
 	<nav class="footer-links" aria-label={s.follow}>
-		{profile.links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
 		<a href={url(`/${lang}/rss.xml`)}>RSS</a>
 		<a href={url(`/${lang}/links/`)}>{s.nav.links}</a>
 	</nav>

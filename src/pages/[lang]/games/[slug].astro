@@ -75,7 +75,7 @@ const wiki = (await getCollection('wiki', (w) => w.data.wiki === game.id || w.da
 				{d.jam && <a class="pill" href={d.jam.url}>{d.jam.name} ↗</a>}
 			</div>
 		</div>
-		{d.local_images.cover && <img class:list={["detail-cover", { wide: isCard(game) }]} src={url(d.local_images.cover)} alt="" data-rise />}
+		{d.local_images.cover && <img class:list={["detail-cover", { wide: isCard(game), steam: d.source === 'steam' }]} src={url(d.local_images.cover)} alt="" data-rise />}
 	</section>
 
 	<div class="detail">

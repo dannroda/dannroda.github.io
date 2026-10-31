@@ -55,7 +55,7 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 							{featured.map((g) => (
 								<figure>
 									<a href={href(g)}>
-										{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt={g.data.title} width="1120" height="700" />}
+										{g.data.local_images.cover && <img class:list={{ gh: isCard(g), steam: g.data.source === 'steam' }} src={url(g.data.local_images.cover)} alt={g.data.title} width="1120" height="700" />}
 									</a>
 									<figcaption>
 										<span><strong><a href={href(g)}>{g.data.title}</a>.</strong> {blurb(g, lang)}</span>
@@ -93,7 +93,7 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 					work.map((g) => (
 						<article class="work-row" data-ai={ai(g)} data-rise>
 							<a class="work-img" href={href(g)} tabindex="-1" aria-hidden="true">
-								{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="960" height="540" />}
+								{g.data.local_images.cover && <img class:list={{ gh: isCard(g), steam: g.data.source === 'steam' }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="960" height="540" />}
 							</a>
 							<div class="work-text">
 								<h3><a href={href(g)}>{g.data.title}</a></h3>
@@ -153,17 +153,6 @@ const itch = profile.links.find((l) => l.url.includes('itch.io'));
 				}
 				<p class="empty">{s.emptyFilter}</p>
 			</div>
-		</section>
-
-		<section id="contact" class="block contact" aria-labelledby="h-contact" style={`--pattern: url(${url('/godot-pattern.svg')})`}>
-			<div class="hero-bg" aria-hidden="true"></div>
-			<div>
-				<h2 id="h-contact" data-rise>{s.contactTitle}</h2>
-				<p data-rise>{s.invite}</p>
-			</div>
-			<nav class="contact-links" aria-label={s.elsewhere} data-rise>
-				{profile.links.map((l, i) => <a class:list={['pill', { primary: i === profile.links.length - 1 }]} href={l.url}>{l.label} ↗</a>)}
-			</nav>
 		</section>
 	</div>
 </Base>
