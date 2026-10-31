@@ -143,6 +143,7 @@ const copy = {
 		skillsFine: 'MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Three steps to the first prompt.',
 		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
+		knownIssue: '<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 still prints the error, though it didn’t crash in 12 runs.',
 		downloadZip: 'Download (GitHub)',
 		gettingStarted: 'Getting started',
 		gettingStartedUrl: `${repo}/wiki/Getting-started`,
@@ -257,6 +258,7 @@ const copy = {
 		skillsFine: 'MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Tres pasos hasta el primer prompt.',
 		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
+		knownIssue: '<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 sigue imprimiendo el error, aunque no se cayó en 12 corridas.',
 		downloadZip: 'Descargar (GitHub)',
 		gettingStarted: 'Primeros pasos',
 		gettingStartedUrl: `${repo}/wiki/Primeros-pasos`,
@@ -474,6 +476,7 @@ const release = `${repo}/releases/latest`;
 				<div class="ga-install-left">
 					<h2 id="h-install">{copy.installH}</h2>
 					<p class="small" set:html={copy.req} />
+					<p class="small" set:html={copy.knownIssue} />
 					<div class="pills">
 						<a class="pill" href={release}>{copy.downloadZip}</a>
 						<a class="pill ghost" href={copy.gettingStartedUrl}>{copy.gettingStarted}</a>
