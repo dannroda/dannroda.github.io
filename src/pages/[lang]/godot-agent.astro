@@ -30,6 +30,7 @@ const toolNames = [
 	['tileset_add_atlas', 'tilemap_paint_terrain', 'animation_set_track'],
 	['move_file', 'create_resource', 'asset_search', 'asset_install']
 ];
+const regressionCommand = 'godot --headless --path . --script res://addons/godot_agent/playtest/regression_cli.gd';
 const pluginsRepo = 'https://github.com/dannroda/godot-agent-plugins';
 const commands = ['npx skills add dannroda/godot-agent-plugins', '/plugin marketplace add dannroda/godot-agent-plugins'];
 const skillPlugins = [
@@ -42,7 +43,7 @@ const skillPlugins = [
 const copy = {
 	en: {
 		title: 'Godot Agent Harness',
-		description: 'Your coding agent, inside the Godot editor: Claude Code, Codex, Google Antigravity or any ACP agent, with the editor’s own tools, undo and permissions you choose.',
+		description: 'Your coding agent, inside the Godot editor: Claude Code or any ACP agent, with the editor’s own tools, undo and permissions you choose.',
 		h1: 'Your coding agent, <em>inside</em> the Godot editor.',
 		intro: 'An editor addon for Godot 4. The agent reads and edits scenes and scripts with the editor’s own tools, with undo, runs the game and tests it. Every change goes through permissions you choose. Free and MIT licensed.',
 		download: 'Download (GitHub)',
@@ -84,6 +85,10 @@ const copy = {
 		playtestP: 'Say what to check by playing. The agent runs the game, sends input and captures frames, then answers passed, failed or could not test. It doesn’t change the project.',
 		playtestAlt: 'The Agent dock after a playtest. A failed verdict: asteroids stop getting faster after wave 3, with the evidence, a game_set that may have changed the game without playing, the detector’s HUD.Wave at 12/10 and the steps to reproduce it. Above, the finding with Show in the scene, Verify a fix and Not a bug.',
 		playtestCap: 'A failed verdict in the dock: the evidence, what may have changed without playing, what the detectors saw and how to reproduce it.',
+		regressionsH: 'Regressions without tokens',
+		regressionsP: 'A playtest that passes leaves a script that repeats the check. <b>Run regressions</b> in the findings panel runs them all without the agent and without using tokens, and says which ones fail. For CI, commit <code>res://.godot_agent/playtests/regressions/</code> and run:',
+		regressionsWiki: 'More in the wiki',
+		regressionsUrl: `${repo}/wiki/Review`,
 		playtest: [
 			['Checked verdict', 'Without playing the game, or without a captured frame when the verdict depends on how something looks, it counts as could not test. It also lists what may have changed in the running game without playing.', ['game_set', 'game_call', 'game_script']],
 			['In-game detectors', 'They report what the agent wasn’t looking at, with a picture of the moment: NaN transforms, bodies out of the world, long falls, long frames and a HUD past its maximum.', ['NaN', '8 s falling', 'frame > 0.75 s', '12/10']],
@@ -137,7 +142,7 @@ const copy = {
 		pluginsRepo: 'See the repo',
 		skillsFine: 'MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Three steps to the first prompt.',
-		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Linux, macOS and Windows. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
+		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
 		downloadZip: 'Download (GitHub)',
 		gettingStarted: 'Getting started',
 		gettingStartedUrl: `${repo}/wiki/Getting-started`,
@@ -152,7 +157,7 @@ const copy = {
 	},
 	es: {
 		title: 'Godot Agent Harness',
-		description: 'Tu agente de código, dentro del editor de Godot: Claude Code, Codex, Google Antigravity o cualquier agente ACP, con las herramientas del propio editor, deshacer y los permisos que elegís.',
+		description: 'Tu agente de código, dentro del editor de Godot: Claude Code o cualquier agente ACP, con las herramientas del propio editor, deshacer y los permisos que elegís.',
 		h1: 'Tu agente de código, <em>dentro</em> del editor de Godot.',
 		intro: 'Un addon de editor para Godot 4. El agente lee y edita escenas y scripts con las herramientas del propio editor, con deshacer, corre el juego y lo prueba. Cada cambio pasa por los permisos que elegís. Gratis y con licencia MIT.',
 		download: 'Descargar (GitHub)',
@@ -194,6 +199,10 @@ const copy = {
 		playtestP: 'Decile qué comprobar jugando. El agente corre el juego, manda input y captura frames, y contesta pasó, falló o no se pudo probar. No cambia el proyecto.',
 		playtestAlt: 'El dock Agent después de un playtest. Un veredicto que falló: los asteroides dejan de acelerar después de la oleada 3, con la evidencia, un game_set que puede haber cambiado el juego sin jugar, el detector con HUD.Wave en 12/10 y los pasos para reproducirlo. Arriba, el hallazgo con Mostrar en la escena, Verificar un arreglo y No es un bug.',
 		playtestCap: 'Un veredicto que falló en el dock: la evidencia, lo que pudo cambiar sin jugar, lo que vieron los detectores y cómo reproducirlo.',
+		regressionsH: 'Regresiones sin gastar tokens',
+		regressionsP: 'Un playtest que pasa deja un script que repite la comprobación. <b>Correr regresiones</b> en el panel de hallazgos los corre todos sin el agente y sin gastar tokens, y dice cuáles fallan. Para CI, commiteá <code>res://.godot_agent/playtests/regressions/</code> y corré:',
+		regressionsWiki: 'Más en la wiki',
+		regressionsUrl: `${repo}/wiki/Revisar`,
 		playtest: [
 			['Veredicto contrastado', 'Si no jugó, o si el veredicto depende de cómo se ve algo y no capturó ningún frame, cuenta como no se pudo probar. También lista lo que puede haber cambiado en el juego sin jugar.', ['game_set', 'game_call', 'game_script']],
 			['Detectores en el juego', 'Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas largas, frames largos y un HUD por encima de su máximo.', ['NaN', '8 s cayendo', 'frame > 0,75 s', '12/10']],
@@ -247,7 +256,7 @@ const copy = {
 		pluginsRepo: 'Ver el repo',
 		skillsFine: 'MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Tres pasos hasta el primer prompt.',
-		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Linux, macOS y Windows. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
+		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
 		downloadZip: 'Descargar (GitHub)',
 		gettingStarted: 'Primeros pasos',
 		gettingStartedUrl: `${repo}/wiki/Primeros-pasos`,
@@ -278,7 +287,7 @@ const release = `${repo}/releases/latest`;
 					</div>
 					<div class="ga-agents">
 						<AiTag lang={lang} level={game?.own?.ai} />
-						<span>Claude Code</span><span>Codex</span><span>Google Antigravity</span><span>{copy.anyAcp}</span><span>{copy.gdcs}</span>
+						<span>Claude Code</span><span>{copy.anyAcp}</span><span>{copy.gdcs}</span>
 					</div>
 				</div>
 			</div>
@@ -363,6 +372,15 @@ const release = `${repo}/releases/latest`;
 							<div class="ga-names">{(labels as string[]).map((n) => <span>{n}</span>)}</div>
 						</div>
 					))}
+					<div class="ga-tool ga-regressions">
+						<h3>{copy.regressionsH}</h3>
+						<p set:html={copy.regressionsP} />
+						<div class="ga-cmd-row">
+							<code>{regressionCommand}</code>
+							<button type="button" data-copy={copy.copy} data-copied={copy.copied}>{copy.copy}</button>
+						</div>
+						<a class="small" href={copy.regressionsUrl}>{copy.regressionsWiki} ↗</a>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -439,7 +457,7 @@ const release = `${repo}/releases/latest`;
 						<div class="ga-cmd">
 							<span class="small">{copy.commandLabels[i]}</span>
 							<div class="ga-cmd-row">
-								<code tabindex="0">{command}</code>
+								<code>{command}</code>
 								<button type="button" data-copy={copy.copy} data-copied={copy.copied}>{copy.copy}</button>
 							</div>
 						</div>
@@ -581,9 +599,11 @@ const release = `${repo}/releases/latest`;
 	.ga-rule b { font-family: var(--display); font-size: 1.25rem; line-height: 1.15; }
 	.ga-rule span { color: var(--muted); font-size: var(--step-small); }
 
-	/* 2 or 1 columns beside the screenshot: both divide the six groups */
+	/* 2 or 1 columns beside the screenshot: both divide the six groups, and regressions take a whole row */
 	.ga-playtest { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	@media (max-width: 600px) { .ga-playtest { grid-template-columns: minmax(0, 1fr); } }
+	.ga-regressions { grid-column: 1 / -1; }
+	.ga-regressions a { width: fit-content; text-decoration: underline; }
 
 	/* 4, 2 or 1 columns: all divide the four plugins */
 	.ga-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -597,7 +617,7 @@ const release = `${repo}/releases/latest`;
 	.ga-cmds { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 	.ga-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 	.ga-cmd-row { display: flex; align-items: stretch; background: var(--surface); border-radius: 8px; min-width: 0; }
-	.ga-cmd-row code { flex: 1; min-width: 0; padding: 14px 16px; font-size: 14px; white-space: pre; overflow-x: auto; }
+	.ga-cmd-row code { flex: 1; min-width: 0; padding: 14px 16px; font-size: 14px; overflow-wrap: anywhere; }
 	.ga-cmd-row button { flex: none; min-width: 84px; border: 0; border-left: 1px solid var(--surface-3); border-radius: 0 8px 8px 0; background: none; color: var(--muted); font: 500 13px var(--text); cursor: pointer; }
 	.ga-cmd-row button:hover { color: var(--accent); }
 
