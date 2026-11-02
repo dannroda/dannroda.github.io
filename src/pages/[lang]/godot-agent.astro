@@ -11,7 +11,6 @@ const game = (await games()).all.find((g) => g.id === 'godot-agent');
 const repo = 'https://github.com/dannroda/godot-agent';
 // Loaded from the repo so they follow tests/docs_shots.sh, which regenerates them in both languages.
 const shot = (name: string) => `https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/${lang}/${name}.png`;
-// shortcut: playtest.png is a copy in public/godot-agent/, it won't follow docs_shots.sh; use shot('playtest') once it is on the repo's main.
 
 type D = 'allow' | 'ask' | 'deny';
 const matrix: [string, D[], string?][] = [
@@ -45,7 +44,7 @@ const copy = {
 		title: 'Godot Agent Harness',
 		description: 'Your coding agent, inside the Godot editor: Claude Code or any ACP agent, with the editor’s own tools, undo and permissions you choose.',
 		h1: 'Your coding agent, <em>inside</em> the Godot editor.',
-		intro: 'An editor addon for Godot 4. The agent reads and edits scenes and scripts with the editor’s own tools, with undo, runs the game and tests it. Every change goes through permissions you choose. Free and MIT licensed.',
+		intro: 'An editor addon for Godot 4. The agent reads and edits scenes and scripts with the editor’s own tools, with undo, runs the game and tests it. Every change goes through permissions you choose. Run several sessions at once, one per dock tab, each with its own agent and account. Free and MIT licensed.',
 		download: 'Download (GitHub)',
 		wiki: 'Read the wiki',
 		wikiHome: `${repo}/wiki`,
@@ -99,13 +98,13 @@ const copy = {
 		],
 		oneshotEyebrow: 'One-shot screen · next to 2D / 3D / Script',
 		oneshotH: 'Give it a whole game. Get a branch back.',
-		oneshotP: '“A 2-player Pong with score.” The agent writes a spec, plans, builds, playtests and reports. A separate evaluator plays the result before anything counts as done. It never merges.',
+		oneshotP: '“A 2-player Pong with score.” The agent writes a spec, plans, builds, playtests and reports. A separate evaluator plays the result before anything counts as done. Each run opens in its own dock tab. It never merges.',
 		steps: [
-			['Spec', '<code>spec.md</code>: mechanics, game loop, visual direction, what “done” means. You can review it before the build starts.'],
+			['Spec', '<code>spec.md</code>: mechanics, game loop, visual direction, what “done” means. Add reference files (a GDD, concept art, a level sketch) and the agent reads them first. You can review the spec before the build starts.'],
 			['Plan', 'Tasks with live durations. Edit the plan while it runs; the agent rereads it after each turn.'],
 			['Build and verify', 'Edit, <code>run_scene</code>, look at frames, read errors, report checks as pass, fail or pending.'],
 			['Checkpoints', 'One <code>cpN</code> commit per task on <code>agent/&lt;date&gt;</code>. Restore any of them and resume from there.'],
-			['QA', 'A new session that never saw the builder’s chat plays the game and scores playability, function, visuals and feel, and code. It can’t edit, or pass a check it could not test.'],
+			['QA', 'A new session that never saw the builder’s chat plays the game, checks it against your reference files and scores playability, function, visuals and feel, and code. It can’t edit, or pass a check it could not test.'],
 			['Report', 'What the harness measured, not what the agent claims: time per task, tools, failures, loops, quota pauses.']
 		],
 		oneshotAlt: 'The One-shot screen running an asteroid shooter goal, task 2 of 3: quota, time, tokens and playtest bars, the plan, the activity log, the last playtest frame, two passed checks and one pending, and checkpoints cp1 to cp3 with Restore here.',
@@ -123,13 +122,13 @@ const copy = {
 		rules: [
 			['Merge or push without your OK', 'One-shot works on its own branch. You review and you merge.'],
 			['Store your API keys', 'Profiles name an environment variable; the value is read at request time.'],
-			['Read the agent’s credentials', 'Sign-in runs the agent’s own login. Pasted codes never reach the log.'],
+			['Read the agent’s credentials', 'Sign-in runs the agent’s own login. Pasted codes never reach the log. To label accounts, it reads only the email Claude Code keeps.'],
 			['Listen beyond your machine', 'The MCP server binds to 127.0.0.1 with a token that changes on every start.'],
 			['Ship in your game', 'Nothing from the addon reaches an exported build.']
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
 		skillsH: 'Godot skills for any agent.',
-		skillsP: 'Four plugins for working on Godot 4 games: architecture, shaders, assets and video. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon.',
+		skillsP: 'Four plugins for working on Godot 4 games: architecture, shaders, assets and video. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon. Inside the addon, the Extensions window installs <code>gdscript</code> and <code>shaders</code> in one click, and <b>Use with all agents</b> shares your project’s or your own skills with Google Antigravity, Codex and the rest.',
 		skills: [
 			'Design and review GDScript: where code and data live, signals and autoloads, state machines, components, pools, Resources, saves and mods.',
 			'Non-trivial shaders in Godot 4.6+: spaces and matrices, custom <code>light()</code>, normal maps, procedural shapes, post-processing and ray marching.',
@@ -160,7 +159,7 @@ const copy = {
 		title: 'Godot Agent Harness',
 		description: 'Tu agente de código, dentro del editor de Godot: Claude Code o cualquier agente ACP, con las herramientas del propio editor, deshacer y los permisos que elegís.',
 		h1: 'Tu agente de código, <em>dentro</em> del editor de Godot.',
-		intro: 'Un addon de editor para Godot 4. El agente lee y edita escenas y scripts con las herramientas del propio editor, con deshacer, corre el juego y lo prueba. Cada cambio pasa por los permisos que elegís. Gratis y con licencia MIT.',
+		intro: 'Un addon de editor para Godot 4. El agente lee y edita escenas y scripts con las herramientas del propio editor, con deshacer, corre el juego y lo prueba. Cada cambio pasa por los permisos que elegís. Trabajá en varias sesiones a la vez, una por pestaña del dock, cada una con su agente y su cuenta. Gratis y con licencia MIT.',
 		download: 'Descargar (GitHub)',
 		wiki: 'Leer la wiki',
 		wikiHome: `${repo}/wiki/Inicio`,
@@ -214,13 +213,13 @@ const copy = {
 		],
 		oneshotEyebrow: 'Pantalla One-shot · al lado de 2D / 3D / Script',
 		oneshotH: 'Pedile un juego entero. Recibí una rama.',
-		oneshotP: '«Un Pong de 2 jugadores con puntaje.» El agente escribe una spec, planifica, construye, prueba y reporta. Un evaluador aparte juega el resultado antes de darlo por terminado. Nunca hace merge.',
+		oneshotP: '«Un Pong de 2 jugadores con puntaje.» El agente escribe una spec, planifica, construye, prueba y reporta. Un evaluador aparte juega el resultado antes de darlo por terminado. Cada corrida se abre en su propia pestaña del dock. Nunca hace merge.',
 		steps: [
-			['Spec', '<code>spec.md</code>: mecánicas, ciclo de juego, dirección visual y qué significa «terminado». Podés revisarla antes de que empiece.'],
+			['Spec', '<code>spec.md</code>: mecánicas, ciclo de juego, dirección visual y qué significa «terminado». Sumá archivos de referencia (un GDD, arte conceptual, un boceto de nivel) y el agente los lee primero. Podés revisar la spec antes de que empiece.'],
 			['Plan', 'Tareas con su duración en vivo. Editá el plan mientras corre; el agente lo relee después de cada turno.'],
 			['Construir y verificar', 'Edita, <code>run_scene</code>, mira capturas, lee errores y reporta checks como pass, fail o pending.'],
 			['Checkpoints', 'Un commit <code>cpN</code> por tarea en <code>agent/&lt;fecha&gt;</code>. Restaurá cualquiera y seguí desde ahí.'],
-			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega y puntúa jugabilidad, funcionalidad, visual y sensación, y código. No puede editar ni aprobar un check que no pudo probar.'],
+			['QA', 'Una sesión nueva, que nunca vio el chat del constructor, juega, lo contrasta con tus archivos de referencia y puntúa jugabilidad, funcionalidad, visual y sensación, y código. No puede editar ni aprobar un check que no pudo probar.'],
 			['Reporte', 'Lo que midió el harness, no lo que dice el agente: tiempo por tarea, herramientas, fallas, loops y pausas por cuota.']
 		],
 		oneshotAlt: 'La pantalla One-shot con el objetivo de un shooter de asteroides, tarea 2 de 3: barras de cuota, tiempo, tokens y playtests, el plan, la actividad, el frame del último playtest, dos checks pasados y uno pendiente, y los checkpoints cp1 a cp3.',
@@ -238,13 +237,13 @@ const copy = {
 		rules: [
 			['Hacer merge o push sin tu aprobación', 'One-shot trabaja en su propia rama. Vos revisás y vos hacés el merge.'],
 			['Guardar tus API keys', 'Los perfiles nombran una variable de entorno; el valor se lee en cada pedido.'],
-			['Leer las credenciales del agente', 'El inicio de sesión usa el login del propio agente. Los códigos pegados nunca llegan al log.'],
+			['Leer las credenciales del agente', 'El inicio de sesión usa el login del propio agente. Los códigos pegados nunca llegan al log. Para nombrar las cuentas, solo lee el email que guarda Claude Code.'],
 			['Escuchar fuera de tu máquina', 'El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque.'],
 			['Viajar en tu juego', 'Nada del addon llega a un juego exportado.']
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
 		skillsH: 'Skills de Godot para cualquier agente.',
-		skillsP: 'Cuatro plugins para trabajar en juegos de Godot 4: arquitectura, shaders, assets y video. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él.',
+		skillsP: 'Cuatro plugins para trabajar en juegos de Godot 4: arquitectura, shaders, assets y video. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él. Dentro del addon, la ventana Extensiones instala <code>gdscript</code> y <code>shaders</code> con un clic, y <b>Usar con todos los agentes</b> comparte las skills del proyecto o las tuyas con Google Antigravity, Codex y los demás.',
 		skills: [
 			'Diseñar y revisar GDScript: dónde viven el código y los datos, señales y autoloads, máquinas de estado, componentes, pools, Resources, saves y mods.',
 			'Shaders no triviales en Godot 4.6+: espacios y matrices, <code>light()</code> propio, normal maps, formas procedurales, post-procesado y ray marching.',
@@ -363,7 +362,7 @@ const release = `${repo}/releases/latest`;
 			</div>
 			<div class="ga-modes">
 				<figure class="ga-shot ga-perm">
-					<img src={url(`/godot-agent/${lang}/playtest.png`)} width="480" height="1108" loading="lazy" alt={copy.playtestAlt} />
+					<img src={shot('playtest')} width="480" height="1108" loading="lazy" alt={copy.playtestAlt} />
 					<figcaption>{copy.playtestCap}</figcaption>
 				</figure>
 				<div class="ga-tools ga-playtest">
@@ -442,7 +441,7 @@ const release = `${repo}/releases/latest`;
 			<div class="ga-head">
 				<span class="ga-eyebrow">{copy.skillsEyebrow}</span>
 				<h2 id="h-skills">{copy.skillsH}</h2>
-				<p>{copy.skillsP}</p>
+				<p set:html={copy.skillsP} />
 			</div>
 			<div class="ga-tools ga-skills">
 				{skillPlugins.map(([name, skills], i) => (
