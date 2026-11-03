@@ -102,11 +102,8 @@
 		"trailer": null
 	},
 	"source": "itch",
-	"synced_at": "2026-10-21T20:45:28.866Z",
+	"synced_at": "2026-11-03T03:23:39.665Z",
 	"tags": [
-		"ai-generated",
-		"ai-generated-code",
-		"ai-generated-graphics",
 		"godot",
 		"ludum-dare-59",
 		"puzzle"
