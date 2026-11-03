@@ -25,7 +25,7 @@ const toolNames = [
 	['scene_tree', 'get_node', 'class_info', 'search_api'],
 	['add_nodes', 'set_properties', 'reparent_node', 'connect_signal'],
 	['run_scene', 'capture_game_frame', 'game_input', 'game_wait'],
-	['validate_scripts', 'validate_physics', 'validate_tilemap', 'get_errors'],
+	['validate_scripts', 'validate_physics', 'validate_tilemap', 'get_errors', 'build_extension', 'test_extension'],
 	['tileset_add_atlas', 'tilemap_paint_terrain', 'animation_set_track'],
 	['move_file', 'create_resource', 'asset_search', 'asset_install']
 ];
@@ -35,8 +35,10 @@ const commands = ['npx skills add dannroda/godot-agent-plugins', '/plugin market
 const skillPlugins = [
 	['gdscript', ['godot-architecture', 'godot-communication', 'godot-patterns', 'godot-data-driven', 'godot-code-review']],
 	['shaders', ['godot-shader-techniques']],
+	['gdextension', ['gdextension-cpp', 'gdextension-build', 'gdextension-debug', 'gdextension-wrap-library']],
 	['blender', ['blender-scripting', 'blender-to-godot']],
-	['godot-video', ['godot-capture', 'godot-trailer', 'godot-gdd', 'godot-gamedev']]
+	['godot-video', ['godot-capture', 'godot-trailer', 'game-music', 'trailer-music', 'godot-gdd', 'godot-gamedev']],
+	['godot-testing', ['godot-visual-test', 'godot-performance']]
 ] as const;
 
 const copy = {
@@ -75,10 +77,12 @@ const copy = {
 			['Read the project', 'Scene trees with non-default properties, one node in detail, editor state, and the API of any class in your exact Godot version.'],
 			['Edit scenes', 'A whole subtree in one call and one undo step. Nothing is created if one item is invalid.'],
 			['Run and look', 'Run a scene with simulated input, read the real errors, capture frames. Input plays by physics frame, so a run reproduces at any framerate. Playtest answers passed, failed or could not test, with evidence and optional video.'],
-			['Check the work', 'Parse scripts without running, build C# with dotnet, and catch bodies without shapes or tiles without collision.'],
+			['Check the work', 'Parse scripts without running, build C# with dotnet, and catch bodies without shapes or tiles without collision. Build your GDExtension with SCons, CMake or Cargo, with errors by file and line, and test it in a separate headless Godot, so a crash never takes down the editor.'],
 			['Tilemaps & animation', 'Turn a texture into an atlas, paint terrains, build AnimationPlayer tracks and SpriteFrames from a sheet.'],
 			['Files & Asset Store', 'Moves keep the uid and rewrite every <code>res://</code> reference. Assets install into <code>addons/</code> without overwriting.']
 		],
+		supervisorH: 'A build that crashes the editor rolls back on its own.',
+		supervisorP: 'In projects that build a GDExtension, the editor can open under a supervisor. If a new build crashes it while starting, the supervisor puts back the last build that started fine, reopens the editor, and the agent goes on with the backtrace. The agent loads new builds with <code>restart_editor</code>.',
 		playtestEyebrow: 'Review mode · Playtest',
 		playtestH: 'A verdict only counts if the agent played.',
 		playtestP: 'Say what to check by playing. The agent runs the game, sends input and captures frames, then answers passed, failed or could not test. It doesn’t change the project.',
@@ -128,12 +132,14 @@ const copy = {
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
 		skillsH: 'Godot skills for any agent.',
-		skillsP: 'Four plugins for working on Godot 4 games: architecture, shaders, assets and video. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon. Inside the addon, the Extensions window installs <code>gdscript</code> and <code>shaders</code> in one click, and <b>Use with all agents</b> shares your project’s or your own skills with Google Antigravity, Codex and the rest.',
+		skillsP: 'Six plugins for working on Godot 4 games: architecture, shaders, C++ GDExtensions, assets, video and testing. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon. Inside the addon, the Extensions window installs <code>gdscript</code> and <code>shaders</code> in one click, and <b>Use with all agents</b> shares your project’s or your own skills with Google Antigravity, Codex and the rest.',
 		skills: [
 			'Design and review GDScript: where code and data live, signals and autoloads, state machines, components, pools, Resources, saves and mods.',
 			'Non-trivial shaders in Godot 4.6+: spaces and matrices, custom <code>light()</code>, normal maps, procedural shapes, post-processing and ray marching.',
+			'C++ GDExtensions with godot-cpp 10: bindings, builds and exports for each platform, debugging crashes and leaks, and wrapping C or C++ libraries.',
 			'Build and check assets with headless Blender 5 Python, then bring them to Godot with the right axes, collisions, materials and animations.',
-			'Videos from real footage of your game: repeatable capture, trailers, design document checks and development films. Needs only Godot and ffmpeg.'
+			'Videos from real footage of your game: repeatable capture, trailers, simple music, design document checks and development films. Needs only Godot, ffmpeg and Python.',
+			'Check the game by running it: screenshot tests against approved images, and before and after performance comparisons.'
 		],
 		commandLabels: ['Any agent', 'Claude Code'],
 		copy: 'Copy',
@@ -141,7 +147,7 @@ const copy = {
 		pluginsRepo: 'See the repo',
 		skillsFine: 'MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Three steps to the first prompt.',
-		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
+		req: 'Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider.',
 		knownIssue: '<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 still prints the error, though it didn’t crash in 12 runs.',
 		downloadZip: 'Download (GitHub)',
 		gettingStarted: 'Getting started',
@@ -190,10 +196,12 @@ const copy = {
 			['Leer el proyecto', 'Árboles de escena con sus propiedades, un nodo en detalle, el estado del editor y la API de cualquier clase en tu versión exacta de Godot.'],
 			['Editar escenas', 'Un subárbol entero en una llamada y un paso de deshacer. Si un ítem es inválido, no se crea nada.'],
 			['Correr y mirar', 'Corre una escena con input simulado, lee los errores reales y captura frames. El input va por frame de física, así que la corrida se repite igual a cualquier framerate. Playtest contesta pasó, falló o no se pudo probar, con evidencia y video opcional.'],
-			['Verificar el trabajo', 'Valida scripts sin correr el juego, compila C# con dotnet y detecta cuerpos sin forma o tiles sin colisión.'],
+			['Verificar el trabajo', 'Valida scripts sin correr el juego, compila C# con dotnet y detecta cuerpos sin forma o tiles sin colisión. Compila tu GDExtension con SCons, CMake o Cargo, con los errores por archivo y línea, y la prueba en un Godot headless aparte, así un crash nunca tira abajo el editor.'],
 			['TileMaps y animación', 'Convierte una textura en atlas, pinta terrenos y arma pistas de AnimationPlayer y SpriteFrames desde una hoja.'],
 			['Archivos y Asset Store', 'Mover conserva el uid y reescribe cada referencia <code>res://</code>. Los assets se instalan en <code>addons/</code> sin sobrescribir nada.']
 		],
+		supervisorH: 'Si una build tira el editor, vuelve atrás sola.',
+		supervisorP: 'En proyectos que compilan una GDExtension, el editor puede abrirse bajo un supervisor. Si una build nueva lo hace crashear al arrancar, vuelve a la última build que arrancó bien, reabre el editor, y el agente sigue con el backtrace. El agente carga las builds nuevas con <code>restart_editor</code>.',
 		playtestEyebrow: 'Modo Revisar · Playtest',
 		playtestH: 'Un veredicto solo cuenta si el agente jugó.',
 		playtestP: 'Decile qué comprobar jugando. El agente corre el juego, manda input y captura frames, y contesta pasó, falló o no se pudo probar. No cambia el proyecto.',
@@ -243,12 +251,14 @@ const copy = {
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
 		skillsH: 'Skills de Godot para cualquier agente.',
-		skillsP: 'Cuatro plugins para trabajar en juegos de Godot 4: arquitectura, shaders, assets y video. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él. Dentro del addon, la ventana Extensiones instala <code>gdscript</code> y <code>shaders</code> con un clic, y <b>Usar con todos los agentes</b> comparte las skills del proyecto o las tuyas con Google Antigravity, Codex y los demás.',
+		skillsP: 'Seis plugins para trabajar en juegos de Godot 4: arquitectura, shaders, GDExtensions en C++, assets, video y pruebas. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él. Dentro del addon, la ventana Extensiones instala <code>gdscript</code> y <code>shaders</code> con un clic, y <b>Usar con todos los agentes</b> comparte las skills del proyecto o las tuyas con Google Antigravity, Codex y los demás.',
 		skills: [
 			'Diseñar y revisar GDScript: dónde viven el código y los datos, señales y autoloads, máquinas de estado, componentes, pools, Resources, saves y mods.',
 			'Shaders no triviales en Godot 4.6+: espacios y matrices, <code>light()</code> propio, normal maps, formas procedurales, post-procesado y ray marching.',
+			'GDExtensions en C++ con godot-cpp 10: bindings, compilarlas y exportarlas para cada plataforma, depurar crashes y leaks, y envolver bibliotecas de C o C++.',
 			'Armar y verificar assets con Python en Blender 5 headless, y llevarlos a Godot con los ejes, colisiones, materiales y animaciones correctos.',
-			'Videos con imágenes reales de tu juego: captura repetible, trailers, chequeos del documento de diseño y películas de desarrollo. Solo necesita Godot y ffmpeg.'
+			'Videos con imágenes reales de tu juego: captura repetible, trailers, música simple, chequeos del documento de diseño y películas de desarrollo. Solo necesita Godot, ffmpeg y Python.',
+			'Probar el juego corriéndolo: tests de capturas contra imágenes aprobadas, y comparaciones de rendimiento de antes y después.'
 		],
 		commandLabels: ['Cualquier agente', 'Claude Code'],
 		copy: 'Copiar',
@@ -256,7 +266,7 @@ const copy = {
 		pluginsRepo: 'Ver el repo',
 		skillsFine: 'MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a>.',
 		installH: 'Tres pasos hasta el primer prompt.',
-		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
+		req: 'Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.',
 		knownIssue: '<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 sigue imprimiendo el error, aunque no se cayó en 12 corridas.',
 		downloadZip: 'Descargar (GitHub)',
 		gettingStarted: 'Primeros pasos',
@@ -351,6 +361,10 @@ const release = `${repo}/releases/latest`;
 						<div class="ga-names">{toolNames[i].map((n) => <span>{n}</span>)}</div>
 					</div>
 				))}
+			</div>
+			<div class="ga-supervisor">
+				<h3>{copy.supervisorH}</h3>
+				<p set:html={copy.supervisorP} />
 			</div>
 		</section>
 
@@ -601,16 +615,18 @@ const release = `${repo}/releases/latest`;
 	.ga-rule b { font-family: var(--display); font-size: 1.25rem; line-height: 1.15; }
 	.ga-rule span { color: var(--muted); font-size: var(--step-small); }
 
+	.ga-supervisor { margin-top: 24px; padding: 18px 0 0; border-top: 2px solid var(--accent); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px 48px; }
+	@media (max-width: 860px) { .ga-supervisor { grid-template-columns: minmax(0, 1fr); } }
+	.ga-supervisor h3 { font-family: var(--display); font-size: 1.25rem; line-height: 1.15; }
+	.ga-supervisor p { color: var(--muted); }
+
 	/* 2 or 1 columns beside the screenshot: both divide the six groups, and regressions take a whole row */
 	.ga-playtest { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	@media (max-width: 600px) { .ga-playtest { grid-template-columns: minmax(0, 1fr); } }
 	.ga-regressions { grid-column: 1 / -1; }
 	.ga-regressions a { width: fit-content; text-decoration: underline; }
 
-	/* 4, 2 or 1 columns: all divide the four plugins */
-	.ga-skills { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-	@media (max-width: 1100px) { .ga-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-	@media (max-width: 600px) { .ga-skills { grid-template-columns: minmax(0, 1fr); } }
+	/* .ga-tools gives 3, 2 or 1 columns: all divide the six plugins */
 	.ga-skills h3 { font-family: var(--mono); font-weight: 500; letter-spacing: -0.01em; }
 	.ga-skills .ga-names { margin-top: auto; }
 	.ga-get { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 48px; align-items: end; }
