@@ -97,7 +97,7 @@
 		"Updated": "25 October 2026 @ 00:13 UTC"
 	},
 	"jam": {
-		"entries": 736,
+		"entries": 735,
 		"format": "jam",
 		"name": "Ludum Dare 60",
 		"results": null,
@@ -112,7 +112,7 @@
 		"trailer": null
 	},
 	"source": "itch",
-	"synced_at": "2026-11-03T03:23:34.758Z",
+	"synced_at": "2026-11-07T15:15:49.008Z",
 	"tags": [
 		"2d",
 		"3d",
