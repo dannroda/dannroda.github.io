@@ -97,10 +97,43 @@
 		"Updated": "25 October 2026 @ 00:13 UTC"
 	},
 	"jam": {
-		"entries": 735,
+		"entries": 736,
 		"format": "jam",
 		"name": "Ludum Dare 60",
-		"results": null,
+		"results": {
+			"Audio": {
+				"average": 4.016,
+				"rank": 50
+			},
+			"Fun": {
+				"average": 3.54,
+				"rank": 221
+			},
+			"Graphics": {
+				"average": 4.508,
+				"rank": 26
+			},
+			"Humor": {
+				"average": 3.587,
+				"rank": 108
+			},
+			"Innovation": {
+				"average": 4.127,
+				"rank": 35
+			},
+			"Mood": {
+				"average": 4.079,
+				"rank": 105
+			},
+			"Overall": {
+				"average": 3.849,
+				"rank": 152
+			},
+			"Theme": {
+				"average": 4.024,
+				"rank": 165
+			}
+		},
 		"theme": "Old Tech",
 		"url": "https://ldjam.com/events/ludum-dare/60/mr-duck"
 	},
@@ -112,7 +145,7 @@
 		"trailer": null
 	},
 	"source": "itch",
-	"synced_at": "2026-11-07T15:15:49.008Z",
+	"synced_at": "2026-11-08T15:39:15.746Z",
 	"tags": [
 		"2d",
 		"3d",
