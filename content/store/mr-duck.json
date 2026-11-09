@@ -79,7 +79,7 @@
 		"Publisher": "Scope Overflow",
 		"Rating": {
 			"average": 5,
-			"count": 1
+			"count": 2
 		},
 		"Status": [
 			"In development"
@@ -97,7 +97,7 @@
 		"Updated": "25 October 2026 @ 00:13 UTC"
 	},
 	"jam": {
-		"entries": 736,
+		"entries": 735,
 		"format": "jam",
 		"name": "Ludum Dare 60",
 		"results": {
@@ -145,7 +145,7 @@
 		"trailer": null
 	},
 	"source": "itch",
-	"synced_at": "2026-11-08T15:39:15.746Z",
+	"synced_at": "2026-11-09T19:18:38.618Z",
 	"tags": [
 		"2d",
 		"3d",
