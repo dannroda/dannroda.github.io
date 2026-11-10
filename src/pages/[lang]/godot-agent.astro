@@ -125,9 +125,9 @@ const copy = {
 		rulesH: 'What it will never do.',
 		rules: [
 			['Merge or push without your OK', 'One-shot works on its own branch. You review and you merge.'],
-			['Store your API keys', 'Profiles name an environment variable; the value is read at request time.'],
+			['Store your API keys', 'Profiles name an environment variable; the value is read at request time. Keys and tokens are masked wherever they could show: chat, Agent Log, permission and error cards, history on disk and One-shot reports. What the agent writes or runs keeps the real value.'],
 			['Read the agent’s credentials', 'Sign-in runs the agent’s own login. Pasted codes never reach the log. To label accounts, it reads only the email Claude Code keeps.'],
-			['Listen beyond your machine', 'The MCP server binds to 127.0.0.1 with a token that changes on every start.'],
+			['Listen beyond your machine', 'The MCP server binds to 127.0.0.1 with a token that changes on every start and is masked in the chat, the cards, the Agent Log and the history.'],
 			['Ship in your game', 'Nothing from the addon reaches an exported build.']
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
@@ -244,9 +244,9 @@ const copy = {
 		rulesH: 'Lo que nunca va a hacer.',
 		rules: [
 			['Hacer merge o push sin tu aprobación', 'One-shot trabaja en su propia rama. Vos revisás y vos hacés el merge.'],
-			['Guardar tus API keys', 'Los perfiles nombran una variable de entorno; el valor se lee en cada pedido.'],
+			['Guardar tus API keys', 'Los perfiles nombran una variable de entorno; el valor se lee en cada pedido. Las keys y los tokens se ocultan en todo lugar donde podrían verse: chat, Agent Log, tarjetas de permiso y de error, historial en disco e informes del One-shot. Lo que el agente escribe o ejecuta conserva el valor real.'],
 			['Leer las credenciales del agente', 'El inicio de sesión usa el login del propio agente. Los códigos pegados nunca llegan al log. Para nombrar las cuentas, solo lee el email que guarda Claude Code.'],
-			['Escuchar fuera de tu máquina', 'El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque.'],
+			['Escuchar fuera de tu máquina', 'El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque y se oculta en el chat, las tarjetas, el Agent Log y el historial.'],
 			['Viajar en tu juego', 'Nada del addon llega a un juego exportado.']
 		],
 		skillsEyebrow: 'godot-agent-plugins · SKILL.md',
