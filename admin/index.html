@@ -66,6 +66,7 @@
 	.tabs button[aria-selected='true'] { background: var(--surface-3); }
 	.empty { color: var(--muted); padding: 40px 32px; }
 	pre.log { background: var(--surface); padding: 12px; border-radius: 6px; max-height: 420px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+	.preview-pane[hidden] { display: none; }
 	.preview-pane { border-left: 1px solid var(--surface-3); display: flex; flex-direction: column; }
 	.preview-pane .bar { padding: 8px 12px; font-size: 13px; color: var(--muted); }
 	.preview-pane iframe { flex: 1; border: 0; background: #fff; width: 100%; }
@@ -137,7 +138,7 @@ function detect(link) {
 }
 
 let S; // everything the server read from disk
-let view = 'games', sel = null, lang = 'es', draft = null, dirty = false, preview = innerWidth > 1300, busy = '', lastLog = '';
+let view = 'games', sel = null, lang = 'es', draft = null, dirty = false, preview = (() => { try { return JSON.parse(localStorage.getItem('preview')) ?? innerWidth > 1300; } catch { return innerWidth > 1300; } })(), busy = '', lastLog = '';
 const $ = (q) => document.querySelector(q);
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -172,6 +173,9 @@ function toast(msg, err) {
 async function reload() {
 	S = await api('GET', 'state');
 	render();
+	// Files changed on disk: show the saved page again (the live preview fills itself instead).
+	const f = pane?.querySelector('iframe');
+	if (f && !pane.hidden && !f.src.endsWith('/admin-preview/')) f.src = f.src;
 }
 // Every change goes through here, so the "unsaved" marker and the confirm on leave stay right.
 const touch = () => { dirty = true; $('#save')?.classList.add('dirty'); };
@@ -198,16 +202,30 @@ const seg = (name, options, value, onpick) =>
 	h('div.seg', { role: 'radiogroup' }, options.map(([v, l]) => h('label', {}, h('input', { type: 'radio', name, checked: (value ?? '') === v, onchange: () => onpick(v) }), l)));
 const select = (options, value, onpick) => h('select', { onchange: (e) => onpick(e.target.value) }, options.map(([v, l]) => h('option', { value: v, selected: v === (value ?? '') }, l)));
 
+// The preview pane is built once and only pointed elsewhere, so clicking around doesn't reload the same page.
+let pane;
 function render() {
 	const app = $('#app');
-	app.className = 'app' + (preview ? ' preview' : '');
 	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['history', 'Historial'], ['publish', 'Publicar']];
+	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
+	// Only screens with a page of the site to show get the pane (and its button).
+	const show = preview && !!url;
 	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l]) =>
 		h('button', { 'aria-current': String(view === v), onclick: () => go(v) }, l, v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
-	), h('div.grow'), h('button', { onclick: () => { preview = !preview; render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
-	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
-	const live = url?.endsWith('/admin-preview/');
-	app.replaceChildren(nav, list, h('main', {}, editor), preview ? h('div.preview-pane', {}, h('div.bar', {}, h('span.grow', {}, live ? 'En vivo, sin guardar' : url || '/'), h('button.link', { onclick: () => { $('iframe').src = $('iframe').src; } }, 'Recargar')), h('iframe', { src: S.site + (url || `/${lang}/`), title: 'Vista previa' })) : '');
+	), h('div.grow'), url && h('button', { 'aria-pressed': String(preview), onclick: () => { preview = !preview; try { localStorage.setItem('preview', preview); } catch {} render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
+	pane ??= h('div.preview-pane', {}, h('div.bar', {}, h('span.grow'), h('button.link', { onclick: () => { const f = pane.querySelector('iframe'); f.src = f.src; } }, 'Recargar')), h('iframe', { title: 'Vista previa' }));
+	pane.hidden = !show;
+	const live = !!url?.endsWith('/admin-preview/');
+	if (show) {
+		pane.querySelector('.grow').textContent = live ? 'En vivo, sin guardar' : url;
+		const f = pane.querySelector('iframe');
+		if (f.getAttribute('src') !== S.site + url) f.src = S.site + url;
+		else if (live) sendPreview(); // same frame, another post: refill it
+	}
+	app.className = 'app' + (show ? ' preview' : '');
+	const main = h('main', {}, editor);
+	if (!app.children.length) app.append(nav, list, main, pane);
+	else [nav, list, main].forEach((el, i) => app.children[i].replaceWith(el));
 	if (dirty) $('#save')?.classList.add('dirty');
 }
 
@@ -737,7 +755,7 @@ function publishView() {
 			h('span.hint', {}, 'Primero compila el sitio entero; si algo falla (un dato roto, un shortcode mal escrito) no publica nada y muestra el error. Si anda, hace commit de content/ y public/ y lo sube a main; el sitio se actualiza en unos minutos.')),
 		lastLog && h('fieldset', {}, h('legend', {}, 'Registro'), h('pre.log', {}, lastLog))
 	);
-	return [h('div.list', {}, h('div.empty', {}, 'Guardar escribe los archivos en tu equipo. Publicar los sube.')), editor, `/${lang}/`];
+	return [h('div.list', {}, h('div.empty', {}, 'Guardar escribe los archivos en tu equipo. Publicar los sube.')), editor, null];
 }
 
 reload().catch((e) => { document.body.textContent = `No pude leer el contenido: ${e.message}`; });
