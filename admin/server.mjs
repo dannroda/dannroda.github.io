@@ -141,19 +141,65 @@ const check = () => sh(at('node_modules/.bin/astro'), ['build', '--outDir', '.as
 async function publish(message) {
 	const built = await check();
 	if (!built.ok) return { ok: false, log: `La compilación del sitio falló; no se publicó nada.\n\n${built.log}` };
-	const steps = [
-		['git', ['add', '-A', '--', 'content', 'public']],
-		['git', ['commit', '-m', message || 'content: update from admin']],
-		['git', ['pull', '--rebase']],
-		['git', ['push']]
-	];
 	let log = '';
-	for (const [c, a] of steps) {
-		const r = await sh(c, a);
-		log += `$ ${c} ${a.join(' ')}\n${r.log}\n`;
+	const step = async (a) => {
+		const r = await sh('git', a);
+		log += `$ git ${a.join(' ')}\n${r.log}\n`;
+		return r;
+	};
+	const before = (await sh('git', ['rev-parse', 'HEAD'])).log.trim();
+	for (const a of [['add', '-A', '--', 'content', 'public'], ['commit', '-m', message || 'content: update from admin']]) {
+		if (!(await step(a)).ok) return { ok: false, log };
+	}
+	// --autostash: edits outside content/ and public/ (code, compass/) don't stop the pull.
+	if (!(await step(['pull', '--rebase', '--autostash'])).ok) {
+		const r = await settleRebase(before);
+		log = r.log + log;
 		if (!r.ok) return { ok: false, log };
 	}
+	if (!(await step(['push'])).ok) return { ok: false, log };
 	return { ok: true, log };
+}
+
+// The sync bot commits store data to main every day and on each deploy, so a pull can clash with what the panel is
+// publishing. Files the sync writes (content/store/, public/games/) are rebuilt on the next deploy anyway: keep this
+// commit's side of them (a deletion included) and go on. Any other clash cancels the rebase and undoes the commit, so
+// the changes are back as unpublished, and says which files clash. The repo is never left halfway through a rebase.
+const syncOwned = (p) => p.startsWith('content/store/') || p.startsWith('public/games/');
+async function settleRebase(before) {
+	const inRebase = (await sh('git', ['rev-parse', '--verify', '-q', 'REBASE_HEAD'])).ok;
+	if (!inRebase) {
+		await sh('git', ['reset', '--soft', before]);
+		return { ok: false, log: 'No se pudo traer lo último de GitHub; no se publicó nada y tus cambios siguen en «Cambios sin publicar».\n\n' };
+	}
+	for (let round = 0; round < 20; round++) {
+		const { log: unmerged } = await sh('git', ['ls-files', '-u']);
+		// "<mode> <sha> <stage>\t<path>"; stage 3 is this commit's side while rebasing
+		const stages = new Map();
+		for (const l of unmerged.split('\n').filter(Boolean)) {
+			const [meta, path] = l.split('\t');
+			stages.set(path, [...(stages.get(path) ?? []), meta.split(' ')[2]]);
+		}
+		const clash = [...stages.keys()];
+		if (!clash.length || !clash.every(syncOwned)) {
+			await sh('git', ['rebase', '--abort']);
+			await sh('git', ['reset', '--soft', before]);
+			return {
+				ok: false,
+				log: `Mientras editabas, cambiaron en GitHub los mismos archivos que querés publicar:\n\n${clash.map((p) => '  ' + p).join('\n')}\n\nNo se publicó nada y tus cambios siguen en «Cambios sin publicar». Revisalos en el Historial (lo nuevo de GitHub ya está ahí) y publicá de nuevo.\n\n`
+			};
+		}
+		for (const [path, st] of stages) {
+			if (st.includes('3')) await sh('git', ['checkout', '--theirs', '--', path]).then(() => sh('git', ['add', '--', path]));
+			else await sh('git', ['rm', '-q', '--', path]);
+		}
+		const r = await sh('git', ['-c', 'core.editor=true', 'rebase', '--continue']);
+		if (r.ok) return { ok: true, log: `Choque con la sync de las tiendas en ${clash.join(', ')}: quedó tu versión.\n\n` };
+		if (!(await sh('git', ['rev-parse', '--verify', '-q', 'REBASE_HEAD'])).ok) return { ok: false, log: r.log };
+	}
+	await sh('git', ['rebase', '--abort']);
+	await sh('git', ['reset', '--soft', before]);
+	return { ok: false, log: 'El rebase no terminó; se canceló y no se publicó nada.\n\n' };
 }
 
 // ---------- History: git, limited to the files the panel edits.
