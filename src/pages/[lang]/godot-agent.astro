@@ -506,12 +506,15 @@ const release = `${repo}/releases/latest`;
 
 <script>
 	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+		let reset: ReturnType<typeof setTimeout>;
 		button.addEventListener('click', async () => {
 			const code = button.previousElementSibling!;
 			try {
 				await navigator.clipboard.writeText(code.textContent ?? '');
 				button.textContent = button.dataset.copied!;
-				setTimeout(() => { button.textContent = button.dataset.copy!; }, 1500);
+				// A second click restarts the "copied" time instead of being cut short by the first one's timer.
+				clearTimeout(reset);
+				reset = setTimeout(() => { button.textContent = button.dataset.copy!; }, 1500);
 			} catch {
 				// No clipboard access: leave the command selected for Ctrl+C
 				getSelection()?.selectAllChildren(code);

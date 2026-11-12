@@ -1,7 +1,6 @@
 {
   "ai": "hand",
-  "featured": false,
-  "hidden": false,
+  "show": "listed",
   "role": {
     "es": "",
     "en": ""

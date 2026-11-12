@@ -281,9 +281,8 @@ export function suggestAi(info = {}) {
 const own = (game) => ({
 	ai: suggestAi(game.info),
 	authorship: [],
-	featured: false,
-	hidden: false,
 	role: { en: '', es: '' },
+	show: 'listed',
 	summary: { en: '', es: '' }
 });
 

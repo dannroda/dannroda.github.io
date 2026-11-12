@@ -1,7 +1,6 @@
 {
   "ai": "vibe",
-  "featured": false,
-  "hidden": false,
+  "show": "listed",
   "landing": "",
   "role": {
     "es": "",

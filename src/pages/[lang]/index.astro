@@ -23,7 +23,7 @@ const ai = (g: Game) => g.own?.ai || 'none';
 const work = [...published, ...otherGames, ...projects];
 const everything = [...work, ...jams, ...lab];
 // The first screen shows what the CMS marks as featured: nothing, one work, or a carousel of several.
-const featured = everything.filter((g) => g.own?.featured);
+const featured = everything.filter((g) => g.own?.show === 'featured');
 
 const levels = ['hand', 'assisted', 'vibe'] as const;
 const count = Object.fromEntries(levels.map((k) => [k, everything.filter((g) => ai(g) === k).length]));

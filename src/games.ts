@@ -7,10 +7,10 @@ export async function games() {
 	// shortcut: itch/steam ids grow over time, so id order ≈ release order; use real dates once the CMS stores them.
 	const all: Game[] = (await getCollection('store'))
 		.map((g) => ({ ...g, own: own.get(g.id) }))
-		.filter((g) => !g.own?.hidden)
+		.filter((g) => g.own?.show !== 'hidden')
 		// A repo already linked from another game's page is not listed again as a project.
 		.filter((g, _, all) => g.data.source !== 'github' || !all.some((o) => repoOf(o) && `https://github.com/${repoOf(o)}` === g.data.url.toLowerCase()))
-		.sort((a, b) => Number(!!b.own?.featured) - Number(!!a.own?.featured) || b.data.id - a.data.id);
+		.sort((a, b) => Number(b.own?.show === 'featured') - Number(a.own?.show === 'featured') || b.data.id - a.data.id);
 	// Vibe-coded work only shows in the Lab, whatever its source.
 	const lab = all.filter((g) => g.own?.ai === 'vibe');
 	const rest = all.filter((g) => g.own?.ai !== 'vibe');

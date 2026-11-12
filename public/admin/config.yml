@@ -75,8 +75,15 @@ collections:
           - { label: Hecho a mano, value: hand }
           - { label: Asistido por IA, value: assisted }
           - { label: Vibe-coded, value: vibe }
-      - { name: featured, label: Destacado, widget: boolean, default: false, hint: 'Sale en el primer pantallazo de la home y primero en su lista. Si hay varios, se muestran en un carrusel.' }
-      - { name: hidden, label: Oculto, widget: boolean, default: false }
+      - name: show
+        label: Visibilidad
+        widget: select
+        default: listed
+        hint: 'Destacado sale en el primer pantallazo de la home y primero en su lista; si hay varios, en un carrusel. Oculto no sale en ningún lado.'
+        options:
+          - { label: En su lista, value: listed }
+          - { label: Destacado, value: featured }
+          - { label: Oculto, value: hidden }
       - name: landing
         label: Landing page
         widget: string

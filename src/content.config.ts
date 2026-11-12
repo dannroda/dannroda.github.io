@@ -61,12 +61,14 @@ const text = z.object({ en: z.string().default(''), es: z.string().default('') }
 export const aiLevels = ['hand', 'assisted', 'vibe'] as const;
 export const areas = ['design', 'code', 'art', 'audio', 'writing', 'tools', 'debugging'] as const;
 export const authors = ['me', 'ai', 'team', 'third'] as const;
+// One field, not featured + hidden booleans, so a game can't be both.
+export const shows = ['listed', 'featured', 'hidden'] as const;
 const games = defineCollection({
 	loader: glob({ pattern: '*.json', base: './content/games' }),
 	schema: z.object({
-		ai: z.enum(aiLevels).or(z.literal('')).nullish(),
-		featured: z.boolean().default(false),
-		hidden: z.boolean().default(false),
+		// The CMS writes '' for "not set"; everything downstream sees null.
+		ai: z.enum(aiLevels).or(z.literal('')).nullish().transform((v) => v || null),
+		show: z.enum(shows).default('listed'),
 		// its landing page: a page of this site without the language ("godot-agent") or a full https:// link
 		landing: z.string().trim().nullish(),
 		role: text,
