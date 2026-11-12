@@ -8,9 +8,11 @@
 		"cover": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/overview.png",
 		"screenshots": [
 			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/chat.png",
+			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/turn-marks.png",
+			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/plan.png",
+			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/plan-verified.png",
 			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/permission.png",
-			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/settings.png",
-			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/review.png"
+			"https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/settings.png"
 		]
 	},
 	"language": "GDScript",
@@ -21,13 +23,15 @@
 			"/games/godot-agent/shot-1.png",
 			"/games/godot-agent/shot-2.png",
 			"/games/godot-agent/shot-3.png",
-			"/games/godot-agent/shot-4.png"
+			"/games/godot-agent/shot-4.png",
+			"/games/godot-agent/shot-5.png",
+			"/games/godot-agent/shot-6.png"
 		],
 		"trailer": null
 	},
 	"source": "github",
 	"stars": 1,
-	"synced_at": "2026-11-12T22:38:37.915Z",
+	"synced_at": "2026-11-12T23:38:35.460Z",
 	"title": "godot-agent",
 	"topics": [
 		"acp",
