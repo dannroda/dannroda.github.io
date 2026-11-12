@@ -160,6 +160,11 @@ const routes = {
 		await readFile(at(`content/store/${slug}.json`)); // only games the sync knows
 		await writeJson(`content/games/${slug}.json`, body);
 	},
+	// Off the site now, not at the next store sync: the same files the sync's cleanup removes.
+	'DELETE game': async (slug) => {
+		if (!slugRe.test(slug.replace(/\./g, '-'))) throw new Error('Juego desconocido');
+		for (const f of [`content/store/${slug}.json`, `content/games/${slug}.json`, `public/games/${slug}`]) await rm(at(f), { recursive: true, force: true });
+	},
 	'PUT sources': (_, body) => writeJson('content/sources.json', body),
 	'PUT profile': (_, body) => writeJson('content/profile.json', body),
 	'PUT blog': (slug, body) => saveDoc('blog', slug, body),

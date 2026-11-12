@@ -88,6 +88,8 @@
 	dialog.picker .bar { margin-bottom: 12px; }
 	.text-row { display: flex; flex-direction: column; gap: 4px; }
 	.text-row[hidden] { display: none; }
+	.banner { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 8px; background: color-mix(in srgb, var(--danger) 15%, transparent); box-shadow: inset 0 0 0 1px var(--danger); }
+	.banner .grow { flex: 1 1 260px; }
 	.dirty::after { content: ' ●'; color: var(--warn); }
 	@media (max-width: 900px) {
 		.app, .app.preview { grid-template-columns: 1fr; height: auto; }
@@ -215,6 +217,21 @@ function pending() {
 	// Listed in sources but with no store data yet: new, private, or failing.
 	return Object.entries(STORES).flatMap(([k]) => (S.sources[k] ?? []).filter((e) => !S.games.some((g) => g.store.source === k && matches[k](e, g.store))).map((e) => [k, e]));
 }
+// Removing takes it off the source list and deletes its data and own texts right away; Publicar takes it off the live site.
+async function removeGame(g, src) {
+	if (!confirm(`¿Quitar «${g.store.title}» del sitio? Se borran sus datos, imágenes y lo que escribiste en su ficha.`)) return;
+	try {
+		if (src) {
+			const next = clone(S.sources);
+			next[g.store.source].splice(src.i, 1);
+			await api('PUT', 'sources', next);
+		}
+		await api('DELETE', `game/${g.slug}`);
+		dirty = false; draft = null; sel = null;
+		await reload();
+		toast(`«${g.store.title}» quitado. Publicá para sacarlo del sitio en línea.`);
+	} catch (e) { toast(e.message, true); }
+}
 function gamesView() {
 	const games = [...S.games].sort((a, b) => a.store.title.localeCompare(b.store.title));
 	const add = h('input', { placeholder: 'Pegá un link de Steam, itch.io, GitHub o Asset Library', 'aria-label': 'Agregar juego o proyecto' });
@@ -233,10 +250,14 @@ function gamesView() {
 	const item = (g) => h('button.item', { 'aria-current': String(sel === g.slug), onclick: () => go('games', g.slug) },
 		g.store.cover ? h('img', { src: '/public' + g.store.cover, alt: '' }) : h('span.ph'),
 		h('span', { style: 'min-width:0' }, h('div.t', {}, g.store.title), h('div.s', {}, STORES[g.store.source],
-			g.own.show === 'featured' && h('span.tag.on', {}, 'destacado'), g.own.show === 'hidden' && h('span.tag.off', {}, 'oculto'), g.own.ai && h('span.tag', {}, AI.find(([v]) => v === g.own.ai)?.[1]))));
+			!sourceOf(g) && h('span.tag.off', {}, 'quitado'), g.own.show === 'featured' && h('span.tag.on', {}, 'destacado'), g.own.show === 'hidden' && h('span.tag.off', {}, 'oculto'), g.own.ai && h('span.tag', {}, AI.find(([v]) => v === g.own.ai)?.[1]))));
 	const pend = pending();
+	// Out of content/sources.json but its data still on disk (removed by hand, or before removing deleted at once).
+	const gone = games.filter((g) => !sourceOf(g));
+	const listed = games.filter((g) => sourceOf(g));
 	const list = h('div.list', {}, h('div.list-head', {}, add, h('button', { onclick: addIt }, 'Agregar')),
-		Object.keys(STORES).map((k) => games.some((g) => g.store.source === k) && [h('div.group', {}, STORES[k]), games.filter((g) => g.store.source === k).map(item)]),
+		gone.length > 0 && [h('div.group', { style: 'color:var(--danger)' }, 'Quitados de la lista'), gone.map(item)],
+		Object.keys(STORES).map((k) => listed.some((g) => g.store.source === k) && [h('div.group', {}, STORES[k]), listed.filter((g) => g.store.source === k).map(item)]),
 		pend.length > 0 && [h('div.group', {}, 'Sin datos todavía'), pend.map(([k, e]) => h('div.item', {}, h('span.ph'), h('span', { style: 'min-width:0' }, h('div.t', {}, String(e.url ?? e)), h('div.s', {}, `${STORES[k]} · privado o sin sincronizar`))))]
 	);
 	const g = S.games.find((x) => x.slug === sel);
@@ -268,6 +289,15 @@ function gamesView() {
 	);
 	drawAuthorship();
 	const editor = h('div.editor', {},
+		!src && h('div.banner', { role: 'alert' }, h('span.grow', {}, 'Ya no está en la lista de fuentes, pero sus datos siguen y el sitio lo sigue mostrando.'),
+			h('button.danger', { onclick: () => removeGame(g, null) }, 'Borrarlo ahora'),
+			h('button', { onclick: async () => {
+				const s = g.store, next = clone(S.sources);
+				(next[s.source] ??= []).push(s.source === 'itch' ? { url: s.url, repo: '' } : s.source === 'github' ? githubRepo(s.url) : s.url);
+				await api('PUT', 'sources', next);
+				await reload();
+				toast('Vuelve a estar en la lista');
+			} }, 'Volver a agregarlo')),
 		h('div.bar', {}, h('h1.grow', {}, g.store.title), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
 		h('div.bar', { style: 'color:var(--muted)' }, h('a', { href: g.store.url, target: '_blank' }, `${STORES[g.store.source]} ↗`), g.store.jam && h('span', {}, `· ${g.store.jam}`), h('span', {}, `· datos del ${g.store.synced_at?.slice(0, 10)}`)),
 		field('Visibilidad', seg('show', SHOW, o.show, (v) => set(o, 'show', v)), 'Destacado sale en el primer pantallazo de la home (varios hacen un carrusel) y primero en su lista. Oculto no sale en ningún lado.'),
@@ -282,15 +312,7 @@ function gamesView() {
 			h('div.hint', {}, linked.length ? ['Linkeadas desde su ficha: ', ...linked.map((p) => h('button.link', { onclick: () => go('pages', p.slug), style: 'margin-right:10px' }, `/${p.slug}/`))] : 'Ninguna página de contenido apunta a este proyecto. ',
 				h('button.link', { onclick: () => newDoc('pages', g.store.title, { project: g.slug }) }, 'Crear una'))),
 		g.store.source === 'itch' && src && field('Código en GitHub', h('input', { value: draft.repo, placeholder: 'usuario/repo', oninput: (e) => { draft.repo = e.target.value; touch(); } }), 'Opcional: la ficha lo linkea y el repo no se repite en Proyectos.'),
-		src && h('div', {}, h('button.danger', { onclick: async () => {
-			if (!confirm(`¿Sacar «${g.store.title}» del sitio? Sus datos e imágenes se borran la próxima vez que traigas datos de las tiendas.`)) return;
-			const next = clone(S.sources);
-			next[g.store.source].splice(src.i, 1);
-			await api('PUT', 'sources', next);
-			dirty = false;
-			await reload();
-			toast('Quitado de la lista de fuentes');
-		} }, 'Quitar del sitio'))
+		h('div', {}, h('button.danger', { onclick: () => removeGame(g, src) }, 'Quitar del sitio'))
 	);
 	return [list, editor, `/${lang}/games/${g.slug}/`];
 }
