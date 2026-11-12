@@ -7,7 +7,7 @@ import { basename, posix } from 'node:path';
 const UA = { 'user-agent': 'dann.com.ar game sync' };
 const sources = JSON.parse(await readFile('content/sources.json', 'utf8'));
 
-// content/sources.json is edited in the CMS, so entries may be links or bare ids.
+// content/sources.json is edited in the admin, so entries may be links or bare ids.
 export const steamId = (v) => Number(String(v).match(/(?:app\/)?(\d+)/)?.[1]);
 export const itchUrl = (v) => String(v).trim().replace(/\/$/, '');
 export const githubRepo = (v) => String(v).trim().replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '');
@@ -272,7 +272,7 @@ const json = (v) => JSON.stringify(v, sorted, '\t');
 
 const slugOf = (g) => (g.source === 'itch' || g.source === 'github' ? basename(g.url).toLowerCase() : g.title.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
 
-// Only a starting value for a new game's own file; the CMS owns it afterwards.
+// Only a starting value for a new game's own file; the admin owns it afterwards.
 export function suggestAi(info = {}) {
 	if ([info.Content].flat().some((c) => /no generative ai/i.test(c ?? ''))) return 'hand';
 	return info['AI Disclosure'] ? 'assisted' : '';
@@ -289,7 +289,7 @@ const own = (game) => ({
 async function save(game) {
 	const slug = slugOf(game);
 	await mkdir('content/games', { recursive: true });
-	// 'wx' never overwrites: content/games/ is edited by hand or in the CMS.
+	// 'wx' never overwrites: content/games/ is edited by hand or in the admin.
 	await writeFile(`content/games/${slug}.json`, json(own(game)) + '\n', { flag: 'wx' }).catch((e) => {
 		if (e.code !== 'EEXIST') throw e;
 	});
@@ -322,7 +322,7 @@ async function save(game) {
 
 // Removing an entry from content/sources.json removes its store data and images.
 // Decided by the config, not by fetch results, so a store that is down never deletes anything.
-// Its own file in content/games/ goes too, so the CMS only lists games that are on the site.
+// Its own file in content/games/ goes too, so the admin only lists games that are on the site.
 async function prune() {
 	const keep = (d) =>
 		d.source === 'steam' ? wanted.steam.includes(d.id)

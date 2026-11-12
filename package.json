@@ -6,7 +6,8 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"sync": "node scripts/sync-games.mjs"
+		"sync": "node scripts/sync-games.mjs",
+		"admin": "node admin/server.mjs"
 	},
 	"dependencies": {
 		"@astrojs/markdown-satteri": "^0.4.5",

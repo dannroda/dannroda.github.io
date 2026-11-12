@@ -4,7 +4,7 @@ export type Game = CollectionEntry<'store'> & { own?: CollectionEntry<'games'>['
 
 export async function games() {
 	const own = new Map((await getCollection('games')).map((g) => [g.id, g.data]));
-	// shortcut: itch/steam ids grow over time, so id order ≈ release order; use real dates once the CMS stores them.
+	// shortcut: itch/steam ids grow over time, so id order ≈ release order; use real dates once the admin stores them.
 	const all: Game[] = (await getCollection('store'))
 		.map((g) => ({ ...g, own: own.get(g.id) }))
 		.filter((g) => g.own?.show !== 'hidden')

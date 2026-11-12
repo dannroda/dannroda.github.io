@@ -56,7 +56,7 @@ const store = defineCollection({
 	})
 });
 
-// Your own data per game, edited in the CMS (/admin). The sync only creates missing files.
+// Your own data per game, edited in the admin (npm run admin). The sync only creates missing files.
 const text = z.object({ en: z.string().default(''), es: z.string().default('') }).default({ en: '', es: '' });
 export const aiLevels = ['hand', 'assisted', 'vibe'] as const;
 export const areas = ['design', 'code', 'art', 'audio', 'writing', 'tools', 'debugging'] as const;
@@ -66,7 +66,7 @@ export const shows = ['listed', 'featured', 'hidden'] as const;
 const games = defineCollection({
 	loader: glob({ pattern: '*.json', base: './content/games' }),
 	schema: z.object({
-		// The CMS writes '' for "not set"; everything downstream sees null.
+		// The admin writes '' for "not set"; everything downstream sees null.
 		ai: z.enum(aiLevels).or(z.literal('')).nullish().transform((v) => v || null),
 		show: z.enum(shows).default('listed'),
 		// its landing page: a page of this site without the language ("godot-agent") or a full https:// link
@@ -80,7 +80,7 @@ const games = defineCollection({
 	})
 });
 
-// content/blog/<lang>/<slug>.md, the layout Sveltia's multiple_folders i18n writes.
+// content/blog/<lang>/<slug>.md: one file per language, as the admin writes them.
 const blog = defineCollection({
 	loader: glob({ pattern: '*/*.md', base: './content/blog' }),
 	schema: z.object({
@@ -92,7 +92,7 @@ const blog = defineCollection({
 	})
 });
 
-// content/pages/<lang>/<slug>.md, from the CMS: landing pages and anything else that is not a post. Served at /<lang>/<slug>/.
+// content/pages/<lang>/<slug>.md, from the admin: landing pages and anything else that is not a post. Served at /<lang>/<slug>/.
 const pages = defineCollection({
 	loader: glob({ pattern: '*/*.md', base: './content/pages' }),
 	schema: z.object({

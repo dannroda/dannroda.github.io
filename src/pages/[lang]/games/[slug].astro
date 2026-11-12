@@ -48,7 +48,7 @@ const facts = [
 ].filter(([, v]) => v) as [string, string][];
 const synced = new Date(d.synced_at).toLocaleDateString(s.dateLocale, { dateStyle: 'long' });
 const entries = d.jam?.entries;
-// The project's own landing field wins over a CMS page that names this project.
+// The project's own landing field wins over an admin page that names this project.
 const cmsLanding = (await pages(lang)).find((p) => p.data.project === game.id);
 const ownLanding = own?.landing?.replace(/^\/+|\/+$/g, '');
 const landing = ownLanding?.startsWith('https://') ? ownLanding : ownLanding ? url(`/${lang}/${ownLanding}/`) : cmsLanding ? url(`/${lang}/${slugOf(cmsLanding.id)}/`) : null;
