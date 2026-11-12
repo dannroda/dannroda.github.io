@@ -1,0 +1,13 @@
+---
+import Head from './Head.astro';
+import type { Lang } from '../i18n';
+import { tx, img, size, type Item } from './util';
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const images = ((b.images ?? []) as Item[]).filter((x) => img(x.image, lang));
+const id = `h-${b.id}`;
+---
+
+<section class="ga-section" aria-labelledby={tx(b.heading, lang) ? id : undefined}>
+	<Head b={b} lang={lang} id={id} />
+	<div class="b-gallery">{images.map((x) => <img src={img(x.image, lang)} {...size(x, 'image', lang)} alt={tx(x.alt, lang)} loading="lazy" />)}</div>
+</section>

@@ -1,0 +1,13 @@
+---
+import { markdownToHtml } from 'satteri';
+import { shortcodePlugin, markdownFeatures } from '../shortcodes.mjs';
+import type { Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// Same pipeline as posts (shortcodes included); the path tells shortcodes which language to link in.
+const html = markdownToHtml(tx(b.body, lang), { features: markdownFeatures, mdastPlugins: [shortcodePlugin(base)], fileURL: `file:///content/pages/${lang}/block.md` }).html;
+---
+
+<section id={b.anchor || undefined} class="b-text prose" set:html={html} />

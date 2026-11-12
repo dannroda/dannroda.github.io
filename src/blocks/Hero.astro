@@ -1,0 +1,109 @@
+---
+import AiTag from '../components/AiTag.astro';
+import { games, isCard, blurb, type Game } from '../games';
+import { t, url, type Lang } from '../i18n';
+import { tx, img, link, pill, size, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const s = t[lang];
+const { published, jams, other, projects, lab, all } = await games();
+// The first screen shows what the admin marks as featured: nothing, one work, or a carousel of several.
+const featured = b.side === 'featured' ? [...published, ...other, ...projects, ...jams, ...lab].filter((g) => g.own?.show === 'featured') : [];
+const game = b.game ? all.find((g) => g.id === b.game) : null;
+const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
+const year = (g: Game) => (g.data.release_date ?? g.data.created)?.match(/\d{4}/)?.[0];
+const buttons = (b.buttons ?? []) as Item[];
+const chips = (b.chips ?? []) as Item[];
+const id = `h-${b.id}`;
+---
+
+{
+	b.layout === 'stacked' ? (
+		<section class="ga-hero" id={b.anchor || undefined} aria-labelledby={id} style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+			<div class="hero-bg" aria-hidden="true" />
+			<div class="ga-hero-text">
+				<h1 id={id} set:html={tx(b.title, lang)} />
+				<div class="ga-hero-side">
+					{tx(b.intro, lang) && <p class="ga-lead" set:html={tx(b.intro, lang)} />}
+					{buttons.length > 0 && <div class="pills">{buttons.map((x) => <a class={pill(x.style)} href={link(x.url, lang)}>{tx(x.label, lang)}</a>)}</div>}
+					{(game || chips.length > 0) && (
+						<div class="ga-agents">
+							{game && <AiTag lang={lang} level={game.own?.ai} />}
+							{chips.map((c) => <span>{tx(c.text, lang)}</span>)}
+						</div>
+					)}
+				</div>
+			</div>
+			{b.side === 'image' && img(b.image, lang) && (
+				<figure class="ga-shot">
+					<picture>
+						{/* A wide screenshot is unreadable on a phone: there, the narrow one. */}
+						{img(b.imageMobile, lang) && <source media="(max-width: 860px)" srcset={img(b.imageMobile, lang)} {...size(b, 'imageMobile', lang)} />}
+						<img src={img(b.image, lang)} {...size(b, 'image', lang)} alt={tx(b.imageAlt, lang)} />
+					</picture>
+					{tx(b.caption, lang) && <figcaption>{tx(b.caption, lang)}</figcaption>}
+				</figure>
+			)}
+		</section>
+	) : (
+		<section class="hero" id={b.anchor || undefined} aria-labelledby={id} style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+			<div class="hero-bg" aria-hidden="true" />
+			<div class="hero-text">
+				<h1 id={id} data-rise set:html={tx(b.title, lang)} />
+				{tx(b.intro, lang) && <p class="hero-intro" data-rise set:html={tx(b.intro, lang)} />}
+				{buttons.length > 0 && <p class="pills" data-rise>{buttons.map((x) => <a class={pill(x.style)} href={link(x.url, lang)}>{tx(x.label, lang)}</a>)}</p>}
+				{(game || chips.length > 0) && (
+					<div class="ga-agents" data-rise>
+						{game && <AiTag lang={lang} level={game.own?.ai} />}
+						{chips.map((c) => <span>{tx(c.text, lang)}</span>)}
+					</div>
+				)}
+			</div>
+			{featured.length > 0 && (
+				<div class="hero-featured" data-rise>
+					<div class="hero-track">
+						{featured.map((g) => (
+							<figure>
+								<a href={href(g)}>
+									{g.data.local_images.cover && <img class:list={{ gh: isCard(g), steam: g.data.source === 'steam' }} src={url(g.data.local_images.cover)} alt={g.data.title} width="1120" height="700" />}
+								</a>
+								<figcaption>
+									<span><strong><a href={href(g)}>{g.data.title}</a>.</strong> {blurb(g, lang)}</span>
+									<span class="muted">{year(g)}</span>
+								</figcaption>
+							</figure>
+						))}
+					</div>
+					{featured.length > 1 && (
+						<p class="pills hero-nav" hidden>
+							<button type="button" class="pill" data-slide="-1" aria-label={s.previous}>←</button>
+							<button type="button" class="pill" data-slide="1" aria-label={s.next}>→</button>
+						</p>
+					)}
+				</div>
+			)}
+			{b.side === 'image' && img(b.image, lang) && (
+				<figure class="hero-featured" data-rise>
+					<img src={img(b.image, lang)} {...size(b, 'image', lang)} alt={tx(b.imageAlt, lang)} />
+					{tx(b.caption, lang) && <figcaption class="small">{tx(b.caption, lang)}</figcaption>}
+				</figure>
+			)}
+		</section>
+	)
+}
+
+<script>
+	// Without this script the carousel still scrolls by touch or trackpad; the buttons only appear with it.
+	const track = document.querySelector<HTMLElement>('.hero-track');
+	const nav = document.querySelector<HTMLElement>('.hero-nav');
+	if (track && nav) {
+		nav.hidden = false;
+		nav.querySelectorAll<HTMLButtonElement>('[data-slide]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const count = track.children.length;
+				const current = Math.round(track.scrollLeft / track.clientWidth);
+				track.scrollLeft = ((current + Number(button.dataset.slide) + count) % count) * track.clientWidth;
+			});
+		});
+	}
+</script>

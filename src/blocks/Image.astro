@@ -1,0 +1,14 @@
+---
+import type { Lang } from '../i18n';
+import { tx, img, size, type Item } from './util';
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+---
+
+{
+	img(b.image, lang) && (
+		<figure class:list={['b-image', { wide: b.wide }]}>
+			<img src={img(b.image, lang)} {...size(b, 'image', lang)} alt={tx(b.alt, lang)} loading="lazy" />
+			{tx(b.caption, lang) && <figcaption class="small">{tx(b.caption, lang)}</figcaption>}
+		</figure>
+	)
+}

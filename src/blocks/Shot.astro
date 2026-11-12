@@ -1,0 +1,15 @@
+---
+// A screenshot with its caption, as the sections show them beside their content.
+import type { Lang } from '../i18n';
+import { tx, img, size, type Item } from './util';
+const { b, lang, class: cls } = Astro.props as { b: Item; lang: Lang; class?: string };
+---
+
+{
+	img(b.image, lang) && (
+		<figure class:list={['ga-shot', cls]}>
+			<img src={img(b.image, lang)} {...size(b, 'image', lang)} loading="lazy" alt={tx(b.imageAlt, lang)} />
+			{tx(b.caption, lang) && <figcaption>{tx(b.caption, lang)}</figcaption>}
+		</figure>
+	)
+}

@@ -1,0 +1,54 @@
+---
+import AiTag from '../components/AiTag.astro';
+import { games, list, storeName, isCard, blurb, type Game } from '../games';
+import { t, url, type Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const s = t[lang];
+const { published, jams, other, projects, lab } = await games();
+const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
+const year = (g: Game) => (g.data.release_date ?? g.data.created)?.match(/\d{4}/)?.[0];
+// What a work was made with, as the store reports it: itch's "Made with" or the repo's language.
+const made = (g: Game) => [list(g.data.info?.['Made with'])?.split(', '), g.data.language].flat().filter(Boolean) as string[];
+const sub = (g: Game) => [storeName[g.data.source], ...made(g), year(g)].filter(Boolean).join(' · ');
+const ai = (g: Game) => g.own?.ai || 'none';
+const work = [...published, ...other, ...projects];
+// The counts and the filter cover every work on the site, jams and Lab included.
+const everything = [...work, ...jams, ...lab];
+const levels = ['hand', 'assisted', 'vibe'] as const;
+const count = Object.fromEntries(levels.map((k) => [k, everything.filter((g) => ai(g) === k).length]));
+const filters = [['all', s.filterAll], ['hand', s.filterHand], ['assisted', s.filterAssisted], ['vibe', s.filterVibe]] as const;
+---
+
+<section id="work" class="block filterable" aria-labelledby="h-work">
+	<div class="block-head">
+		<div>
+			<h2 id="h-work" data-rise>{tx(b.heading, lang)}</h2>
+			<p class="count" data-rise>
+				<span data-for="all"><strong>{everything.length} {s.works}:</strong> {count.hand} {s.counts.hand}, {count.assisted} {s.counts.assisted} {s.and} {count.vibe} {s.counts.vibe}.</span>
+				{levels.map((k) => <span data-for={k}><strong>{count[k]} {s.of} {everything.length}:</strong> {s.legend[k][1]}</span>)}
+			</p>
+		</div>
+		<div class="filter" role="group" aria-label={s.filterGroup} hidden>
+			{filters.map(([k, label]) => <button type="button" data-filter={k} aria-pressed={String(k === 'all')}>{label}</button>)}
+		</div>
+	</div>
+	<div class="work-rows">
+		{
+			work.map((g) => (
+				<article class="work-row" data-ai={ai(g)} data-rise>
+					<a class="work-img" href={href(g)} tabindex="-1" aria-hidden="true">
+						{g.data.local_images.cover && <img class:list={{ gh: isCard(g), steam: g.data.source === 'steam' }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="960" height="540" />}
+					</a>
+					<div class="work-text">
+						<h3><a href={href(g)}>{g.data.title}</a></h3>
+						{blurb(g, lang) && <p>{blurb(g, lang)}</p>}
+						<p class="meta"><span class="muted">{sub(g)}</span><AiTag lang={lang} level={g.own?.ai} /></p>
+					</div>
+				</article>
+			))
+		}
+	</div>
+	<p class="empty">{s.emptyFilter}</p>
+</section>

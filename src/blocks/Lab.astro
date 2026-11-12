@@ -1,0 +1,38 @@
+---
+import AiTag from '../components/AiTag.astro';
+import { games, list, storeName, isCard, type Game } from '../games';
+import { t, url, type Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const s = t[lang];
+const { lab } = await games();
+const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
+const year = (g: Game) => (g.data.release_date ?? g.data.created)?.match(/\d{4}/)?.[0];
+const made = (g: Game) => [list(g.data.info?.['Made with'])?.split(', '), g.data.language].flat().filter(Boolean) as string[];
+const sub = (g: Game) => [storeName[g.data.source], ...made(g), year(g)].filter(Boolean).join(' · ');
+const ai = (g: Game) => g.own?.ai || 'none';
+---
+
+<section id="lab" class="block lab filterable" aria-labelledby="h-lab">
+	<div class="lab-head">
+		<h2 id="h-lab" data-rise>{tx(b.heading, lang)}</h2>
+		{tx(b.intro, lang) && <p data-rise>{tx(b.intro, lang)}</p>}
+	</div>
+	<div class="lab-items">
+		{
+			lab.length > 0 ? (
+				lab.map((g) => (
+					<a class="lab-item" href={href(g)} data-ai={ai(g)} data-rise>
+						{g.data.local_images.cover && <img class:list={{ gh: isCard(g) }} src={url(g.data.local_images.cover)} alt="" loading="lazy" width="640" height="480" />}
+						<span class="lab-title">{g.data.title}</span>
+						<span class="meta"><span class="muted">{sub(g)}</span><AiTag lang={lang} level={g.own?.ai} /></span>
+					</a>
+				))
+			) : (
+				<p>{tx(b.empty, lang)}</p>
+			)
+		}
+		<p class="empty">{s.emptyFilter}</p>
+	</div>
+</section>

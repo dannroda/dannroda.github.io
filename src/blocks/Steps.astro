@@ -1,0 +1,18 @@
+---
+import Head from './Head.astro';
+import Shot from './Shot.astro';
+import type { Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const steps = (b.steps ?? []) as Item[];
+const id = `h-${b.id}`;
+---
+
+<section id={b.anchor || undefined} class="ga-section" aria-labelledby={tx(b.heading, lang) ? id : undefined}>
+	<Head b={b} lang={lang} id={id} />
+	<div class="ga-oneshot">
+		<ol class="ga-steps">{steps.map((x) => <li><b>{tx(x.title, lang)}</b><span set:html={tx(x.text, lang)} /></li>)}</ol>
+		<Shot b={b} lang={lang} class="ga-run" />
+	</div>
+</section>

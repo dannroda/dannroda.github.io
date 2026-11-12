@@ -1,0 +1,23 @@
+---
+import { url, type Lang } from '../i18n';
+import { tx, link, pill, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const notes = (b.notes ?? []) as Item[];
+const buttons = (b.buttons ?? []) as Item[];
+const steps = (b.steps ?? []) as Item[];
+const id = `h-${b.id}`;
+---
+
+<section id={b.anchor || undefined} class="ga-section ga-install-wrap" aria-labelledby={id} style={`--pattern: url(${url('/godot-pattern.svg')})`}>
+	<div class="hero-bg" aria-hidden="true"></div>
+	<div class="ga-install">
+		<div class="ga-install-left">
+			<h2 id={id}>{tx(b.heading, lang)}</h2>
+			{notes.map((x) => <p class="small" set:html={tx(x.text, lang)} />)}
+			{buttons.length > 0 && <div class="pills">{buttons.map((x) => <a class={pill(x.style)} href={link(x.url, lang)}>{tx(x.label, lang)}</a>)}</div>}
+		</div>
+		{steps.length > 0 && <ol>{steps.map((x) => <li set:html={tx(x.text, lang)} />)}</ol>}
+	</div>
+	{tx(b.fine, lang) && <p class="small ga-fine" set:html={tx(b.fine, lang)} />}
+</section>

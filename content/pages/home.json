@@ -1,0 +1,107 @@
+{
+  "title": {
+    "es": "",
+    "en": ""
+  },
+  "description": {
+    "es": "",
+    "en": ""
+  },
+  "project": "",
+  "image": "",
+  "draft": false,
+  "blocks": [
+    {
+      "id": "b1",
+      "type": "hero",
+      "layout": "split",
+      "title": {
+        "es": "Hago juegos en Godot.",
+        "en": "I make games in Godot."
+      },
+      "intro": {
+        "es": "Soy Daniel Rodriguez Aires, DTO en los créditos de las jams. Hago juegos, jams y herramientas para el editor en GDScript y C++, desde Argentina. Cada trabajo dice cuánta IA lleva.",
+        "en": "I’m Daniel Rodriguez Aires, DTO in jam credits. I make games, jams and editor tools in GDScript and C++, from Argentina. Every work says how much AI went into it."
+      },
+      "buttons": [
+        {
+          "label": {
+            "es": "Ver los trabajos ↓",
+            "en": "See the work ↓"
+          },
+          "url": {
+            "es": "#work",
+            "en": "#work"
+          },
+          "style": "primary"
+        },
+        {
+          "label": {
+            "es": "itch.io ↗",
+            "en": "itch.io ↗"
+          },
+          "url": {
+            "es": "https://dannroda.itch.io/",
+            "en": "https://dannroda.itch.io/"
+          },
+          "style": "plain"
+        }
+      ],
+      "game": "",
+      "chips": [],
+      "side": "featured",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageMobile": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b2",
+      "type": "works",
+      "heading": {
+        "es": "Trabajos",
+        "en": "Work"
+      }
+    },
+    {
+      "id": "b3",
+      "type": "jams",
+      "heading": {
+        "es": "Game jams",
+        "en": "Game jams"
+      },
+      "intro": {
+        "es": "Un fin de semana, un juego. El resultado es el que publica cada jam.",
+        "en": "One weekend, one game. The result is the one each jam publishes."
+      }
+    },
+    {
+      "id": "b4",
+      "type": "lab",
+      "heading": {
+        "es": "Lab",
+        "en": "Lab"
+      },
+      "intro": {
+        "es": "Experimentos hechos casi enteros con IA. Útiles o divertidos, sin garantías.",
+        "en": "Experiments made mostly with AI. Useful or fun, no guarantees."
+      },
+      "empty": {
+        "es": "Todavía no hay nada acá.",
+        "en": "Nothing here yet."
+      }
+    }
+  ]
+}

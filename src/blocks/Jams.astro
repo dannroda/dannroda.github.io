@@ -1,0 +1,41 @@
+---
+import AiTag from '../components/AiTag.astro';
+import { games, type Game } from '../games';
+import { t, url, type Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const s = t[lang];
+const { jams } = await games();
+const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
+const ai = (g: Game) => g.own?.ai || 'none';
+const rank = (g: Game) => {
+	const r = g.data.jam?.results?.Overall?.rank;
+	return r && `${s.rank} ${r}${g.data.jam?.entries ? ` ${s.of} ${g.data.jam.entries}` : ''}`;
+};
+---
+
+{
+	jams.length > 0 && (
+		<section id="jams" class="block filterable" aria-labelledby="h-jams">
+			<div class="block-head">
+				<h2 id="h-jams" data-rise>{tx(b.heading, lang)}</h2>
+				{tx(b.intro, lang) && <p class="block-lead" data-rise>{tx(b.intro, lang)}</p>}
+			</div>
+			<div class="jam-rows">
+				{jams.map((g) => (
+					<a class="jam-row" href={href(g)} data-ai={ai(g)} data-rise>
+						{g.data.local_images.cover && <img src={url(g.data.local_images.cover)} alt="" loading="lazy" width="320" height="200" />}
+						<span class="jam-name">
+							<span class="jam-title">{g.data.title}</span>
+							<span>{g.data.jam?.name}{g.data.jam?.theme && ` · ${s.theme}: “${g.data.jam.theme}”`}</span>
+						</span>
+						<span class="jam-result">{rank(g)}</span>
+						<AiTag lang={lang} level={g.own?.ai} />
+					</a>
+				))}
+			</div>
+			<p class="empty">{s.emptyFilter}</p>
+		</section>
+	)
+}

@@ -1,0 +1,8 @@
+---
+import type { Lang } from '../i18n';
+import { tx, link, pill, type Item } from './util';
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const buttons = (b.buttons ?? []) as Item[];
+---
+
+{buttons.length > 0 && <p class="pills">{buttons.map((x) => <a class={pill(x.style)} href={link(x.url, lang)}>{tx(x.label, lang)}</a>)}</p>}

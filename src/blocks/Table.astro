@@ -1,0 +1,41 @@
+---
+import Head from './Head.astro';
+import Shot from './Shot.astro';
+import type { Lang } from '../i18n';
+import { tx, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const columns = (b.columns ?? []) as Item[];
+const rows = (b.rows ?? []) as Item[];
+const id = `h-${b.id}`;
+// "deny, ask*, allow": the decision per column; a trailing * adds a mark the note explains.
+const cells = (s: string) => String(s ?? '').split(',').map((c) => c.trim()).map((c) => ({ d: c.replace(/\*$/, ''), mark: c.endsWith('*') ? '*' : '' }));
+---
+
+<section id={b.anchor || undefined} class="ga-section" aria-labelledby={tx(b.heading, lang) ? id : undefined}>
+	<Head b={b} lang={lang} id={id} />
+	<div class="ga-modes">
+		<Shot b={b} lang={lang} class="ga-perm" />
+		<div class="ga-modes-main">
+			<div class="ga-matrix">
+				<table>
+					<thead>
+						<tr>
+							<th scope="col">{tx(b.groupLabel, lang)}</th>
+							{columns.map((c) => <th scope="col">{tx(c.name, lang)}<small>{tx(c.what, lang)}</small></th>)}
+						</tr>
+					</thead>
+					<tbody>
+						{rows.map((r) => (
+							<tr>
+								<th scope="row">{tx(r.label, lang)}</th>
+								{cells(r.cells).map(({ d, mark }) => <td><span class={`ga-d ${d}`}>{tx(b[d], lang)}{mark}</span></td>)}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+			{tx(b.note, lang) && <p class="small" set:html={tx(b.note, lang)} />}
+		</div>
+	</div>
+</section>

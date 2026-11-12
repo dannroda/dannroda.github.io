@@ -1,0 +1,34 @@
+---
+// Renders a page's blocks (content/pages/<slug>.json). The library and its fields: src/blocks/schema.mjs.
+import '../styles/blocks.css';
+import Hero from '../blocks/Hero.astro';
+import Works from '../blocks/Works.astro';
+import Jams from '../blocks/Jams.astro';
+import Lab from '../blocks/Lab.astro';
+import Text from '../blocks/Text.astro';
+import Image from '../blocks/Image.astro';
+import Gallery from '../blocks/Gallery.astro';
+import Video from '../blocks/Video.astro';
+import Game from '../blocks/Game.astro';
+import Buttons from '../blocks/Buttons.astro';
+import Cards from '../blocks/Cards.astro';
+import Table from '../blocks/Table.astro';
+import Steps from '../blocks/Steps.astro';
+import Panels from '../blocks/Panels.astro';
+import Band from '../blocks/Band.astro';
+import type { Lang } from '../i18n';
+
+const components: Record<string, any> = { hero: Hero, works: Works, jams: Jams, lab: Lab, text: Text, image: Image, gallery: Gallery, video: Video, game: Game, buttons: Buttons, cards: Cards, table: Table, steps: Steps, panels: Panels, band: Band };
+const { blocks, lang } = Astro.props as { blocks: { id: string; type: string }[]; lang: Lang };
+// In `npm run dev` each block is tagged, so a click in the admin's preview opens it; the built site has no wrapper.
+const dev = import.meta.env.DEV;
+---
+
+<div class="blocks">
+	{
+		blocks.map((b) => {
+			const C = components[b.type];
+			return dev ? <div data-block={b.id} style="display: contents"><C b={b} lang={lang} /></div> : <C b={b} lang={lang} />;
+		})
+	}
+</div>

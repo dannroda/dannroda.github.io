@@ -27,7 +27,10 @@
 	label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
 	.hint { font-weight: 400; color: var(--muted); font-size: 13px; }
 	.app { display: grid; grid-template-columns: 200px 300px minmax(0, 1fr); height: 100vh; }
-	.app.preview { grid-template-columns: 200px 300px minmax(0, 1fr) minmax(0, 1fr); }
+	/* --pw: the preview's width, set by dragging its left edge */
+	.app.preview { grid-template-columns: 200px 300px minmax(320px, 1fr) var(--pw, minmax(0, 1fr)); }
+	.app.full { grid-template-columns: 200px minmax(0, 1fr); }
+	.app.full > .list, .app.full > main { display: none; }
 	nav { background: var(--surface); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
 	nav .brand { font: 700 22px 'Space Grotesk', system-ui; padding: 0 8px 16px; }
 	nav button { text-align: left; background: none; display: flex; justify-content: space-between; }
@@ -59,7 +62,7 @@
 	.seg input { width: auto; accent-color: var(--accent-ink); }
 	.check { flex-direction: row; align-items: center; gap: 8px; }
 	.check input { width: auto; }
-	.row { display: grid; grid-template-columns: 150px 150px 1fr 1fr auto; gap: 8px; align-items: center; }
+	.row { display: grid; grid-template-columns: 150px 150px 1fr auto; gap: 8px; align-items: center; }
 	.row.link { grid-template-columns: 180px 1fr auto auto auto; }
 	.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--surface-3); }
 	.tabs button { background: none; border-radius: 6px 6px 0 0; }
@@ -67,7 +70,12 @@
 	.empty { color: var(--muted); padding: 40px 32px; }
 	pre.log { background: var(--surface); padding: 12px; border-radius: 6px; max-height: 420px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
 	.preview-pane[hidden] { display: none; }
-	.preview-pane { border-left: 1px solid var(--surface-3); display: flex; flex-direction: column; }
+	.preview-pane { border-left: 1px solid var(--surface-3); display: flex; flex-direction: column; position: relative; min-width: 0; }
+	.grip { position: absolute; left: -4px; top: 0; bottom: 0; width: 8px; cursor: col-resize; z-index: 3; }
+	.grip:hover, .dragging .grip { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+	.dragging iframe { pointer-events: none; } /* the frame would swallow the drag */
+	.dragging { cursor: col-resize; user-select: none; }
+	.app.full .grip { display: none; }
 	.preview-pane .bar { padding: 8px 12px; font-size: 13px; color: var(--muted); }
 	.preview-pane iframe { flex: 1; border: 0; background: #fff; width: 100%; }
 	.toast { position: fixed; bottom: 20px; left: 50%; translate: -50%; background: var(--surface-3); padding: 10px 18px; border-radius: 8px; box-shadow: 0 6px 24px #0008; z-index: 9; }
@@ -95,9 +103,43 @@
 	.change .grow { flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere; }
 	.editor h1.msg { font-size: 22px; line-height: 1.25; }
 	.diff .add { color: #8fd18a; } .diff .del { color: var(--danger); } .diff .hunk { color: var(--muted); }
+	nav .langs { padding: 8px; flex-wrap: nowrap; }
+	nav .langs label { flex: 1; justify-content: center; position: relative; }
+	nav .langs input { position: absolute; opacity: 0; }
+	nav .langs label:has(input:focus-visible) { outline: 2px solid var(--accent); }
+	.text-row.on { background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 4px; }
+	/* Page editor: blocks as cards, opened one at a time */
+	.blks { display: flex; flex-direction: column; gap: 4px; }
+	.blk { border: 1px solid var(--surface-3); border-radius: 8px; background: var(--surface); }
+	.blk.open { border-color: var(--accent); }
+	.blk-head { display: flex; align-items: center; gap: 2px; padding: 4px; }
+	.blk-head > button:not(.blk-toggle) { padding: 6px 9px; background: none; color: var(--muted); }
+	.blk-head > button:not(.blk-toggle):hover { color: var(--ink); background: var(--surface-3); }
+	.blk-toggle { flex: 1; min-width: 0; display: flex; gap: 10px; align-items: baseline; background: none; text-align: left; padding: 8px 10px; }
+	.blk-type { font-weight: 600; white-space: nowrap; }
+	.blk-sum { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.blk-body { padding: 4px 14px 16px; display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--surface-3); }
+	.blk-add { align-self: center; padding: 0 10px; height: 18px; line-height: 18px; background: none; color: var(--muted); opacity: 0; transition: opacity 0.15s; }
+	.blks:hover .blk-add, .blk-add:focus-visible { opacity: 1; }
+	.blk-add:hover { color: var(--accent); }
+	.blk-add.end { opacity: 1; height: auto; padding: 10px; margin-top: 8px; width: 100%; border: 1px dashed var(--surface-3); border-radius: 8px; color: var(--ink); }
+	.img-field { display: flex; gap: 12px; align-items: flex-start; font-weight: 400; }
+	.img-field img, .img-field .ph { width: 120px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; flex: none; background: repeating-conic-gradient(#2a2d35 0 25%, #1b1d23 0 50%) 0 0 / 16px 16px; }
+	.img-field .ph { display: grid; place-items: center; color: var(--muted); font-size: 12px; text-align: center; padding: 6px; }
+	.list-field { gap: 10px; }
+	.list-item { display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 6px; background: var(--surface-2); }
+	.list-item .bar button { padding: 4px 8px; }
+	details.settings { border: 1px solid var(--surface-3); border-radius: 8px; padding: 10px 14px; }
+	details.settings[open] { display: flex; flex-direction: column; gap: 14px; }
+	details.settings summary { cursor: pointer; font-weight: 600; }
+	.blocks-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+	.block-pick { padding: 12px; gap: 6px; white-space: normal; }
+	.block-pick strong { font-size: 14px; }
+	.block-pick .hint { white-space: normal; overflow: visible; }
 	.dirty::after { content: ' ●'; color: var(--warn); }
 	@media (max-width: 900px) {
-		.app, .app.preview { grid-template-columns: 1fr; height: auto; }
+		.app, .app.preview, .app.full { grid-template-columns: 1fr; height: auto; }
+		.grip, .pane-full { display: none; }
 		nav { flex-direction: row; flex-wrap: wrap; } nav .grow { display: none; }
 		.list { border-right: 0; max-height: 40vh; }
 		.preview-pane { height: 70vh; }
@@ -138,10 +180,11 @@ function detect(link) {
 }
 
 let S; // everything the server read from disk
-let view = 'games', sel = null, lang = 'es', draft = null, dirty = false, preview = (() => { try { return JSON.parse(localStorage.getItem('preview')) ?? innerWidth > 1300; } catch { return innerWidth > 1300; } })(), busy = '', lastLog = '';
+let view = 'games', sel = null, lang = (() => { try { return localStorage.getItem('lang') === 'en' ? 'en' : 'es'; } catch { return 'es'; } })(), draft = null, dirty = false, preview = (() => { try { return JSON.parse(localStorage.getItem('preview')) ?? innerWidth > 1300; } catch { return innerWidth > 1300; } })(), busy = '', lastLog = '';
 const $ = (q) => document.querySelector(q);
 const clone = (v) => JSON.parse(JSON.stringify(v));
-const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+// "Página de prueba" -> "pagina-de-prueba": accents dropped, not turned into dashes.
+const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const today = () => new Date().toLocaleDateString('sv'); // local YYYY-MM-DD, not UTC
 
 // h('tag.class', {attrs, on*: handler}, ...children)
@@ -197,23 +240,53 @@ const get = (o, p) => p.split('.').reduce((a, k) => a?.[k], o);
 const set = (o, p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((a, k) => (a[k] ??= {}), o)[last] = v; touch(); };
 const text = (obj, path, attrs = {}) => h('input', { value: get(obj, path) ?? '', oninput: (e) => set(obj, path, e.target.value), ...attrs });
 const area = (obj, path, attrs = {}) => h('textarea', { value: get(obj, path) ?? '', oninput: (e) => set(obj, path, e.target.value), ...attrs });
+// "Sin traducir": empty in the language being edited while the other one has text.
+const untranslated = (obj, l = lang) => !String(obj?.[l] ?? '').trim() && !!String(obj?.[l === 'es' ? 'en' : 'es'] ?? '').trim();
+const missing = h.bind(null, 'span.tag.off', {}, 'sin traducir');
 const field = (label, input, hint) => h('label', {}, label, input, hint && h('span.hint', {}, hint));
 const seg = (name, options, value, onpick) =>
 	h('div.seg', { role: 'radiogroup' }, options.map(([v, l]) => h('label', {}, h('input', { type: 'radio', name, checked: (value ?? '') === v, onchange: () => onpick(v) }), l)));
 const select = (options, value, onpick) => h('select', { onchange: (e) => onpick(e.target.value) }, options.map(([v, l]) => h('option', { value: v, selected: v === (value ?? '') }, l)));
 
+// Preview width: dragged from its left edge and remembered; null goes back to half and half.
+let full = false;
+function setPaneWidth(px) {
+	const app = $('#app');
+	// Capped by the window, so a width saved on a big screen never squeezes the editor on a smaller one.
+	if (px) app.style.setProperty('--pw', `min(${px}px, calc(100vw - 820px))`); else app.style.removeProperty('--pw');
+	try { px ? localStorage.setItem('pw', px) : localStorage.removeItem('pw'); } catch {}
+}
+function dragPane(e) {
+	e.preventDefault();
+	const app = $('#app');
+	app.classList.add('dragging');
+	// Leave the editor at least 320px; the preview at least 320px.
+	const move = (ev) => setPaneWidth(Math.round(Math.min(innerWidth - 200 - 300 - 320, Math.max(320, innerWidth - ev.clientX))));
+	const up = () => { app.classList.remove('dragging'); removeEventListener('pointermove', move); removeEventListener('pointerup', up); };
+	addEventListener('pointermove', move);
+	addEventListener('pointerup', up);
+}
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && full) { full = false; render(); } });
 // The preview pane is built once and only pointed elsewhere, so clicking around doesn't reload the same page.
 let pane;
 function render() {
 	const app = $('#app');
 	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['history', 'Historial'], ['publish', 'Publicar']];
-	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
+	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: pagesView, media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
 	// Only screens with a page of the site to show get the pane (and its button).
 	const show = preview && !!url;
 	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l]) =>
 		h('button', { 'aria-current': String(view === v), onclick: () => go(v) }, l, v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
-	), h('div.grow'), url && h('button', { 'aria-pressed': String(preview), onclick: () => { preview = !preview; try { localStorage.setItem('preview', preview); } catch {} render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
-	pane ??= h('div.preview-pane', {}, h('div.bar', {}, h('span.grow'), h('button.link', { onclick: () => { const f = pane.querySelector('iframe'); f.src = f.src; } }, 'Recargar')), h('iframe', { title: 'Vista previa' }));
+	), h('div.grow'),
+	h('div.seg.langs', { role: 'radiogroup', 'aria-label': 'Idioma que editás' }, Object.entries(LANGS).map(([l, n]) => h('label', { title: `Editar en ${n}` }, h('input', { type: 'radio', name: 'lang', 'aria-label': n, checked: lang === l, onchange: () => { lang = l; try { localStorage.setItem('lang', l); } catch {} render(); } }), l.toUpperCase()))),
+	url && h('button', { 'aria-pressed': String(preview), onclick: () => { preview = !preview; try { localStorage.setItem('preview', preview); } catch {} render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
+	pane ??= h('div.preview-pane', {},
+		h('div.grip', { title: 'Arrastrá para cambiar el ancho (doble clic: mitad y mitad)', onpointerdown: dragPane, ondblclick: () => setPaneWidth(null) }),
+		h('div.bar', {}, h('span.grow'),
+			h('button.link.pane-full', { onclick: () => { full = !full; render(); } }),
+			h('button.link', { onclick: () => { const f = pane.querySelector('iframe'); f.src = f.src; } }, 'Recargar')),
+		h('iframe', { title: 'Vista previa' }));
+	pane.querySelector('.pane-full').textContent = full ? '⤡ Volver al editor' : '⤢ Ancho completo';
 	pane.hidden = !show;
 	const live = !!url?.endsWith('/admin-preview/');
 	if (show) {
@@ -221,8 +294,10 @@ function render() {
 		const f = pane.querySelector('iframe');
 		if (f.getAttribute('src') !== S.site + url) f.src = S.site + url;
 		else if (live) sendPreview(); // same frame, another post: refill it
+		else sendTexts(); // same page, other texts (or none): re-mark it
 	}
-	app.className = 'app' + (show ? ' preview' : '');
+	if (!show) full = false;
+	app.className = 'app' + (show ? ' preview' : '') + (full ? ' full' : '');
 	const main = h('main', {}, editor);
 	if (!app.children.length) app.append(nav, list, main, pane);
 	else [nav, list, main].forEach((el, i) => app.children[i].replaceWith(el));
@@ -287,8 +362,8 @@ function gamesView() {
 	draft ??= { own: { ai: '', show: 'listed', landing: '', role: { es: '', en: '' }, summary: { es: '', en: '' }, authorship: [], ...clone(g.own) }, repo: sourceOf(g)?.entry?.repo ?? '' };
 	const o = draft.own;
 	const src = sourceOf(g);
-	const linked = S.pages.filter((p) => (p.es ?? p.en).data.project === g.slug);
-	const landingOpts = [['', 'Ninguna'], ...S.fixedPages.map((p) => [p, `/${p}/ (página del sitio)`]), ...S.pages.map((p) => [p.slug, `/${p.slug}/ · ${(p.es ?? p.en).data.title}`])];
+	const linked = Object.entries(S.pages).filter(([, p]) => p.project === g.slug).map(([slug]) => ({ slug }));
+	const landingOpts = [['', 'Ninguna'], ...Object.keys(S.pages).filter((k) => k !== 'home').map((k) => [k, `/${k}/ · ${pageTitle(S.pages[k])}`]), ...S.fixedPages.map((p) => [p, `/${p}/ (página del sitio)`])];
 	const custom = o.landing && !landingOpts.some(([v]) => v === o.landing);
 	const save = async () => {
 		await api('PUT', `game/${g.slug}`, { ...o, ai: o.ai || '', landing: o.landing?.trim() || '' });
@@ -305,7 +380,7 @@ function gamesView() {
 	const drawAuthorship = () => authorship.replaceChildren(
 		...o.authorship.map((a, i) => h('div.row', {},
 			select(AREAS, a.area, (v) => set(a, 'area', v)), select(WHO, a.who, (v) => set(a, 'who', v)),
-			text(a, 'note.es', { placeholder: 'Nota (es)' }), text(a, 'note.en', { placeholder: 'Note (en)' }),
+			text(a, `note.${lang}`, { placeholder: `Nota (${lang})` }),
 			h('button.link', { onclick: () => { o.authorship.splice(i, 1); touch(); drawAuthorship(); } }, 'Quitar'))),
 		h('div', {}, h('button', { onclick: () => { o.authorship.push({ area: 'code', who: 'me', note: { es: '', en: '' } }); touch(); drawAuthorship(); } }, '+ Área'))
 	);
@@ -325,14 +400,15 @@ function gamesView() {
 		field('Visibilidad', seg('show', SHOW, o.show, (v) => set(o, 'show', v)), 'Destacado sale en el primer pantallazo de la home (varios hacen un carrusel) y primero en su lista. Oculto no sale en ningún lado.'),
 		field('Uso de IA', seg('ai', AI, o.ai, (v) => set(o, 'ai', v)), 'Vibe-coded va al Lab, sea de la tienda que sea.'),
 		h('fieldset', {}, h('legend', {}, 'Texto propio'), h('span.hint', {}, 'Vacío: se usa el de la tienda (gris).'),
-			h('div.two', {}, Object.entries(LANGS).map(([l, n]) => field(n, area(o, `summary.${l}`, { placeholder: g.store.text?.[l] || g.store.text?.en || '' }))))),
-		h('fieldset', {}, h('legend', {}, 'Mi rol'), h('div.two', {}, Object.entries(LANGS).map(([l, n]) => field(n, text(o, `role.${l}`))))),
+			untranslated(o.summary) && missing(), area(o, `summary.${lang}`, { rows: 4, 'aria-label': `Texto propio (${LANGS[lang]})`, placeholder: g.store.text?.[lang] || g.store.text?.en || '' })),
+		field(h('span', {}, 'Mi rol ', untranslated(o.role) && missing()), text(o, `role.${lang}`)),
 		h('fieldset', {}, h('legend', {}, 'Quién hizo qué'), authorship),
 		h('fieldset', {}, h('legend', {}, 'Páginas'),
 			field('Landing page', select([...landingOpts, ['__custom', 'Otro link https://…']], custom ? '__custom' : o.landing, (v) => { set(o, 'landing', v === '__custom' ? 'https://' : v); render(); }), 'La ficha muestra «Página del proyecto».'),
 			custom && field('Link', text(o, 'landing', { placeholder: 'https://…', type: 'url' })),
+			S.pages[o.landing?.trim()] && h('div', {}, h('button.link', { onclick: () => go('pages', o.landing.trim()) }, 'Editar esta página')),
 			h('div.hint', {}, linked.length ? ['Linkeadas desde su ficha: ', ...linked.map((p) => h('button.link', { onclick: () => go('pages', p.slug), style: 'margin-right:10px' }, `/${p.slug}/`))] : 'Ninguna página de contenido apunta a este proyecto. ',
-				h('button.link', { onclick: () => newDoc('pages', g.store.title, { project: g.slug }) }, 'Crear una'))),
+				h('button.link', { onclick: () => newPage(g.store.title, { project: g.slug }) }, 'Crear una'))),
 		g.store.source === 'itch' && src && field('Código en GitHub', h('input', { value: draft.repo, placeholder: 'usuario/repo', oninput: (e) => { draft.repo = e.target.value; touch(); } }), 'Opcional: la ficha lo linkea y el repo no se repite en Proyectos.'),
 		h('div', {}, h('button.danger', { onclick: () => removeGame(g, src) }, 'Quitar del sitio'))
 	);
@@ -486,7 +562,11 @@ function docsView(kind) {
 	const doc = S[kind].find((d) => d.slug === sel);
 	if (!doc && !draft?.isNew) return [list, h('div.empty', {}, kind === 'blog' ? 'Elegí un post o creá uno.' : 'Las páginas se publican en /es/<nombre>/ y /en/<nombre>/: landings y todo lo que no es un post.')];
 	draft ??= clone(doc);
-	if (!draft[lang]) lang = draft.es ? 'es' : 'en';
+	const other = lang === 'es' ? 'en' : 'es';
+	if (!draft[lang]) return [list, h('div.editor', {},
+		h('h1', {}, draft[other].data.title),
+		h('p', {}, `No tiene versión en ${LANGS[lang]}.`, missing()),
+		h('div', {}, h('button.primary', { onclick: () => { draft[lang] = { data: { ...clone(draft[other].data), title: '', description: '' }, body: '' }; touch(); render(); } }, `Crear la versión en ${LANGS[lang]}`))), null];
 	const d = draft[lang];
 	const shared = (k, v) => { for (const l of Object.keys(LANGS)) if (draft[l]) draft[l].data[k] = v; touch(); sendPreview(); };
 	const save = async () => {
@@ -510,10 +590,7 @@ function docsView(kind) {
 	const path = kind === 'blog' ? `/${lang}/blog/${draft.slug}/` : `/${lang}/${draft.slug}/`;
 	const editor = h('div.editor', {},
 		h('div.bar', {}, h('h1.grow', {}, d.data.title || '(sin título)'), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
-		h('div.bar.hint', {}, h('span', {}, path), draft.isNew ? h('span', {}, '· nuevo, todavía sin guardar') : h('button.link', { onclick: renameIt }, 'Cambiar nombre')),
-		h('div.tabs', { role: 'tablist' }, Object.entries(LANGS).map(([l, n]) => draft[l]
-			? h('button', { role: 'tab', 'aria-selected': String(lang === l), onclick: () => { lang = l; render(); } }, n)
-			: h('button', { onclick: () => { draft[l] = { data: { ...clone(d.data), title: '', description: '' }, body: '' }; lang = l; touch(); render(); } }, `+ ${n}`))),
+		h('div.bar.hint', {}, h('span', {}, path), h('span.tag', {}, LANGS[lang]), draft.isNew ? h('span', {}, '· nuevo, todavía sin guardar') : h('button.link', { onclick: renameIt }, 'Cambiar nombre')),
 		field('Título', live(text(d.data, 'title', { oninput: (e) => { set(d.data, 'title', e.target.value); $('h1').textContent = e.target.value; } }))),
 		field('Bajada', live(area(d.data, 'description', { rows: 2 })), 'Debajo del título y en buscadores y redes.'),
 		h('div.two', {},
@@ -530,12 +607,246 @@ function docsView(kind) {
 	return [list, editor, `/${lang}/admin-preview/`];
 }
 
+// ---------- Pages built from blocks (content/pages/<slug>.json), Storyblok style. The block library and its fields
+// come from src/blocks/schema.mjs. The preview shows the page as edited, before saving: every change is written to a
+// scratch file that /<lang>/admin-draft/ renders. Text changes show at once; other changes reload the preview.
+let openBlock = null;
+const I18N = ['text', 'textarea', 'html', 'markdown', 'image', 'url', 'tags'];
+const blockDef = (type) => S.blocks.find((b) => b.type === type);
+const emptyValue = (f) => (f.type === 'list' ? [] : f.type === 'tags' ? { es: [], en: [] } : f.type === 'bool' ? false : f.type === 'select' ? f.options[0][0] : I18N.includes(f.type) ? { es: '', en: '' } : '');
+const emptyOf = (fields) => Object.fromEntries(fields.map((f) => [f.key, emptyValue(f)]));
+const newBlockId = () => { const ids = new Set(draft.blocks.map((b) => b.id)); let n = 1; while (ids.has(`b${n}`)) n++; return `b${n}`; };
+// A translated value in the language being edited (older plain strings count for both).
+const tv = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v[lang] ?? '' : v ?? '');
+const otherOf = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v[lang === 'es' ? 'en' : 'es'] ?? '' : '');
+const setT = (obj, key, value) => { if (!obj[key] || typeof obj[key] !== 'object' || Array.isArray(obj[key])) obj[key] = { es: obj[key] ?? '', en: obj[key] ?? '' }; obj[key][lang] = value; };
+const pageTitle = (p) => tv(p.title) || otherOf(p.title);
+const mediaSrc = (v) => (v?.startsWith('/') ? '/public' + v : v); // how the panel itself shows a site picture
+
+let draftTimer, draftReload = false;
+function scheduleDraft(reloadAfter, wait = reloadAfter ? 200 : 500) {
+	draftReload ||= reloadAfter;
+	clearTimeout(draftTimer);
+	draftTimer = setTimeout(async () => {
+		const again = draftReload;
+		draftReload = false;
+		try { await api('POST', 'draft', { slug: sel, page: draft }); } catch (e) { return toast(e.message, true); }
+		const f = pane?.querySelector('iframe');
+		if (again && f && !pane.hidden) f.src = f.src;
+	}, wait);
+}
+// Words on the page: shown live, no reload. Anything else: the preview is rendered again.
+const textChange = (key, value) => { touch(); frame()?.postMessage({ type: 'update', key, value }, S.site); scheduleDraft(false); };
+const structChange = (wait) => { touch(); scheduleDraft(true, wait); };
+
+// Every translated text of the page's blocks in the language being edited, keyed by where it lives ("b3.items.0.title"),
+// so the preview can find it and the panel can open it.
+function blockTexts() {
+	const out = {};
+	const walk = (fields, obj, path) => {
+		for (const f of fields) {
+			const p = `${path}.${f.key}`;
+			if (f.type === 'list') (obj[f.key] ?? []).forEach((it, i) => walk(f.fields, it, `${p}.${i}`));
+			else if (['text', 'textarea', 'html'].includes(f.type)) out[p] = tv(obj[f.key]);
+		}
+	};
+	for (const b of draft.blocks) walk(blockDef(b.type)?.fields ?? [], b, b.id);
+	return out;
+}
+
+// One field of a block (or of a list item inside it). key: where it lives, as the preview names it.
+function blockField(f, obj, key) {
+	const missingHere = I18N.includes(f.type) && f.type !== 'tags' && !String(tv(obj[f.key]) ?? '').trim() && !!String(otherOf(obj[f.key]) ?? '').trim();
+	const label = h('span', {}, f.label, missingHere && missing());
+	const focus = () => frame()?.postMessage({ type: 'select', key }, S.site);
+	let input;
+	if (['text', 'textarea', 'html', 'url'].includes(f.type)) {
+		const v = String(tv(obj[f.key]));
+		const attrs = { value: v, 'data-key': key, placeholder: String(otherOf(obj[f.key])), onfocus: focus,
+			oninput: (e) => { setT(obj, f.key, e.target.value); f.type === 'url' ? (touch(), scheduleDraft(false)) : textChange(key, e.target.value); } };
+		input = f.type === 'text' || f.type === 'url' ? h('input', { ...attrs, type: f.type === 'url' ? 'text' : 'text' }) : h('textarea', { ...attrs, rows: Math.min(8, Math.max(2, Math.ceil(v.length / 70))) });
+	} else if (f.type === 'markdown') {
+		// The post editor, pointed at this field.
+		const proxy = { get body() { return tv(obj[f.key]); }, set body(v) { setT(obj, f.key, v); structChange(700); } };
+		input = mdEditor(proxy);
+	} else if (f.type === 'image') {
+		input = imageField(obj, f.key);
+	} else if (f.type === 'tags') {
+		const cur = obj[f.key];
+		const words = Array.isArray(cur) ? cur : cur?.[lang] ?? [];
+		input = h('input', { value: words.join(', '), 'data-key': key, placeholder: (Array.isArray(cur) ? [] : cur?.[lang === 'es' ? 'en' : 'es'] ?? []).join(', '),
+			onchange: (e) => { if (Array.isArray(obj[f.key]) || !obj[f.key]) obj[f.key] = { es: obj[f.key] ?? [], en: obj[f.key] ?? [] }; obj[f.key][lang] = e.target.value.split(',').map((s) => s.trim()).filter(Boolean); structChange(); } });
+	} else if (f.type === 'select') {
+		input = select(f.options, obj[f.key], (v) => { obj[f.key] = v; structChange(); render(); });
+	} else if (f.type === 'game') {
+		input = select([['', 'Ninguno'], ...[...S.games].sort((a, b) => a.store.title.localeCompare(b.store.title)).map((g) => [g.slug, g.store.title])], obj[f.key], (v) => { obj[f.key] = v; structChange(); });
+	} else if (f.type === 'bool') {
+		return h('label.check', {}, h('input', { type: 'checkbox', checked: !!obj[f.key], onchange: (e) => { obj[f.key] = e.target.checked; structChange(); } }), f.label, f.hint && h('span.hint', {}, f.hint));
+	} else if (f.type === 'list') {
+		return listField(f, obj, key);
+	} else {
+		input = h('input', { value: obj[f.key] ?? '', 'data-key': key, onfocus: focus, onchange: (e) => { obj[f.key] = e.target.value; structChange(); } });
+	}
+	return h('label', { className: f.type === 'markdown' ? 'md-field' : '' }, label, input, f.hint && h('span.hint', {}, f.hint));
+}
+
+// A picture: from the library, uploaded, or a link; its size is measured and kept so the page doesn't jump.
+function imageField(obj, key) {
+	const v = String(tv(obj[key]));
+	const set = (url) => {
+		setT(obj, key, url);
+		if (!url) { structChange(); return render(); }
+		const probe = new Image();
+		probe.onload = () => {
+			obj[`${key}Size`] = { ...(obj[`${key}Size`] ?? {}), [lang]: [probe.naturalWidth, probe.naturalHeight] };
+			structChange();
+			render();
+		};
+		probe.onerror = () => { toast('No pude abrir esa imagen; quedó el link igual', true); structChange(); render(); };
+		probe.src = mediaSrc(url);
+	};
+	return h('div.img-field', {},
+		v ? h('img', { src: mediaSrc(v), alt: '' }) : h('div.ph', {}, otherOf(obj[key]) ? 'Usa la del otro idioma' : 'Sin imagen'),
+		h('div', { style: 'display:flex;flex-direction:column;gap:6px;flex:1;min-width:0' },
+			h('input', { value: v, placeholder: '/media/… o https://…', 'aria-label': 'Dirección de la imagen', onchange: (e) => set(e.target.value.trim()) }),
+			h('div.bar', {},
+				h('button', { type: 'button', onclick: async () => { const url = await pickMedia(); if (url) set(url); } }, 'Elegir o subir…'),
+				v && h('button.link', { type: 'button', onclick: () => set('') }, 'Quitar'))));
+}
+
+function listField(f, obj, key) {
+	const items = (obj[f.key] ??= []);
+	const redo = () => { structChange(); render(); };
+	return h('fieldset.list-field', {}, h('legend', {}, f.label),
+		items.map((it, i) => h('div.list-item', {},
+			h('div.bar', {}, h('span.hint.grow', {}, `${i + 1}`),
+				h('button', { type: 'button', disabled: i === 0, 'aria-label': 'Subir', onclick: () => { [items[i - 1], items[i]] = [items[i], items[i - 1]]; redo(); } }, '↑'),
+				h('button', { type: 'button', disabled: i === items.length - 1, 'aria-label': 'Bajar', onclick: () => { [items[i + 1], items[i]] = [items[i], items[i + 1]]; redo(); } }, '↓'),
+				h('button', { type: 'button', 'aria-label': 'Duplicar', title: 'Duplicar', onclick: () => { items.splice(i + 1, 0, clone(it)); redo(); } }, '⧉'),
+				h('button.link', { type: 'button', onclick: () => { items.splice(i, 1); redo(); } }, 'Quitar')),
+			f.fields.map((sub) => blockField(sub, it, `${key}.${i}.${sub.key}`)))),
+		h('div', {}, h('button', { type: 'button', onclick: () => { items.push(emptyOf(f.fields)); redo(); } }, `+ ${f.label.replace(/s$/, '').toLowerCase()}`)));
+}
+
+// The block picker: the library by group, each with what it's for.
+function pickBlock() {
+	return new Promise((done) => {
+		const dlg = h('dialog.picker', { onclose: () => { dlg.remove(); done(dlg.returnValue || null); } });
+		const groups = [...new Set(S.blocks.map((b) => b.group))];
+		dlg.append(h('div.bar', {}, h('strong.grow', {}, 'Agregar un bloque'), h('button', { onclick: () => dlg.close() }, 'Cancelar')),
+			...groups.flatMap((g) => [h('div.group', { style: 'padding:12px 0 6px' }, g), h('div.grid.blocks-grid', {}, S.blocks.filter((b) => b.group === g).map((b) =>
+				h('button.thumb.block-pick', { onclick: () => dlg.close(b.type) }, h('strong', {}, b.label), b.help && h('span.hint', {}, b.help))))]));
+		document.body.append(dlg);
+		dlg.showModal();
+	});
+}
+async function addBlock(at) {
+	const type = await pickBlock();
+	if (!type) return;
+	const b = { id: newBlockId(), type, ...emptyOf(blockDef(type).fields) };
+	draft.blocks.splice(at, 0, b);
+	openBlock = b.id;
+	structChange();
+	render();
+	document.querySelector(`[data-blk="${b.id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+// The preview asked for a block, or a text inside one: open it here.
+function openFromPreview(id, key) {
+	if (view !== 'pages' || !draft?.blocks?.some((b) => b.id === id)) return;
+	if (full) full = false;
+	openBlock = id;
+	render();
+	const field = key && document.querySelector(`[data-key="${CSS.escape(key)}"]`);
+	const card = document.querySelector(`[data-blk="${id}"]`);
+	(field ?? card)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+	field?.focus({ preventScroll: true });
+}
+
+function newPage(title = '', data = {}) {
+	if (!leave()) return;
+	title = prompt('Título de la página', title);
+	if (!title) return;
+	const slug = slugify(title);
+	if (S.pages[slug] || S.reserved.includes(slug)) return toast(`Ya existe /${slug}/`, true);
+	view = 'pages'; sel = slug; openBlock = 'b1'; dirty = true;
+	draft = { isNew: true, title: { es: title, en: '' }, description: { es: '', en: '' }, project: '', image: '', draft: true, ...data,
+		blocks: [{ id: 'b1', type: 'hero', ...emptyOf(blockDef('hero').fields), layout: 'stacked', side: 'none', title: { es: title, en: '' } }] };
+	render();
+	scheduleDraft(true, 0);
+}
+
+function pagesView() {
+	const slugs = Object.keys(S.pages).filter((s) => s !== 'home').sort();
+	const item = (slug, name, extra) => h('button.item', { 'aria-current': String(sel === slug), onclick: () => go('pages', slug) },
+		h('span', { style: 'min-width:0' }, h('div.t', {}, name), h('div.s', {}, slug === 'home' ? '/' : `/${slug}/`, extra)));
+	const list = h('div.list', {}, h('div.list-head', {}, h('button.primary', { onclick: () => newPage() }, '+ Nueva página')),
+		S.pages.home && item('home', 'Inicio', null),
+		slugs.map((s) => item(s, pageTitle(S.pages[s]) || s, [S.pages[s].draft && h('span.tag.off', {}, 'borrador'), h('span.tag', {}, `${S.pages[s].blocks?.length ?? 0} bloques`)])),
+		draft?.isNew && item(sel, pageTitle(draft), h('span.tag.off', {}, 'sin guardar')));
+	if (!S.pages[sel] && !draft?.isNew) return [list, h('div.empty', {}, 'Elegí una página o creá una. Cada página es una lista de bloques: agregalos, ordenalos y editalos; la vista previa muestra los cambios antes de guardar.'), null];
+	if (!draft) { draft = clone(S.pages[sel]); openBlock = null; scheduleDraft(true, 0); }
+	const p = draft;
+	const isHome = sel === 'home';
+	const save = async () => {
+		const { isNew, ...page } = draft;
+		await api('PUT', `page/${sel}`, page);
+		dirty = false; draft = null;
+		await reload();
+		toast('Guardado');
+	};
+	const renameIt = async () => {
+		if (!leave()) return;
+		const to = prompt('Nuevo nombre (la dirección pasa a ser /<nombre>/). Los links que ya compartiste a la anterior dejan de andar.', sel);
+		if (!to || slugify(to) === sel) return;
+		try {
+			await api('POST', `rename/pages/${sel}`, { to: slugify(to) });
+			dirty = false; draft = null; sel = slugify(to);
+			await reload();
+			toast('Renombrado');
+		} catch (e) { toast(e.message, true); }
+	};
+	const card = (b, i) => {
+		const def = blockDef(b.type) ?? { label: b.type, fields: [] };
+		const open = openBlock === b.id;
+		const firstText = def.fields.find((f) => ['text', 'html'].includes(f.type) && tv(b[f.key]));
+		const summary = firstText ? tv(b[firstText.key]).replace(/<[^>]+>/g, '') : '';
+		const move = (j) => { [draft.blocks[i], draft.blocks[j]] = [draft.blocks[j], draft.blocks[i]]; structChange(); render(); };
+		return h('div.blk', { 'data-blk': b.id, className: open ? 'blk open' : 'blk' },
+			h('div.blk-head', {},
+				h('button.blk-toggle', { type: 'button', 'aria-expanded': String(open), onclick: () => { openBlock = open ? null : b.id; render(); if (!open) frame()?.postMessage({ type: 'block', id: b.id }, S.site); } },
+					h('span.blk-type', {}, def.label), h('span.blk-sum', {}, summary)),
+				h('button', { type: 'button', disabled: i === 0, 'aria-label': 'Subir', title: 'Subir', onclick: () => move(i - 1) }, '↑'),
+				h('button', { type: 'button', disabled: i === p.blocks.length - 1, 'aria-label': 'Bajar', title: 'Bajar', onclick: () => move(i + 1) }, '↓'),
+				h('button', { type: 'button', 'aria-label': 'Duplicar', title: 'Duplicar', onclick: () => { const c = { ...clone(b), id: newBlockId() }; draft.blocks.splice(i + 1, 0, c); openBlock = c.id; structChange(); render(); } }, '⧉'),
+				h('button', { type: 'button', 'aria-label': 'Borrar', title: 'Borrar', onclick: () => { if (!confirm(`¿Borrar el bloque «${def.label}»?`)) return; draft.blocks.splice(i, 1); structChange(); render(); } }, '✕')),
+			open && h('div.blk-body', {}, def.help && h('p.hint', {}, def.help), def.fields.map((f) => blockField(f, b, `${b.id}.${f.key}`))));
+	};
+	const gap = (i) => h('button.blk-add', { type: 'button', onclick: () => addBlock(i), title: 'Insertar un bloque acá' }, '+');
+	const editor = h('div.editor', {},
+		h('div.bar', {}, h('h1.grow', {}, isHome ? 'Inicio' : pageTitle(p) || '(sin título)'), h('span.tag', {}, LANGS[lang]), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
+		h('div.bar.hint', {}, h('span', {}, isHome ? `/${lang}/` : `/${lang}/${sel}/`), !isHome && !p.isNew && h('button.link', { onclick: renameIt }, 'Cambiar nombre'),
+			h('span', {}, preview ? '· Hacé clic en un bloque o un texto de la vista previa para editarlo.' : '· Abrí la vista previa para ver los cambios antes de guardar.')),
+		h('details.settings', {}, h('summary', {}, 'Ajustes de la página'),
+			blockField({ key: 'title', label: 'Título (pestaña del navegador y buscadores)', type: 'text' }, p, 'page.title'),
+			blockField({ key: 'description', label: 'Descripción (buscadores y redes)', type: 'textarea' }, p, 'page.description'),
+			h('label', {}, 'Imagen al compartir', h('div.img-field', {}, p.image ? h('img', { src: mediaSrc(p.image), alt: '' }) : h('div.ph', {}, 'La del sitio'),
+				h('div', { style: 'display:flex;gap:6px;flex-wrap:wrap' }, h('button', { type: 'button', onclick: async () => { const u = await pickMedia(); if (u) { p.image = u; structChange(); render(); } } }, 'Elegir o subir…'), p.image && h('button.link', { type: 'button', onclick: () => { p.image = ''; structChange(); render(); } }, 'Quitar')))),
+			!isHome && field('Proyecto', select([['', 'Ninguno'], ...[...S.games].sort((a, b) => a.store.title.localeCompare(b.store.title)).map((g) => [g.slug, g.store.title])], p.project, (v) => { p.project = v; touch(); }), 'Su ficha linkea a esta página.'),
+			!isHome && h('label.check', {}, h('input', { type: 'checkbox', checked: !!p.draft, onchange: (e) => { p.draft = e.target.checked; touch(); } }), 'Borrador', h('span.hint', {}, '(se ve en la vista previa, no se publica)'))),
+		h('div.blks', {}, p.blocks.map((b, i) => [gap(i), card(b, i)]), h('button.blk-add.end', { type: 'button', onclick: () => addBlock(p.blocks.length) }, '+ Agregar bloque')),
+		!isHome && !p.isNew && h('div', {}, h('button.danger', { onclick: async () => {
+			if (!confirm(`¿Borrar la página «${pageTitle(p)}»? Se puede recuperar desde Historial hasta que publiques.`)) return;
+			await api('DELETE', `page/${sel}`); dirty = false; go('pages'); await reload();
+		} }, 'Borrar la página')));
+	return [list, editor, `/${lang}/admin-draft/`];
+}
+
 // ---------- Media library
 // Which admin screen edits a content file, to jump from a picture to where it's used.
 function openFile(f) {
-	const m = f.match(/^content\/(blog|pages)\/(es|en)\/(.+)\.md$/) ?? f.match(/^content\/(games)\/(.+)\.json$/);
+	const m = f.match(/^content\/(blog)\/(es|en)\/(.+)\.md$/) ?? f.match(/^content\/(games|pages)\/(.+)\.json$/);
 	if (!m) return null;
-	return m[1] === 'games' ? () => go('games', m[2]) : () => { lang = m[2]; go(m[1], m[3]); };
+	return m[1] !== 'blog' ? () => go(m[1], m[2]) : () => { lang = m[2]; go(m[1], m[3]); };
 }
 function mediaView() {
 	const file = h('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true, onchange: (e) => add([...e.target.files]) });
@@ -556,6 +867,27 @@ function mediaView() {
 			h('div.hint', {}, m.usedIn.length ? ['Usada en: ', m.usedIn.map((f) => { const open = openFile(f); return open ? h('button.link', { onclick: open, style: 'margin-right:8px' }, f.replace(/^content\//, '')) : f.replace(/^content\//, '') + ' '; })] : 'Sin usar'),
 			h('div.bar', {},
 				h('button', { onclick: async () => { await navigator.clipboard.writeText(`![](${m.url})`); toast('Copiado'); } }, 'Copiar Markdown'),
+				// Replace keeps the name, so every page and post using it shows the new picture.
+				h('button', { onclick: () => {
+					const input = h('input', { type: 'file', accept: m.name.match(/\.\w+$/)[0], onchange: async (e) => {
+						const f = e.target.files[0];
+						if (!f) return;
+						try {
+							const bytes = new Uint8Array(await f.arrayBuffer());
+							let bin = '';
+							for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+							await api('POST', 'media', { name: f.name, data: btoa(bin), replace: m.name });
+							await reload();
+							toast(m.usedIn.length ? `Reemplazada en ${m.usedIn.length} lugar(es)` : 'Reemplazada');
+						} catch (err) { toast(err.message, true); }
+					} });
+					input.click();
+				} }, 'Reemplazar…'),
+				h('button', { onclick: async () => {
+					const to = prompt(`Nuevo nombre para «${m.name}». ${m.usedIn.length ? `Se actualiza en los ${m.usedIn.length} lugar(es) donde se usa.` : ''}`, m.name);
+					if (!to || to === m.name) return;
+					try { await api('POST', `rename-media/${m.name}`, { to }); await reload(); toast('Renombrada'); } catch (err) { toast(err.message, true); }
+				} }, 'Renombrar…'),
 				h('button.danger', { onclick: async () => {
 					if (!confirm(m.usedIn.length ? `«${m.name}» se usa en ${m.usedIn.length} lugar(es); ahí va a quedar una imagen rota. ¿Borrarla igual?` : `¿Borrar «${m.name}»?`)) return;
 					await api('DELETE', `media/${m.name}`);
@@ -565,40 +897,88 @@ function mediaView() {
 	return [list, editor, null];
 }
 
-// ---------- Fixed texts of the site (content/texts.json): one row per text, Spanish and English side by side.
+// ---------- Fixed texts of the site (content/texts.json), and a landing's (content/landings/<slug>.json, from Páginas).
+// Visual editing, Storyblok style: click a text in the preview and its field opens here; type and the page changes live.
+// Texts the page doesn't show (alt texts, other pages' texts) stay in the list below.
+let onPage = null, onlyPage = true; // keys the preview found on its page; null until it answers
+const textKeys = (o, path = []) => Object.entries(o).flatMap(([k, v]) => {
+	const p = [...path, k];
+	if (p.join('.') === 'dateLocale') return []; // a setting, not a text: breaking it breaks every date
+	return v && typeof v === 'object' ? textKeys(v, p) : [p.join('.')];
+});
+const frame = () => (pane && !pane.hidden ? pane.querySelector('iframe').contentWindow : null);
+// The preview asks for texts on every page load, also when you follow a link inside it.
+function sendTexts() {
+	const f = frame();
+	if (!f) return;
+	onPage = null;
+	// Site texts, a page's blocks, or (anywhere else) nothing, which takes the outlines off.
+	if (view === 'pages' && draft?.blocks) return f.postMessage({ type: 'edit', texts: blockTexts(), blocks: true }, S.site);
+	const editing = draft && view === 'texts';
+	f.postMessage({ type: 'edit', texts: editing ? Object.fromEntries(textKeys(draft[lang]).map((k) => [k, get(draft[lang], k)])) : {} }, S.site);
+}
+addEventListener('message', (e) => {
+	if (e.origin !== S?.site) return;
+	if (e.data === 'site-ready') sendTexts();
+	else if (e.data?.type === 'marked') {
+		onPage = new Set(e.data.keys);
+		filterRows();
+		// After a reload, keep the block being edited in view.
+		if (view === 'pages' && openBlock) frame()?.postMessage({ type: 'block', id: openBlock }, S.site);
+	}
+	else if (e.data?.type === 'select') view === 'pages' ? openFromPreview(e.data.keys[0].split('.')[0], e.data.keys[0]) : pickRow(e.data.keys[0]);
+	else if (e.data?.type === 'block') openFromPreview(e.data.id);
+});
+function filterRows() {
+	const q = $('#find')?.value.toLowerCase() ?? '';
+	for (const r of document.querySelectorAll('.text-row')) {
+		const k = r.dataset.key, v = r.querySelector('input,textarea').value.toLowerCase();
+		r.hidden = (onlyPage && onPage && !onPage.has(k)) || (!!q && !k.toLowerCase().includes(q) && !v.includes(q));
+	}
+	const n = $('#on-page');
+	if (n) n.textContent = onPage ? `${onPage.size} en esta página` : 'buscando en la página…';
+}
+function pickRow(key) {
+	if (full) { full = false; render(); } // a text clicked in the full-width preview: back to its field
+	const r = document.querySelector(`.text-row[data-key="${CSS.escape(key)}"]`);
+	if (!r) return;
+	document.querySelectorAll('.text-row.on').forEach((x) => x.classList.remove('on'));
+	r.hidden = false;
+	r.classList.add('on');
+	r.scrollIntoView({ block: 'center', behavior: 'smooth' });
+	r.querySelector('input,textarea').focus({ preventScroll: true });
+}
 function textsView() {
+	const landing = null;
 	draft ??= clone(S.texts);
-	const rows = [];
-	const walk = (es, en, path) => {
-		for (const k of Object.keys(es)) {
-			const p = [...path, k];
-			if (p.join('.') === 'dateLocale') continue; // a setting, not a text: breaking it breaks every date
-			if (es[k] && typeof es[k] === 'object') walk(es[k], en[k], p);
-			else rows.push(p);
-		}
-	};
-	walk(draft.es, draft.en, []);
-	const find = h('input', { type: 'search', placeholder: 'Buscar un texto…', 'aria-label': 'Buscar un texto', oninput: () => {
-		const q = find.value.toLowerCase();
-		for (const r of document.querySelectorAll('.text-row')) r.hidden = !!q && !r.textContent.toLowerCase().includes(q) && ![...r.querySelectorAll('input,textarea')].some((i) => i.value.toLowerCase().includes(q));
-	} });
+	const other = lang === 'es' ? 'en' : 'es';
 	const save = async () => {
-		await api('PUT', 'texts', draft);
+		await api('PUT', landing ? `landing/${landing}` : 'texts', draft);
 		dirty = false; draft = null;
 		await reload();
 		toast('Guardado');
 	};
-	const input = (l, p) => {
-		const v = String(get(draft[l], p.join('.')) ?? '');
-		const attrs = { value: v, 'aria-label': `${p.join('.')} (${l})`, oninput: (e) => set(draft[l], p.join('.'), e.target.value) };
-		return v.length > 60 ? h('textarea', { ...attrs, rows: 2 }) : h('input', attrs);
+	const row = (key) => {
+		const v = String(get(draft[lang], key) ?? '');
+		const attrs = { value: v, 'aria-label': key, placeholder: String(get(draft[other], key) ?? ''),
+			oninput: (e) => { set(draft[lang], key, e.target.value); frame()?.postMessage({ type: 'update', key, value: e.target.value }, S.site); },
+			onfocus: () => frame()?.postMessage({ type: 'select', key }, S.site) };
+		return h('div.text-row', { 'data-key': key },
+			h('div.hint', {}, key.split('.').join(' › '), untranslated({ [lang]: v, [other]: get(draft[other], key) }) && missing()),
+			v.length > 60 || /<\w/.test(v) ? h('textarea', { ...attrs, rows: Math.min(6, Math.ceil(v.length / 70) + 1) }) : h('input', attrs));
 	};
 	const editor = h('div.editor', {},
-		h('div.bar', {}, h('h1.grow', {}, 'Textos del sitio'), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
-		h('p.hint', {}, 'Títulos, menú, botones y avisos fijos, en los dos idiomas. Los textos de cada juego se editan en su ficha.'),
-		find,
-		rows.map((p) => h('div.text-row', {}, h('div.hint', {}, p.join(' › ')), h('div.two', {}, input('es', p), input('en', p)))));
-	return [h('div.list', {}, h('div.empty', {}, 'Buscá por palabra, en cualquiera de los dos idiomas. El primer pantallazo de la home: heroTitle y heroIntro.')), editor, `/${lang}/`];
+		h('div.bar', {}, h('h1.grow', {}, landing ? `Landing /${landing}/` : 'Textos del sitio'), h('span.tag', {}, LANGS[lang]), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
+		h('p.hint', {}, preview
+			? 'Hacé clic en un texto de la vista previa para editarlo acá; mientras escribís, la página cambia. Podés navegar el sitio dentro de la vista previa.'
+			: 'Abrí la vista previa para elegir los textos haciendo clic en la página.',
+			landing && ` La estructura y el diseño de esta landing están en el código (src/pages/[lang]/${landing}.astro). Algunos textos llevan HTML simple como <em>.`),
+		h('div.bar', {},
+			h('input.grow', { id: 'find', type: 'search', placeholder: 'Buscar un texto…', 'aria-label': 'Buscar un texto', oninput: filterRows, style: 'flex:1 1 200px;width:auto' }),
+			preview && h('label.check', {}, h('input', { type: 'checkbox', checked: onlyPage, onchange: (e) => { onlyPage = e.target.checked; filterRows(); } }), 'Solo los de esta página', h('span.hint', { id: 'on-page' }))),
+		textKeys(draft[lang]).map(row));
+	queueMicrotask(filterRows);
+	return [h('div.list', {}, h('div.empty', {}, landing ? 'Textos de la landing.' : 'Lo que no se ve en la página (textos alternativos de imágenes, otras páginas) aparece al destildar «Solo los de esta página», o buscándolo.')), editor, landing ? `/${lang}/${landing}/` : `/${lang}/`];
 }
 
 // ---------- Site: contact links and wikis
@@ -641,7 +1021,8 @@ function fileName(p) {
 	if ((m = p.match(/^content\/games\/(.+)\.json$/))) return `${game(m[1])} · tu ficha`;
 	if ((m = p.match(/^content\/store\/(.+)\.json$/))) return `${game(m[1])} · datos de la tienda`;
 	if ((m = p.match(/^public\/games\/([^/]+)\/(.+)$/))) return `${game(m[1])} · imagen ${m[2]}`;
-	if ((m = p.match(/^content\/(blog|pages)\/(es|en)\/(.+)\.md$/))) return `${m[1] === 'blog' ? 'Post' : 'Página'} «${doc(m[1], m[3]) ?? m[3]}» (${m[2]})`;
+	if ((m = p.match(/^content\/(blog|pages)\/(es|en)\/(.+)\.md$/))) return `${m[1] === 'blog' ? 'Post' : 'Página'} «${(m[1] === 'blog' && doc(m[1], m[3])) || m[3]}» (${m[2]})`;
+	if ((m = p.match(/^content\/pages\/(.+)\.json$/))) return m[1] === 'home' ? 'Página de inicio' : `Página «${(S.pages[m[1]] && pageTitle(S.pages[m[1]])) || m[1]}»`;
 	if ((m = p.match(/^public\/media\/(.+)$/))) return `Medios · ${m[1]}`;
 	return { 'content/texts.json': 'Textos del sitio', 'content/sources.json': 'Lista de juegos y proyectos', 'content/profile.json': 'Links de contacto' }[p] ?? p;
 }
@@ -704,7 +1085,17 @@ function historyView() {
 // What's worth a look before publishing; none of it blocks.
 function warnings() {
 	const w = [];
-	for (const kind of ['blog', 'pages']) for (const d of S[kind]) {
+	for (const [slug, p] of Object.entries(S.pages)) {
+		const name = slug === 'home' ? 'Inicio' : `Página «${pageTitle(p) || slug}»`;
+		const open = () => go('pages', slug);
+		if (p.draft) w.push([`${name}: es borrador, no se publica`, open]);
+		// Translated texts filled in one language only, anywhere in its blocks.
+		let half = 0;
+		const walk = (o) => { if (Array.isArray(o)) return o.forEach(walk); if (!o || typeof o !== 'object') return; if ('es' in o && 'en' in o && typeof o.es === 'string') { if (!!o.es.trim() !== !!o.en.trim()) half++; return; } Object.values(o).forEach(walk); };
+		walk(p.blocks);
+		if (half) w.push([`${name}: ${half} texto(s) en un solo idioma`, open]);
+	}
+	for (const kind of ['blog']) for (const d of S[kind]) {
 		const m = (d.es ?? d.en).data;
 		const name = `${kind === 'blog' ? 'Post' : 'Página'} «${m.title}»`;
 		const open = () => go(kind, d.slug);
@@ -758,6 +1149,7 @@ function publishView() {
 	return [h('div.list', {}, h('div.empty', {}, 'Guardar escribe los archivos en tu equipo. Publicar los sube.')), editor, null];
 }
 
+try { const pw = Number(localStorage.getItem('pw')); if (pw) $('#app').style.setProperty('--pw', `min(${pw}px, calc(100vw - 820px))`); } catch {}
 reload().catch((e) => { document.body.textContent = `No pude leer el contenido: ${e.message}`; });
 </script>
 </body>

@@ -1,0 +1,59 @@
+---
+import Head from './Head.astro';
+import Shot from './Shot.astro';
+import Copy from './Copy.astro';
+import Card from './Card.astro';
+import type { Lang } from '../i18n';
+import { tx, img, link, pill, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const items = (b.items ?? []) as Item[];
+const commands = (b.commands ?? []) as Item[];
+const buttons = (b.buttons ?? []) as Item[];
+const id = `h-${b.id}`;
+const side = !!img(b.image, lang);
+---
+
+<section id={b.anchor || undefined} class="ga-section" aria-labelledby={tx(b.heading, lang) ? id : undefined}>
+	<Head b={b} lang={lang} id={id} />
+	{
+		b.style === 'rules' ? (
+			<div class="ga-rules">{items.map((x) => <div class="ga-rule"><b>{tx(x.title, lang)}</b><span set:html={tx(x.text, lang)} /></div>)}</div>
+		) : (
+			<Fragment>
+				{side ? (
+					<div class="ga-modes">
+						<Shot b={b} lang={lang} class="ga-perm" />
+						<div class="ga-tools ga-playtest">{items.map((x) => <Card x={x} lang={lang} />)}</div>
+					</div>
+				) : (
+					<div class:list={['ga-tools', { 'ga-skills': b.style === 'grid-mono' }]}>{items.map((x) => <Card x={x} lang={lang} />)}</div>
+				)}
+			</Fragment>
+		)
+	}
+	{
+		tx(b.asideHeading, lang) && (
+			<div class="ga-supervisor">
+				<h3>{tx(b.asideHeading, lang)}</h3>
+				<p set:html={tx(b.asideText, lang)} />
+			</div>
+		)
+	}
+	{
+		(commands.length > 0 || buttons.length > 0) && (
+			<div class="ga-get">
+				<div class="ga-cmds">
+					{commands.map((c) => (
+						<div class="ga-cmd">
+							<span class="small">{tx(c.label, lang)}</span>
+							<Copy command={c.command} lang={lang} />
+						</div>
+					))}
+				</div>
+				{buttons.map((x) => <a class={pill(x.style)} href={link(x.url, lang)}>{tx(x.label, lang)}</a>)}
+			</div>
+		)
+	}
+	{tx(b.note, lang) && <p class="small ga-fine" set:html={tx(b.note, lang)} />}
+</section>

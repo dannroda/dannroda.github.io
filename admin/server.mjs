@@ -8,6 +8,7 @@ import { extname, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { markdownToHtml } from 'satteri';
 import { shortcodePlugin, shortcodes, markdownFeatures } from '../src/shortcodes.mjs';
+import { blocks as blockLibrary, blockTypes } from '../src/blocks/schema.mjs';
 
 const PORT = Number(process.env.ADMIN_PORT ?? 4322);
 const SITE = Number(process.env.SITE_PORT ?? 4321);
@@ -16,7 +17,7 @@ const at = (...p) => resolve(root, ...p);
 const langs = ['es', 'en'];
 const slugRe = /^[a-z0-9][a-z0-9-]*$/;
 // Paths the site already serves under /<lang>/.
-const reserved = ['blog', 'games', 'wiki', 'links', 'rss.xml', 'godot-agent', 'admin-preview'];
+const reserved = ['blog', 'games', 'wiki', 'links', 'rss.xml', 'admin-preview', 'admin-draft', 'home'];
 // Every write and command needs it, so another site open in the browser can't drive this server.
 const token = randomBytes(16).toString('hex');
 const run = promisify(execFile);
@@ -92,15 +93,17 @@ async function state() {
 			store: { source: s.source, id: s.id, url: s.url, title: s.title, cover: s.local_images?.cover, text: s.short ?? { en: s.description ?? '', es: '' }, jam: s.jam?.name ?? null, synced_at: s.synced_at }
 		});
 	}
-	// Landing pages: the site's own fixed pages plus the ones made here.
-	const fixed = (await ls('src/pages/[lang]')).filter((f) => f.endsWith('.astro') && !f.startsWith('[') && f !== 'index.astro').map((f) => f.slice(0, -6));
+	// The site's own fixed pages (links), beside the block pages.
+	const fixed = (await ls('src/pages/[lang]')).filter((f) => f.endsWith('.astro') && !f.startsWith('[') && !f.startsWith('admin-') && f !== 'index.astro').map((f) => f.slice(0, -6));
 	const { stdout: changes } = await run('git', ['status', '--porcelain', '--untracked-files=all', '--', 'content', 'public'], { cwd: root });
 	return {
 		games,
 		sources: await readJson('content/sources.json'),
 		profile: await readJson('content/profile.json'),
 		blog: await docs('blog'),
-		pages: await docs('pages'),
+		// content/pages/<slug>.json, built from blocks; home is the home page.
+		pages: Object.fromEntries(await Promise.all((await ls('content/pages')).filter((f) => f.endsWith('.json')).map(async (f) => [f.slice(0, -5), await readJson(`content/pages/${f}`)]))),
+		blocks: blockLibrary,
 		fixedPages: fixed,
 		texts: await readJson('content/texts.json'),
 		media: await media(),
@@ -187,6 +190,13 @@ async function restore(sha, path) {
 	}
 }
 
+// Texts read by the site's code (content/texts.json): only values change here, never the keys.
+async function saveTexts(file, body) {
+	const keys = (o, p = '') => Object.entries(o).flatMap(([k, v]) => (v && typeof v === 'object' && !Array.isArray(v) ? keys(v, `${p}${k}.`) : [`${p}${k}`])).sort().join();
+	if (keys(body) !== keys(await readJson(file))) throw new Error('Los textos no tienen las mismas claves que el sitio');
+	await writeJson(file, body);
+}
+
 const routes = {
 	'GET state': () => state(),
 	'PUT game': async (slug, body) => {
@@ -202,10 +212,31 @@ const routes = {
 	'PUT sources': (_, body) => writeJson('content/sources.json', body),
 	'PUT profile': (_, body) => writeJson('content/profile.json', body),
 	'PUT blog': (slug, body) => saveDoc('blog', slug, body),
-	'PUT pages': (slug, body) => saveDoc('pages', slug, body),
+	'PUT page': async (slug, body) => {
+		if (!slugRe.test(slug) || (slug !== 'home' && reserved.includes(slug))) throw new Error('Ese nombre ya es una ruta del sitio');
+		if (!Array.isArray(body?.blocks) || body.blocks.some((b) => !blockTypes.includes(b?.type) || !b.id)) throw new Error('Un bloque no es de ningún tipo conocido');
+		await writeJson(`content/pages/${slug}.json`, body);
+	},
+	// The page being edited, unsaved, for the preview (src/pages/[lang]/admin-draft.astro).
+	'POST draft': async (_, body) => {
+		await mkdir(at('.astro'), { recursive: true });
+		await writeFile(at('.astro/admin-draft.json'), JSON.stringify(body));
+	},
 	'DELETE blog': (slug, _, q) => removeDoc('blog', slug, q.get('lang')),
-	'DELETE pages': (slug, _, q) => removeDoc('pages', slug, q.get('lang')),
-	'POST media': async (_, { name, data }) => {
+	'DELETE page': async (slug) => {
+		if (!slugRe.test(slug) || slug === 'home') throw new Error('La página de inicio no se borra');
+		await rm(at(`content/pages/${slug}.json`));
+	},
+	'POST media': async (_, { name, data, replace }) => {
+		// Replace: new picture, same file, so every page using it shows the new one.
+		if (replace) {
+			if (!/^[a-z0-9][a-z0-9.-]*$/.test(replace)) throw new Error('Nombre inválido');
+			if (extname(replace).toLowerCase() !== extname(String(name)).toLowerCase().replace('.jpeg', '.jpg') && extname(replace).toLowerCase() !== extname(String(name)).toLowerCase())
+				throw new Error(`El reemplazo tiene que ser del mismo tipo (${extname(replace)})`);
+			await stat(at('public/media', replace));
+			await writeFile(at('public/media', replace), Buffer.from(data, 'base64'));
+			return { url: `/media/${replace}` };
+		}
 		const clean = String(name).toLowerCase().replace(/[^a-z0-9.-]+/g, '-').replace(/^[-.]+/, '');
 		if (!/\.(png|jpe?g|gif|webp|svg)$/.test(clean)) throw new Error('Solo imágenes png, jpg, gif, webp o svg');
 		await mkdir(at('public/media'), { recursive: true });
@@ -215,12 +246,7 @@ const routes = {
 		await writeFile(at('public/media', file), Buffer.from(data, 'base64'));
 		return { url: `/media/${file}` };
 	},
-	'PUT texts': async (_, body) => {
-		// Only values change here: the keys are what the site's code reads.
-		const keys = (o, p = '') => Object.entries(o).flatMap(([k, v]) => (v && typeof v === 'object' && !Array.isArray(v) ? keys(v, `${p}${k}.`) : [`${p}${k}`])).sort().join();
-		if (keys(body) !== keys(await readJson('content/texts.json'))) throw new Error('Los textos no tienen las mismas claves que el sitio');
-		await writeJson('content/texts.json', body);
-	},
+	'PUT texts': (_, body) => saveTexts('content/texts.json', body),
 	'POST render': (_, { md, kind, lang }) => {
 		try {
 			// A path like the real file's, so shortcodes link in the right language.
@@ -230,18 +256,33 @@ const routes = {
 			return { error: e.message };
 		}
 	},
+	// Rename a picture and every reference to it under content/.
+	'POST rename-media': async (name, { to }) => {
+		const clean = String(to ?? '').toLowerCase().replace(/[^a-z0-9.-]+/g, '-').replace(/^[-.]+/, '');
+		if (!/^[a-z0-9][a-z0-9.-]*$/.test(name) || !clean) throw new Error('Nombre inválido');
+		const target = extname(clean) ? clean : clean + extname(name);
+		if (extname(target).toLowerCase() !== extname(name).toLowerCase()) throw new Error(`Tiene que seguir siendo ${extname(name)}`);
+		if (await stat(at('public/media', target)).then(() => true, () => false)) throw new Error(`Ya existe ${target}`);
+		await rename(at('public/media', name), at('public/media', target));
+		for (const f of await contentFiles()) {
+			const text = await readFile(at(f), 'utf8');
+			if (text.includes(`/media/${name}`)) await writeFile(at(f), text.split(`/media/${name}`).join(`/media/${target}`));
+		}
+		return { url: `/media/${target}` };
+	},
 	'DELETE media': async (name) => {
 		if (!/^[a-z0-9][a-z0-9.-]*$/.test(name)) throw new Error('Nombre inválido');
 		await rm(at('public/media', name));
 	},
 	'POST rename': async (path, { to }) => {
 		const [kind, slug] = path.split('/');
-		if (!['blog', 'pages'].includes(kind) || !slugRe.test(slug)) throw new Error('Nombre inválido');
+		if (!['blog', 'pages'].includes(kind) || !slugRe.test(slug) || slug === 'home') throw new Error('Nombre inválido');
 		if (!slugRe.test(to ?? '')) throw new Error('El nombre nuevo solo puede tener minúsculas, números y guiones');
 		if (kind === 'pages' && reserved.includes(to)) throw new Error(`/${to}/ ya es una página del sitio`);
-		const exists = await Promise.all(langs.map((l) => stat(at(`content/${kind}/${l}/${to}.md`)).then(() => true, () => false)));
+		const file = (s, l) => (kind === 'pages' ? `content/pages/${s}.json` : `content/blog/${l}/${s}.md`);
+		const exists = await Promise.all(langs.map((l) => stat(at(file(to, l))).then(() => true, () => false)));
 		if (exists.some(Boolean)) throw new Error(`Ya existe /${to}/`);
-		for (const l of langs) await rename(at(`content/${kind}/${l}/${slug}.md`), at(`content/${kind}/${l}/${to}.md`)).catch((e) => { if (e.code !== 'ENOENT') throw e; });
+		for (const l of kind === 'pages' ? ['es'] : langs) await rename(at(file(slug, l)), at(file(to, l))).catch((e) => { if (e.code !== 'ENOENT') throw e; });
 		// A game whose landing is this page follows it.
 		if (kind === 'pages')
 			for (const f of await ls('content/games')) {
@@ -303,10 +344,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 		const again = parseMd(writeMd({ data: { ...p.data, title: 'Dice: "hola" #1' }, body: p.body }));
 		console.assert(again.data.title === 'Dice: "hola" #1' && again.data.date === '2026-10-21' && again.data.tags.length === 2 && again.body.trim() === 'Hola `x`.', again);
 	}
+	// The site itself, for the preview pane. --ignore-lock: Astro otherwise refuses a second dev server, and the preview
+	// would silently show whatever other one runs on its port.
+	const astro = spawn(at('node_modules/.bin/astro'), ['dev', '--port', String(SITE), '--ignore-lock'], { cwd: root, stdio: 'inherit' });
+	const stop = (code = 0) => { astro.kill(); process.exit(code); };
+	process.on('SIGINT', () => stop());
+	process.on('SIGTERM', () => stop());
+	server.on('error', (e) => {
+		console.error(e.code === 'EADDRINUSE' ? `\n  The admin is already running at http://localhost:${PORT}/ (or something else uses that port; set ADMIN_PORT).\n` : e);
+		stop(1);
+	});
 	server.listen(PORT, '127.0.0.1', () => console.log(`\n  Admin: http://localhost:${PORT}/\n  Sitio: http://localhost:${SITE}/\n`));
-	// The site itself, for the preview pane; it reloads on its own when a file under content/ changes.
-	const astro = spawn(at('node_modules/.bin/astro'), ['dev', '--port', String(SITE)], { cwd: root, stdio: 'inherit' });
-	const stop = () => { astro.kill(); process.exit(0); };
-	process.on('SIGINT', stop);
-	process.on('SIGTERM', stop);
 }

@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { blockTypes } from './blocks/schema.mjs';
 
 const i18n = z.object({ en: z.string().nullable(), es: z.string().nullable() });
 const images = z.object({ cover: z.string().nullable(), trailer: z.string().nullable().optional(), screenshots: z.array(z.string()) });
@@ -92,15 +93,20 @@ const blog = defineCollection({
 	})
 });
 
-// content/pages/<lang>/<slug>.md, from the admin: landing pages and anything else that is not a post. Served at /<lang>/<slug>/.
+// content/pages/<slug>.json: pages built from blocks in the admin, both languages in one file. home.json is the
+// home page (/<lang>/); the rest are served at /<lang>/<slug>/. Each block's fields: src/blocks/schema.mjs.
+const tr = z.object({ es: z.string().default(''), en: z.string().default('') }).partial().default({});
 const pages = defineCollection({
-	loader: glob({ pattern: '*/*.md', base: './content/pages' }),
+	loader: glob({ pattern: '*.json', base: './content/pages' }),
 	schema: z.object({
-		title: z.string(),
-		description: z.string().optional(),
+		title: tr,
+		description: tr,
 		// a game or project's file name; its page then links here
 		project: z.string().nullish(),
-		draft: z.boolean().default(false)
+		// site-relative picture for link previews
+		image: z.string().nullish(),
+		draft: z.boolean().default(false),
+		blocks: z.array(z.object({ id: z.string(), type: z.enum(blockTypes) }).passthrough()).default([])
 	})
 });
 

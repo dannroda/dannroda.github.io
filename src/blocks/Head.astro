@@ -1,0 +1,16 @@
+---
+// The small label, heading and intro above a section.
+import type { Lang } from '../i18n';
+import { tx, type Item } from './util';
+const { b, lang, id } = Astro.props as { b: Item; lang: Lang; id: string };
+---
+
+{
+	(tx(b.eyebrow, lang) || tx(b.heading, lang) || tx(b.intro, lang)) && (
+		<div class="ga-head">
+			{tx(b.eyebrow, lang) && <span class="ga-eyebrow">{tx(b.eyebrow, lang)}</span>}
+			{tx(b.heading, lang) && <h2 id={id}>{tx(b.heading, lang)}</h2>}
+			{tx(b.intro, lang) && <p set:html={tx(b.intro, lang)} />}
+		</div>
+	)
+}

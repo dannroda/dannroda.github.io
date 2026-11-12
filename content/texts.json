@@ -25,7 +25,6 @@
       ]
     },
     "published": "Juegos publicados",
-    "jams": "Game jams",
     "other": "Otros juegos",
     "allOnItch": "Todos en itch.io",
     "details": "Ver ficha",
@@ -76,7 +75,6 @@
     "draft": "Borrador",
     "projects": "Proyectos",
     "projectsSub": "Herramientas para Godot, apps y experimentos",
-    "labIntro": "Experimentos hechos casi enteros con IA. Útiles o divertidos, sin garantías.",
     "language": "Lenguaje",
     "license": "Licencia",
     "version": "Versión",
@@ -94,7 +92,6 @@
     "menu": "Menú",
     "heroRole": "Hago juegos y herramientas en Godot",
     "heroLine": "DTO en los créditos de las jams. Programo en GDScript y C++, y cada trabajo dice cuánta IA lleva.",
-    "workTitle": "Trabajos",
     "tools": "Con qué trabajo",
     "contact": "Contacto",
     "writeMe": "Escribime",
@@ -108,7 +105,6 @@
     "filterAi": "Con IA",
     "jamsHeading": "Jams: un fin de semana, un juego",
     "entries": "Entradas",
-    "labEmpty": "Todavía no hay nada acá.",
     "projectPage": "Página del proyecto",
     "wiki": "Wiki",
     "wikiPages": "Páginas",
@@ -137,9 +133,6 @@
     "follow": "Seguir",
     "languageLabel": "Idioma",
     "top": "Arriba",
-    "heroTitle": "Hago juegos en Godot.",
-    "heroIntro": "Soy Daniel Rodriguez Aires, DTO en los créditos de las jams. Hago juegos, jams y herramientas para el editor en GDScript y C++, desde Argentina. Cada trabajo dice cuánta IA lleva.",
-    "seeWork": "Ver los trabajos",
     "previous": "Anterior",
     "next": "Siguiente",
     "works": "trabajos",
@@ -153,9 +146,10 @@
     "filterVibe": "Vibe-coded",
     "filterGroup": "Mostrar trabajos según el uso de IA",
     "emptyFilter": "Nada con este filtro.",
-    "jamsLead": "Un fin de semana, un juego. El resultado es el que publica cada jam.",
     "contactTitle": "¿Hacemos algo?",
-    "dateLocale": "es-AR"
+    "dateLocale": "es-AR",
+    "copy": "Copiar",
+    "copied": "Copiado"
   },
   "en": {
     "tagline": "I make games and tools in Godot",
@@ -183,7 +177,6 @@
       ]
     },
     "published": "Released games",
-    "jams": "Game jams",
     "other": "Other games",
     "allOnItch": "All on itch.io",
     "details": "Details",
@@ -234,7 +227,6 @@
     "draft": "Draft",
     "projects": "Projects",
     "projectsSub": "Godot tools, apps and experiments",
-    "labIntro": "Experiments made mostly with AI. Useful or fun, no guarantees.",
     "language": "Language",
     "license": "License",
     "version": "Version",
@@ -252,7 +244,6 @@
     "menu": "Menu",
     "heroRole": "I make games and tools in Godot",
     "heroLine": "DTO in jam credits. I code in GDScript and C++, and every work says how much AI went into it.",
-    "workTitle": "Work",
     "tools": "What I work with",
     "contact": "Contact",
     "writeMe": "Get in touch",
@@ -270,7 +261,6 @@
     "wiki": "Wiki",
     "wikiPages": "Pages",
     "wikiSource": "From the repo's docs, in their own language.",
-    "labEmpty": "Nothing here yet.",
     "about": "About",
     "aboutText": [
       "I am Daniel Rodriguez Aires, DTO in jam credits. From Argentina I make games in Godot and tools for its editor, in GDScript and in C++ with GDExtension.",
@@ -295,9 +285,6 @@
     "follow": "Follow",
     "languageLabel": "Language",
     "top": "Top",
-    "heroTitle": "I make games in Godot.",
-    "heroIntro": "I’m Daniel Rodriguez Aires, DTO in jam credits. I make games, jams and editor tools in GDScript and C++, from Argentina. Every work says how much AI went into it.",
-    "seeWork": "See the work",
     "previous": "Previous",
     "next": "Next",
     "works": "works",
@@ -311,8 +298,9 @@
     "filterVibe": "Vibe-coded",
     "filterGroup": "Show works by AI use",
     "emptyFilter": "Nothing with this filter.",
-    "jamsLead": "One weekend, one game. The result is the one each jam publishes.",
     "contactTitle": "Shall we make something?",
-    "dateLocale": "en-US"
+    "dateLocale": "en-US",
+    "copy": "Copy",
+    "copied": "Copied"
   }
 }

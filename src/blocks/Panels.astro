@@ -1,0 +1,22 @@
+---
+import type { Lang } from '../i18n';
+import { tx, img, size, type Item } from './util';
+
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+const panels = (b.panels ?? []) as Item[];
+---
+
+<section id={b.anchor || undefined} class="ga-section ga-pair">
+	{
+		panels.map((x) => (
+			<div class="ga-panel">
+				{tx(x.eyebrow, lang) && <span class="ga-eyebrow">{tx(x.eyebrow, lang)}</span>}
+				{tx(x.heading, lang) && <h3>{tx(x.heading, lang)}</h3>}
+				{tx(x.text, lang) && <p set:html={tx(x.text, lang)} />}
+				{img(x.image, lang) && <figure class="ga-shot"><img src={img(x.image, lang)} {...size(x, 'image', lang)} loading="lazy" alt={tx(x.imageAlt, lang)} /></figure>}
+				{tx(x.code, lang) && <pre class="ga-code" set:html={tx(x.code, lang)} />}
+				{tx(x.keys, lang) && <div class="ga-keys" set:html={tx(x.keys, lang)} />}
+			</div>
+		))
+	}
+</section>

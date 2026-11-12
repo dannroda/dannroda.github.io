@@ -1,0 +1,29 @@
+---
+// A command with a copy button. The script runs once however many there are on the page.
+import { t, type Lang } from '../i18n';
+const { command, lang } = Astro.props as { command: string; lang: Lang };
+---
+
+<div class="ga-cmd-row">
+	<code>{command}</code>
+	<button type="button" data-copy={t[lang].copy} data-copied={t[lang].copied}>{t[lang].copy}</button>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+		let reset: ReturnType<typeof setTimeout>;
+		button.addEventListener('click', async () => {
+			const code = button.previousElementSibling!;
+			try {
+				await navigator.clipboard.writeText(code.textContent ?? '');
+				button.textContent = button.dataset.copied!;
+				// A second click restarts the "copied" time instead of being cut short by the first one's timer.
+				clearTimeout(reset);
+				reset = setTimeout(() => { button.textContent = button.dataset.copy!; }, 1500);
+			} catch {
+				// No clipboard access: leave the command selected for Ctrl+C
+				getSelection()?.selectAllChildren(code);
+			}
+		});
+	});
+</script>

@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import AiTag from '../../../components/AiTag.astro';
-import { pages, slugOf } from '../../../posts';
+import { pages } from '../../../posts';
 import { games, list, storeName, isCard, repoOf, type Game } from '../../../games';
 import { t, url, langs, term, fmtDate, type Lang } from '../../../i18n';
 
@@ -49,9 +49,9 @@ const facts = [
 const synced = new Date(d.synced_at).toLocaleDateString(s.dateLocale, { dateStyle: 'long' });
 const entries = d.jam?.entries;
 // The project's own landing field wins over an admin page that names this project.
-const cmsLanding = (await pages(lang)).find((p) => p.data.project === game.id);
+const cmsLanding = (await pages()).find((p) => p.data.project === game.id);
 const ownLanding = own?.landing?.replace(/^\/+|\/+$/g, '');
-const landing = ownLanding?.startsWith('https://') ? ownLanding : ownLanding ? url(`/${lang}/${ownLanding}/`) : cmsLanding ? url(`/${lang}/${slugOf(cmsLanding.id)}/`) : null;
+const landing = ownLanding?.startsWith('https://') ? ownLanding : ownLanding ? url(`/${lang}/${ownLanding}/`) : cmsLanding ? url(`/${lang}/${cmsLanding.id}/`) : null;
 const repo = repoOf(game);
 const wiki = (await getCollection('wiki', (w) => w.data.wiki === game.id || w.data.repo.toLowerCase() === repo))[0]?.data.wiki;
 ---

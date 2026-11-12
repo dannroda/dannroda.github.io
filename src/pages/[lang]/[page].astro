@@ -1,38 +1,28 @@
 ---
-import { render } from 'astro:content';
+// Pages built from blocks in the admin: content/pages/<slug>.json, served at /<lang>/<slug>/.
 import Base from '../../layouts/Base.astro';
-import { pages, slugOf } from '../../posts';
+import Blocks from '../../components/Blocks.astro';
+import { pages } from '../../posts';
 import { games } from '../../games';
-import { url, other, langs, type Lang } from '../../i18n';
+import { langs, type Lang } from '../../i18n';
+import { tx } from '../../blocks/util';
 
 export async function getStaticPaths() {
-	// These names are already routes; an admin page with one of them would be silently shadowed.
-	const taken = ['blog', 'games', 'wiki', 'links', 'godot-agent', 'admin-preview'];
-	const titles = new Map((await games()).all.map((g) => [g.id, g.data.title]));
-	const paths = [];
-	for (const lang of langs) {
-		const translated = new Set((await pages(other(lang))).map((p) => slugOf(p.id)));
-		for (const page of await pages(lang)) {
-			const slug = slugOf(page.id);
-			if (taken.includes(slug)) throw new Error(`content/pages/${page.id}.md: "${slug}" is taken by the site, rename the page`);
-			if (page.data.project && !titles.has(page.data.project)) throw new Error(`content/pages/${page.id}.md: no game or project "${page.data.project}"`);
-			paths.push({ params: { lang, page: slug }, props: { page, project: titles.get(page.data.project ?? ''), translated: translated.has(slug) } });
-		}
+	// These names are already routes; a page with one of them would be silently shadowed.
+	const taken = ['blog', 'games', 'wiki', 'links', 'admin-preview', 'admin-draft'];
+	const ids = new Set((await games()).all.map((g) => g.id));
+	const list = await pages();
+	for (const page of list) {
+		if (taken.includes(page.id)) throw new Error(`content/pages/${page.id}.json: "${page.id}" is taken by the site, rename the page`);
+		if (page.data.project && !ids.has(page.data.project)) throw new Error(`content/pages/${page.id}.json: no game or project "${page.data.project}"`);
 	}
-	return paths;
+	return langs.flatMap((lang) => list.map((page) => ({ params: { lang, page: page.id }, props: { page } })));
 }
 
 const lang = Astro.params.lang as Lang;
-const { page, project, translated } = Astro.props;
-const { Content } = await render(page);
-const slug = slugOf(page.id);
+const { page } = Astro.props;
 ---
 
-<Base lang={lang} title={page.data.title} description={page.data.description} path={translated ? `${slug}/` : ''}>
-	<article class="section">
-		<h1 class="lede-h1">{page.data.title}</h1>
-		{page.data.description && <p class="sub">{page.data.description}</p>}
-		{page.data.project && <p class="pills"><a class="pill" href={url(`/${lang}/games/${page.data.project}/`)}>{project} →</a></p>}
-		<div class="prose"><Content /></div>
-	</article>
+<Base lang={lang} title={tx(page.data.title, lang)} description={tx(page.data.description, lang) || undefined} image={page.data.image || undefined} path={`${page.id}/`} mode="home">
+	<Blocks blocks={page.data.blocks} lang={lang} />
 </Base>

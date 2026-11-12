@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
+// Visual editing for the admin's preview; dev only, see the file.
+import adminEdit from '../admin-edit.js?raw';
 import { t, other, url, type Lang } from '../i18n';
 
 interface Props {
@@ -91,5 +93,6 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 				});
 			});
 		</script>
+		{import.meta.env.DEV && <script is:inline set:html={adminEdit} />}
 	</body>
 </html>

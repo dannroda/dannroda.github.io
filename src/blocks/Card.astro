@@ -1,0 +1,16 @@
+---
+// One card of a Cards block: title, text, then whichever of tags, command and link it has.
+import Copy from './Copy.astro';
+import type { Lang } from '../i18n';
+import { tx, link, words, type Item } from './util';
+const { x, lang } = Astro.props as { x: Item; lang: Lang };
+const tags = words(x.tags, lang);
+---
+
+<div class:list={['ga-tool', { 'ga-regressions': x.wide }]}>
+	<h3>{tx(x.title, lang)}</h3>
+	{tx(x.text, lang) && <p set:html={tx(x.text, lang)} />}
+	{tags.length > 0 && <div class="ga-names">{tags.map((n) => <span>{n}</span>)}</div>}
+	{x.command && <Copy command={x.command} lang={lang} />}
+	{link(x.linkUrl, lang) && <a class="small" href={link(x.linkUrl, lang)}>{tx(x.linkLabel, lang)} ↗</a>}
+</div>

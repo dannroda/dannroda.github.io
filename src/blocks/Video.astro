@@ -1,0 +1,10 @@
+---
+import { shortcodes } from '../shortcodes.mjs';
+import type { Lang } from '../i18n';
+import { tx, type Item } from './util';
+const { b, lang } = Astro.props as { b: Item; lang: Lang };
+// The ::youtube shortcode's own markup, so a video looks the same in a post and on a page.
+const html = b.url ? shortcodes.find((s) => s.name === 'youtube')!.render({ id: b.url }, {}) : '';
+---
+
+{html && <figure class="b-video"><Fragment set:html={html} />{tx(b.caption, lang) && <figcaption class="small">{tx(b.caption, lang)}</figcaption>}</figure>}

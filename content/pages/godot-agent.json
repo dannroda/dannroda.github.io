@@ -1,0 +1,1473 @@
+{
+  "title": {
+    "es": "Godot Agent Harness",
+    "en": "Godot Agent Harness"
+  },
+  "description": {
+    "es": "Tu agente de código, dentro del editor de Godot: Claude Code o cualquier agente ACP, con las herramientas del propio editor, deshacer y los permisos que elegís.",
+    "en": "Your coding agent, inside the Godot editor: Claude Code or any ACP agent, with the editor’s own tools, undo and permissions you choose."
+  },
+  "project": "",
+  "image": "/games/godot-agent/cover.png",
+  "draft": false,
+  "blocks": [
+    {
+      "id": "b1",
+      "type": "hero",
+      "layout": "stacked",
+      "title": {
+        "es": "Tu agente de código, <em>dentro</em> del editor de Godot.",
+        "en": "Your coding agent, <em>inside</em> the Godot editor."
+      },
+      "intro": {
+        "es": "Un addon de editor para Godot 4. El agente lee y edita escenas y scripts con las herramientas del propio editor, con deshacer, corre el juego y lo prueba. Cada cambio pasa por los permisos que elegís. Trabajá en varias sesiones a la vez, una por pestaña del dock, cada una con su agente y su cuenta. Gratis y con licencia MIT.",
+        "en": "An editor addon for Godot 4. The agent reads and edits scenes and scripts with the editor’s own tools, with undo, runs the game and tests it. Every change goes through permissions you choose. Run several sessions at once, one per dock tab, each with its own agent and account. Free and MIT licensed."
+      },
+      "buttons": [
+        {
+          "label": {
+            "es": "Descargar (GitHub)",
+            "en": "Download (GitHub)"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-agent/releases/latest",
+            "en": "https://github.com/dannroda/godot-agent/releases/latest"
+          },
+          "style": "primary"
+        },
+        {
+          "label": {
+            "es": "Leer la wiki",
+            "en": "Read the wiki"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-agent/wiki/Inicio",
+            "en": "https://github.com/dannroda/godot-agent/wiki"
+          },
+          "style": "plain"
+        }
+      ],
+      "game": "godot-agent",
+      "chips": [
+        {
+          "text": {
+            "es": "Claude Code",
+            "en": "Claude Code"
+          }
+        },
+        {
+          "text": {
+            "es": "cualquier agente ACP",
+            "en": "any ACP agent"
+          }
+        },
+        {
+          "text": {
+            "es": "GDScript y C#",
+            "en": "GDScript & C#"
+          }
+        }
+      ],
+      "side": "image",
+      "image": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/overview.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/overview.png"
+      },
+      "imageMobile": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/chat.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/chat.png"
+      },
+      "imageAlt": {
+        "es": "El editor de Godot con una escena de asteroides y el dock Agent: Claude Code planificó tres pasos, corrió cinco herramientas, mostró el diff de spawner.gd y conectó un contador de oleadas al HUD.",
+        "en": "The Godot editor with an asteroids scene and the Agent dock: Claude Code planned three steps, ran five tools, showed the diff of spawner.gd and wired a wave counter into the HUD."
+      },
+      "caption": {
+        "es": "Modo Construir en Godot 4.7.2: el plan, cada herramienta, el diff y la respuesta quedan en el dock, al lado de la escena que cambiaron.",
+        "en": "Build mode in Godot 4.7.2: the plan, each tool call, the diff and the answer stay in the dock, next to the scene they changed."
+      },
+      "imageSize": {
+        "es": [
+          1920,
+          1200
+        ],
+        "en": [
+          1920,
+          1200
+        ]
+      },
+      "imageMobileSize": {
+        "es": [
+          480,
+          1108
+        ],
+        "en": [
+          480,
+          1108
+        ]
+      }
+    },
+    {
+      "id": "b2",
+      "type": "table",
+      "anchor": "modes",
+      "eyebrow": {
+        "es": "godot.* · política de permisos",
+        "en": "godot.* · permission policy"
+      },
+      "heading": {
+        "es": "Cinco modos. Vos decidís qué puede tocar cada uno.",
+        "en": "Five modes. You decide what each one may touch."
+      },
+      "intro": {
+        "es": "Cada acción pertenece a un grupo, y cada grupo tiene una decisión por modo. Preguntar muestra una tarjeta con el diff; Denegar le explica al agente por qué. La matriz vive en <code>project_config.tres</code>, así que tu equipo la comparte.",
+        "en": "Every action belongs to a group, and each group has a decision per mode. Ask shows a card with the diff; Deny tells the agent why. The matrix lives in <code>project_config.tres</code>, so your team shares it."
+      },
+      "image": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/permission.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/permission.png"
+      },
+      "imageAlt": {
+        "es": "Un pedido de permiso en el dock Agent: editar player.gd, con el diff, y los botones para permitir una vez, denegar o permitir siempre en esta sesión.",
+        "en": "A permission request in the Agent dock: Edit player.gd, with the diff, and the buttons Allow once, Deny and Always allow in this session."
+      },
+      "caption": {
+        "es": "En Construir, una edición te espera arriba del composer, con su diff.",
+        "en": "In Build, an edit waits for you above the composer, with its diff."
+      },
+      "groupLabel": {
+        "es": "Grupo",
+        "en": "Group"
+      },
+      "columns": [
+        {
+          "name": {
+            "es": "Preguntar",
+            "en": "Ask"
+          },
+          "what": {
+            "es": "Responde sobre el proyecto. Solo lee.",
+            "en": "Answers about the project. Reads only."
+          }
+        },
+        {
+          "name": {
+            "es": "Revisar",
+            "en": "Review"
+          },
+          "what": {
+            "es": "Hallazgos como marcas en el Script Editor.",
+            "en": "Findings as marks in the Script Editor."
+          }
+        },
+        {
+          "name": {
+            "es": "Construir",
+            "en": "Build"
+          },
+          "what": {
+            "es": "Edita y corre, preguntando antes.",
+            "en": "Edits and runs, asking first."
+          }
+        },
+        {
+          "name": {
+            "es": "Auto",
+            "en": "Auto"
+          },
+          "what": {
+            "es": "Sin tarjetas para lo que se puede deshacer.",
+            "en": "No cards for what can be undone."
+          }
+        },
+        {
+          "name": {
+            "es": "One-shot",
+            "en": "One-shot"
+          },
+          "what": {
+            "es": "Un objetivo entero, con presupuestos.",
+            "en": "A whole goal, with budgets."
+          }
+        }
+      ],
+      "rows": [
+        {
+          "label": {
+            "es": "Leer y diagnósticos",
+            "en": "Read & diagnostics"
+          },
+          "cells": "allow, allow, allow, allow, allow"
+        },
+        {
+          "label": {
+            "es": "Editar escenas y archivos",
+            "en": "Edit scenes & files"
+          },
+          "cells": "deny, deny, ask, allow, allow"
+        },
+        {
+          "label": {
+            "es": "Correr el juego",
+            "en": "Run the game"
+          },
+          "cells": "deny, ask, ask, allow, allow"
+        },
+        {
+          "label": {
+            "es": "Comandos de shell",
+            "en": "Shell commands"
+          },
+          "cells": "deny, deny, ask, ask*, ask"
+        },
+        {
+          "label": {
+            "es": "Ajustes del proyecto y exportación",
+            "en": "Project settings & export"
+          },
+          "cells": "deny, deny, ask, allow, allow"
+        },
+        {
+          "label": {
+            "es": "Instalar desde el Asset Store",
+            "en": "Install from the Asset Store"
+          },
+          "cells": "deny, deny, ask, ask, ask"
+        }
+      ],
+      "allow": {
+        "es": "Permitir",
+        "en": "Allow"
+      },
+      "ask": {
+        "es": "Preguntar",
+        "en": "Ask"
+      },
+      "deny": {
+        "es": "Denegar",
+        "en": "Deny"
+      },
+      "note": {
+        "es": "* En Auto, los comandos de lectura y compilación de la lista permitida corren solos; <code>rm</code>, <code>git push</code>, <code>curl</code> y los instaladores siempre preguntan. En cualquier modo, escribir un <code>.tscn</code> a mano o un archivo del proyecto desde la shell se rechaza: las escenas solo cambian a través del editor.",
+        "en": "* In Auto, read-only and build commands on the allowlist run on their own; <code>rm</code>, <code>git push</code>, <code>curl</code> and installers always ask. In any mode, writing a <code>.tscn</code> by hand or a project file from the shell is rejected: scenes change only through the editor."
+      },
+      "imageSize": {
+        "es": [
+          480,
+          1108
+        ],
+        "en": [
+          480,
+          1108
+        ]
+      }
+    },
+    {
+      "id": "b3",
+      "type": "cards",
+      "anchor": "tools",
+      "eyebrow": {
+        "es": "MCP en 127.0.0.1",
+        "en": "MCP on 127.0.0.1"
+      },
+      "heading": {
+        "es": "Más de 70 herramientas. El agente usa Godot, no un editor de texto.",
+        "en": "70+ editor tools. The agent uses Godot, not a text editor."
+      },
+      "intro": {
+        "es": "Cada edición de escena es un paso del deshacer de Godot. Respeta los scripts abiertos y lo que no guardaste. Cuando el agente corre Godot desde la shell, usa el mismo binario que tu editor.",
+        "en": "Scene edits are steps in Godot’s own undo. Open scripts and unsaved buffers are respected. When the agent runs Godot from the shell, it uses the same binary as your editor."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Leer el proyecto",
+            "en": "Read the project"
+          },
+          "text": {
+            "es": "Árboles de escena con sus propiedades, un nodo en detalle, el estado del editor y la API de cualquier clase en tu versión exacta de Godot.",
+            "en": "Scene trees with non-default properties, one node in detail, editor state, and the API of any class in your exact Godot version."
+          },
+          "tags": {
+            "es": [
+              "scene_tree",
+              "get_node",
+              "class_info",
+              "search_api"
+            ],
+            "en": [
+              "scene_tree",
+              "get_node",
+              "class_info",
+              "search_api"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Editar escenas",
+            "en": "Edit scenes"
+          },
+          "text": {
+            "es": "Un subárbol entero en una llamada y un paso de deshacer. Si un ítem es inválido, no se crea nada.",
+            "en": "A whole subtree in one call and one undo step. Nothing is created if one item is invalid."
+          },
+          "tags": {
+            "es": [
+              "add_nodes",
+              "set_properties",
+              "reparent_node",
+              "connect_signal"
+            ],
+            "en": [
+              "add_nodes",
+              "set_properties",
+              "reparent_node",
+              "connect_signal"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Correr y mirar",
+            "en": "Run and look"
+          },
+          "text": {
+            "es": "Corre una escena con input simulado, lee los errores reales y captura frames. El input va por frame de física, así que la corrida se repite igual a cualquier framerate. Playtest contesta pasó, falló o no se pudo probar, con evidencia y video opcional.",
+            "en": "Run a scene with simulated input, read the real errors, capture frames. Input plays by physics frame, so a run reproduces at any framerate. Playtest answers passed, failed or could not test, with evidence and optional video."
+          },
+          "tags": {
+            "es": [
+              "run_scene",
+              "capture_game_frame",
+              "game_input",
+              "game_wait"
+            ],
+            "en": [
+              "run_scene",
+              "capture_game_frame",
+              "game_input",
+              "game_wait"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Verificar el trabajo",
+            "en": "Check the work"
+          },
+          "text": {
+            "es": "Valida scripts sin correr el juego, compila C# con dotnet y detecta cuerpos sin forma o tiles sin colisión. Compila tu GDExtension con SCons, CMake o Cargo, con los errores por archivo y línea, y la prueba en un Godot headless aparte, así un crash nunca tira abajo el editor.",
+            "en": "Parse scripts without running, build C# with dotnet, and catch bodies without shapes or tiles without collision. Build your GDExtension with SCons, CMake or Cargo, with errors by file and line, and test it in a separate headless Godot, so a crash never takes down the editor."
+          },
+          "tags": {
+            "es": [
+              "validate_scripts",
+              "validate_physics",
+              "validate_tilemap",
+              "get_errors",
+              "build_extension",
+              "test_extension"
+            ],
+            "en": [
+              "validate_scripts",
+              "validate_physics",
+              "validate_tilemap",
+              "get_errors",
+              "build_extension",
+              "test_extension"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "TileMaps y animación",
+            "en": "Tilemaps & animation"
+          },
+          "text": {
+            "es": "Convierte una textura en atlas, pinta terrenos y arma pistas de AnimationPlayer y SpriteFrames desde una hoja.",
+            "en": "Turn a texture into an atlas, paint terrains, build AnimationPlayer tracks and SpriteFrames from a sheet."
+          },
+          "tags": {
+            "es": [
+              "tileset_add_atlas",
+              "tilemap_paint_terrain",
+              "animation_set_track"
+            ],
+            "en": [
+              "tileset_add_atlas",
+              "tilemap_paint_terrain",
+              "animation_set_track"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Archivos y Asset Store",
+            "en": "Files & Asset Store"
+          },
+          "text": {
+            "es": "Mover conserva el uid y reescribe cada referencia <code>res://</code>. Los assets se instalan en <code>addons/</code> sin sobrescribir nada.",
+            "en": "Moves keep the uid and rewrite every <code>res://</code> reference. Assets install into <code>addons/</code> without overwriting."
+          },
+          "tags": {
+            "es": [
+              "move_file",
+              "create_resource",
+              "asset_search",
+              "asset_install"
+            ],
+            "en": [
+              "move_file",
+              "create_resource",
+              "asset_search",
+              "asset_install"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "Si una build tira el editor, vuelve atrás sola.",
+        "en": "A build that crashes the editor rolls back on its own."
+      },
+      "asideText": {
+        "es": "En proyectos que compilan una GDExtension, el editor puede abrirse bajo un supervisor. Si una build nueva lo hace crashear al arrancar, vuelve a la última build que arrancó bien, reabre el editor, y el agente sigue con el backtrace. El agente carga las builds nuevas con <code>restart_editor</code>.",
+        "en": "In projects that build a GDExtension, the editor can open under a supervisor. If a new build crashes it while starting, the supervisor puts back the last build that started fine, reopens the editor, and the agent goes on with the backtrace. The agent loads new builds with <code>restart_editor</code>."
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b4",
+      "type": "cards",
+      "anchor": "playtest",
+      "eyebrow": {
+        "es": "Modo Revisar · Playtest",
+        "en": "Review mode · Playtest"
+      },
+      "heading": {
+        "es": "Un veredicto solo cuenta si el agente jugó.",
+        "en": "A verdict only counts if the agent played."
+      },
+      "intro": {
+        "es": "Decile qué comprobar jugando. El agente corre el juego, manda input y captura frames, y contesta pasó, falló o no se pudo probar. No cambia el proyecto.",
+        "en": "Say what to check by playing. The agent runs the game, sends input and captures frames, then answers passed, failed or could not test. It doesn’t change the project."
+      },
+      "style": "grid",
+      "image": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/playtest.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/playtest.png"
+      },
+      "imageAlt": {
+        "es": "El dock Agent después de un playtest. Un veredicto que falló: los asteroides dejan de acelerar después de la oleada 3, con la evidencia, un game_set que puede haber cambiado el juego sin jugar, el detector con HUD.Wave en 12/10 y los pasos para reproducirlo. Arriba, el hallazgo con Mostrar en la escena, Verificar un arreglo y No es un bug.",
+        "en": "The Agent dock after a playtest. A failed verdict: asteroids stop getting faster after wave 3, with the evidence, a game_set that may have changed the game without playing, the detector’s HUD.Wave at 12/10 and the steps to reproduce it. Above, the finding with Show in the scene, Verify a fix and Not a bug."
+      },
+      "caption": {
+        "es": "Un veredicto que falló en el dock: la evidencia, lo que pudo cambiar sin jugar, lo que vieron los detectores y cómo reproducirlo.",
+        "en": "A failed verdict in the dock: the evidence, what may have changed without playing, what the detectors saw and how to reproduce it."
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Veredicto contrastado",
+            "en": "Checked verdict"
+          },
+          "text": {
+            "es": "Si no jugó, o si el veredicto depende de cómo se ve algo y no capturó ningún frame, cuenta como no se pudo probar. También lista lo que puede haber cambiado en el juego sin jugar.",
+            "en": "Without playing the game, or without a captured frame when the verdict depends on how something looks, it counts as could not test. It also lists what may have changed in the running game without playing."
+          },
+          "tags": {
+            "es": [
+              "game_set",
+              "game_call",
+              "game_script"
+            ],
+            "en": [
+              "game_set",
+              "game_call",
+              "game_script"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Detectores en el juego",
+            "en": "In-game detectors"
+          },
+          "text": {
+            "es": "Avisan de lo que el agente no estaba mirando, con una imagen del momento: transforms con NaN, cuerpos fuera del mundo, caídas largas, frames largos y un HUD por encima de su máximo.",
+            "en": "They report what the agent wasn’t looking at, with a picture of the moment: NaN transforms, bodies out of the world, long falls, long frames and a HUD past its maximum."
+          },
+          "tags": {
+            "es": [
+              "NaN",
+              "8 s cayendo",
+              "frame > 0,75 s",
+              "12/10"
+            ],
+            "en": [
+              "NaN",
+              "8 s falling",
+              "frame > 0.75 s",
+              "12/10"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Clics reales, frames exactos",
+            "en": "Real clicks, exact frames"
+          },
+          "text": {
+            "es": "Usa los menús con clics reales, sin adivinar píxeles. Puede jugar por turnos con frames de física exactos, o correr un script corto adentro del juego para reaccionar en el mismo frame.",
+            "en": "Menus are used with real clicks instead of guessed pixels. It can play turn by turn with exact physics frames, or run a short script inside the game to react in the same frame."
+          },
+          "tags": {
+            "es": [
+              "game_ui_act",
+              "game_step",
+              "game_script"
+            ],
+            "en": [
+              "game_ui_act",
+              "game_step",
+              "game_script"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Verificar, lograr, explorar",
+            "en": "Check, reach, explore"
+          },
+          "text": {
+            "es": "Verificá algo, pedile un objetivo o que recorra un nivel y diga qué se ve mal. Un error de script no termina la corrida: el juego sigue y el error queda en la lista.",
+            "en": "Verify something, reach a goal or go through a level and say what looks wrong. A script error doesn’t end the run: the game goes on and the error is listed."
+          },
+          "tags": {
+            "es": [
+              "pasó",
+              "falló",
+              "no se pudo probar",
+              "explorado"
+            ],
+            "en": [
+              "passed",
+              "failed",
+              "could not test",
+              "explored"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Hallazgos para actuar",
+            "en": "Findings to act on"
+          },
+          "text": {
+            "es": "Van al panel de hallazgos, y uno marcado como que no es un bug no vuelve. Repetí el último playtest tal cual, o reproducí la grabación en el editor.",
+            "en": "Findings go to the panel, and one marked as not a bug doesn’t come back. Run the last playtest again as it was, or play the recording in the editor."
+          },
+          "tags": {
+            "es": [
+              "Mostrar en la escena",
+              "Verificar un arreglo",
+              "No es un bug"
+            ],
+            "en": [
+              "Show in the scene",
+              "Verify a fix",
+              "Not a bug"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Memoria entre corridas",
+            "en": "Memory between runs"
+          },
+          "text": {
+            "es": "Los playtests guardan lo que verificaron de tu juego y qué archivos cambiaron desde entonces, para que el siguiente vuelva a comprobar lo que puede haber quedado viejo.",
+            "en": "Playtests keep what they verified about your game and which files changed since, so the next one rechecks what may be out of date."
+          },
+          "tags": {
+            "es": [
+              "res://.godot_agent/playtests/"
+            ],
+            "en": [
+              "res://.godot_agent/playtests/"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Regresiones sin gastar tokens",
+            "en": "Regressions without tokens"
+          },
+          "text": {
+            "es": "Un playtest que pasa deja un script que repite la comprobación. <b>Correr regresiones</b> en el panel de hallazgos los corre todos sin el agente y sin gastar tokens, y dice cuáles fallan. Para CI, commiteá <code>res://.godot_agent/playtests/regressions/</code> y corré:",
+            "en": "A playtest that passes leaves a script that repeats the check. <b>Run regressions</b> in the findings panel runs them all without the agent and without using tokens, and says which ones fail. For CI, commit <code>res://.godot_agent/playtests/regressions/</code> and run:"
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "godot --headless --path . --script res://addons/godot_agent/playtest/regression_cli.gd",
+          "linkLabel": {
+            "es": "Más en la wiki",
+            "en": "More in the wiki"
+          },
+          "linkUrl": {
+            "es": "https://github.com/dannroda/godot-agent/wiki/Revisar",
+            "en": "https://github.com/dannroda/godot-agent/wiki/Review"
+          },
+          "wide": true
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      },
+      "imageSize": {
+        "es": [
+          480,
+          1108
+        ],
+        "en": [
+          480,
+          1108
+        ]
+      }
+    },
+    {
+      "id": "b5",
+      "type": "steps",
+      "anchor": "oneshot",
+      "eyebrow": {
+        "es": "Pantalla One-shot · al lado de 2D / 3D / Script",
+        "en": "One-shot screen · next to 2D / 3D / Script"
+      },
+      "heading": {
+        "es": "Pedile un juego entero. Recibí una rama.",
+        "en": "Give it a whole game. Get a branch back."
+      },
+      "intro": {
+        "es": "«Un Pong de 2 jugadores con puntaje.» El agente escribe una spec, planifica, construye, prueba y reporta. Un evaluador aparte juega el resultado antes de darlo por terminado. Cada corrida se abre en su propia pestaña del dock. Nunca hace merge.",
+        "en": "“A 2-player Pong with score.” The agent writes a spec, plans, builds, playtests and reports. A separate evaluator plays the result before anything counts as done. Each run opens in its own dock tab. It never merges."
+      },
+      "steps": [
+        {
+          "title": {
+            "es": "Spec",
+            "en": "Spec"
+          },
+          "text": {
+            "es": "<code>spec.md</code>: mecánicas, ciclo de juego, dirección visual y qué significa «terminado». Sumá archivos de referencia (un GDD, arte conceptual, un boceto de nivel) y el agente los lee primero. Podés revisar la spec antes de que empiece.",
+            "en": "<code>spec.md</code>: mechanics, game loop, visual direction, what “done” means. Add reference files (a GDD, concept art, a level sketch) and the agent reads them first. You can review the spec before the build starts."
+          }
+        },
+        {
+          "title": {
+            "es": "Plan",
+            "en": "Plan"
+          },
+          "text": {
+            "es": "Tareas con su duración en vivo. Editá el plan mientras corre; el agente lo relee después de cada turno.",
+            "en": "Tasks with live durations. Edit the plan while it runs; the agent rereads it after each turn."
+          }
+        },
+        {
+          "title": {
+            "es": "Construir y verificar",
+            "en": "Build and verify"
+          },
+          "text": {
+            "es": "Edita, <code>run_scene</code>, mira capturas, lee errores y reporta checks como pass, fail o pending.",
+            "en": "Edit, <code>run_scene</code>, look at frames, read errors, report checks as pass, fail or pending."
+          }
+        },
+        {
+          "title": {
+            "es": "Checkpoints",
+            "en": "Checkpoints"
+          },
+          "text": {
+            "es": "Un commit <code>cpN</code> por tarea en <code>agent/&lt;fecha&gt;</code>. Restaurá cualquiera y seguí desde ahí.",
+            "en": "One <code>cpN</code> commit per task on <code>agent/&lt;date&gt;</code>. Restore any of them and resume from there."
+          }
+        },
+        {
+          "title": {
+            "es": "QA",
+            "en": "QA"
+          },
+          "text": {
+            "es": "Una sesión nueva, que nunca vio el chat del constructor, juega, lo contrasta con tus archivos de referencia y puntúa jugabilidad, funcionalidad, visual y sensación, y código. No puede editar ni aprobar un check que no pudo probar.",
+            "en": "A new session that never saw the builder’s chat plays the game, checks it against your reference files and scores playability, function, visuals and feel, and code. It can’t edit, or pass a check it could not test."
+          }
+        },
+        {
+          "title": {
+            "es": "Reporte",
+            "en": "Report"
+          },
+          "text": {
+            "es": "Lo que midió el harness, no lo que dice el agente: tiempo por tarea, herramientas, fallas, loops y pausas por cuota.",
+            "en": "What the harness measured, not what the agent claims: time per task, tools, failures, loops, quota pauses."
+          }
+        }
+      ],
+      "image": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/oneshot.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/oneshot.png"
+      },
+      "imageAlt": {
+        "es": "La pantalla One-shot con el objetivo de un shooter de asteroides, tarea 2 de 3: barras de cuota, tiempo, tokens y playtests, el plan, la actividad, el frame del último playtest, dos checks pasados y uno pendiente, y los checkpoints cp1 a cp3.",
+        "en": "The One-shot screen running an asteroid shooter goal, task 2 of 3: quota, time, tokens and playtest bars, the plan, the activity log, the last playtest frame, two passed checks and one pending, and checkpoints cp1 to cp3 with Restore here."
+      },
+      "caption": {
+        "es": "Se pausa al 90 % de la cuota de tu plan, al terminar una tarea. Si llegás al límite, cambiás de cuenta sin perder la sesión.",
+        "en": "Pauses at 90 % of your plan quota, at the end of a task. Hit the limit and switch accounts without losing the session."
+      },
+      "imageSize": {
+        "es": [
+          1134,
+          1073
+        ],
+        "en": [
+          1134,
+          1073
+        ]
+      }
+    },
+    {
+      "id": "b6",
+      "type": "panels",
+      "anchor": "",
+      "panels": [
+        {
+          "eyebrow": {
+            "es": "Modo Revisar",
+            "en": "Review mode"
+          },
+          "heading": {
+            "es": "Los hallazgos caen en la línea.",
+            "en": "Findings land on the line."
+          },
+          "text": {
+            "es": "Bugs, estructura, rendimiento y estilo aparecen como marcas en el Script Editor, con Aplicar arreglo, Preguntar y Descartar. Traé los comentarios de un PR de GitHub como hallazgos, o exportá la revisión a <code>CLAUDE.md</code> como convenciones.",
+            "en": "Bugs, structure, performance and style show as marks in the Script Editor, with Apply fix, Ask and Dismiss. Pull a GitHub PR’s comments in as findings, or export the review to <code>CLAUDE.md</code> as conventions."
+          },
+          "image": {
+            "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/review.png",
+            "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/review.png"
+          },
+          "imageAlt": {
+            "es": "El Script Editor con hud.gd y un hallazgo de rendimiento en la línea 8, get_node en cada frame, su arreglo y los botones para aplicarlo, preguntar o descartarlo; el dock lista la revisión.",
+            "en": "The Script Editor showing hud.gd with a performance finding on line 8, get_node on every frame, its fix and the buttons Apply fix, Ask and Dismiss; the dock lists the review."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          },
+          "imageSize": {
+            "es": [
+              1920,
+              1200
+            ],
+            "en": [
+              1920,
+              1200
+            ]
+          }
+        },
+        {
+          "eyebrow": {
+            "es": "Completado inline",
+            "en": "Inline completion"
+          },
+          "heading": {
+            "es": "Sugerencias en gris, locales por defecto.",
+            "en": "Grey suggestions, local by default."
+          },
+          "text": {
+            "es": "Reglas que conocen Godot, líneas que tu proyecto repite y un modelo n-gram de tu código. Sin red, salvo que agregues Ollama, llama.cpp u otro LLM.",
+            "en": "Rules that know Godot, lines your project repeats, and an n-gram model of your code. No network unless you add Ollama, llama.cpp or another LLM."
+          },
+          "image": {
+            "es": "",
+            "en": ""
+          },
+          "imageAlt": {
+            "es": "",
+            "en": ""
+          },
+          "code": {
+            "es": "<span class=\"k\">@onready var</span> <span class=\"ghost\">wave_label: Label = $HUD/WaveLabel</span>\n\n<span class=\"k\">func</span> _<span class=\"ghost\">physics_process(delta: float) -&gt; void:</span>",
+            "en": "<span class=\"k\">@onready var</span> <span class=\"ghost\">wave_label: Label = $HUD/WaveLabel</span>\n\n<span class=\"k\">func</span> _<span class=\"ghost\">physics_process(delta: float) -&gt; void:</span>"
+          },
+          "keys": {
+            "es": "<span><kbd>Tab</kbd> aceptar</span><span><kbd>Ctrl</kbd>+<kbd>→</kbd> palabra por palabra</span><span><kbd>Alt</kbd>+<kbd>I</kbd> pedirle un cambio al agente</span>",
+            "en": "<span><kbd>Tab</kbd> accept</span><span><kbd>Ctrl</kbd>+<kbd>→</kbd> word by word</span><span><kbd>Alt</kbd>+<kbd>I</kbd> ask the agent for a change</span>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b7",
+      "type": "cards",
+      "anchor": "",
+      "eyebrow": {
+        "es": "Reglas",
+        "en": "Ground rules"
+      },
+      "heading": {
+        "es": "Lo que nunca va a hacer.",
+        "en": "What it will never do."
+      },
+      "intro": {
+        "es": "",
+        "en": ""
+      },
+      "style": "rules",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Hacer merge o push sin tu aprobación",
+            "en": "Merge or push without your OK"
+          },
+          "text": {
+            "es": "One-shot trabaja en su propia rama. Vos revisás y vos hacés el merge.",
+            "en": "One-shot works on its own branch. You review and you merge."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Guardar tus API keys",
+            "en": "Store your API keys"
+          },
+          "text": {
+            "es": "Los perfiles nombran una variable de entorno; el valor se lee en cada pedido. Las keys y los tokens se ocultan en todo lugar donde podrían verse: chat, Agent Log, tarjetas de permiso y de error, historial en disco e informes del One-shot. Lo que el agente escribe o ejecuta conserva el valor real.",
+            "en": "Profiles name an environment variable; the value is read at request time. Keys and tokens are masked wherever they could show: chat, Agent Log, permission and error cards, history on disk and One-shot reports. What the agent writes or runs keeps the real value."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Leer las credenciales del agente",
+            "en": "Read the agent’s credentials"
+          },
+          "text": {
+            "es": "El inicio de sesión usa el login del propio agente. Los códigos pegados nunca llegan al log. Para nombrar las cuentas, solo lee el email que guarda Claude Code.",
+            "en": "Sign-in runs the agent’s own login. Pasted codes never reach the log. To label accounts, it reads only the email Claude Code keeps."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Escuchar fuera de tu máquina",
+            "en": "Listen beyond your machine"
+          },
+          "text": {
+            "es": "El servidor MCP escucha solo en 127.0.0.1, con un token que cambia en cada arranque y se oculta en el chat, las tarjetas, el Agent Log y el historial.",
+            "en": "The MCP server binds to 127.0.0.1 with a token that changes on every start and is masked in the chat, the cards, the Agent Log and the history."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Viajar en tu juego",
+            "en": "Ship in your game"
+          },
+          "text": {
+            "es": "Nada del addon llega a un juego exportado.",
+            "en": "Nothing from the addon reaches an exported build."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b8",
+      "type": "cards",
+      "anchor": "skills",
+      "eyebrow": {
+        "es": "godot-agent-plugins · SKILL.md",
+        "en": "godot-agent-plugins · SKILL.md"
+      },
+      "heading": {
+        "es": "Skills de Godot para cualquier agente.",
+        "en": "Godot skills for any agent."
+      },
+      "intro": {
+        "es": "Seis plugins para trabajar en juegos de Godot 4: arquitectura, shaders, GDExtensions en C++, assets, video y pruebas. Funcionan con Codex, Cursor, Gemini CLI, OpenCode, Claude Code y otros, con este addon o sin él. Dentro del addon, la ventana Extensiones instala <code>gdscript</code> y <code>shaders</code> con un clic, y <b>Usar con todos los agentes</b> comparte las skills del proyecto o las tuyas con Google Antigravity, Codex y los demás.",
+        "en": "Six plugins for working on Godot 4 games: architecture, shaders, C++ GDExtensions, assets, video and testing. They work in Codex, Cursor, Gemini CLI, OpenCode, Claude Code and others, with or without this addon. Inside the addon, the Extensions window installs <code>gdscript</code> and <code>shaders</code> in one click, and <b>Use with all agents</b> shares your project’s or your own skills with Google Antigravity, Codex and the rest."
+      },
+      "style": "grid-mono",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "gdscript",
+            "en": "gdscript"
+          },
+          "text": {
+            "es": "Diseñar y revisar GDScript: dónde viven el código y los datos, señales y autoloads, máquinas de estado, componentes, pools, Resources, saves y mods.",
+            "en": "Design and review GDScript: where code and data live, signals and autoloads, state machines, components, pools, Resources, saves and mods."
+          },
+          "tags": {
+            "es": [
+              "godot-architecture",
+              "godot-communication",
+              "godot-patterns",
+              "godot-data-driven",
+              "godot-code-review"
+            ],
+            "en": [
+              "godot-architecture",
+              "godot-communication",
+              "godot-patterns",
+              "godot-data-driven",
+              "godot-code-review"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "shaders",
+            "en": "shaders"
+          },
+          "text": {
+            "es": "Shaders no triviales en Godot 4.6+: espacios y matrices, <code>light()</code> propio, normal maps, formas procedurales, post-procesado y ray marching.",
+            "en": "Non-trivial shaders in Godot 4.6+: spaces and matrices, custom <code>light()</code>, normal maps, procedural shapes, post-processing and ray marching."
+          },
+          "tags": {
+            "es": [
+              "godot-shader-techniques"
+            ],
+            "en": [
+              "godot-shader-techniques"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "gdextension",
+            "en": "gdextension"
+          },
+          "text": {
+            "es": "GDExtensions en C++ con godot-cpp 10: bindings, compilarlas y exportarlas para cada plataforma, depurar crashes y leaks, y envolver bibliotecas de C o C++.",
+            "en": "C++ GDExtensions with godot-cpp 10: bindings, builds and exports for each platform, debugging crashes and leaks, and wrapping C or C++ libraries."
+          },
+          "tags": {
+            "es": [
+              "gdextension-cpp",
+              "gdextension-build",
+              "gdextension-debug",
+              "gdextension-wrap-library"
+            ],
+            "en": [
+              "gdextension-cpp",
+              "gdextension-build",
+              "gdextension-debug",
+              "gdextension-wrap-library"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "blender",
+            "en": "blender"
+          },
+          "text": {
+            "es": "Armar y verificar assets con Python en Blender 5 headless, y llevarlos a Godot con los ejes, colisiones, materiales y animaciones correctos.",
+            "en": "Build and check assets with headless Blender 5 Python, then bring them to Godot with the right axes, collisions, materials and animations."
+          },
+          "tags": {
+            "es": [
+              "blender-scripting",
+              "blender-to-godot"
+            ],
+            "en": [
+              "blender-scripting",
+              "blender-to-godot"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "godot-video",
+            "en": "godot-video"
+          },
+          "text": {
+            "es": "Videos con imágenes reales de tu juego: captura repetible, trailers, música simple, chequeos del documento de diseño y películas de desarrollo. Solo necesita Godot, ffmpeg y Python.",
+            "en": "Videos from real footage of your game: repeatable capture, trailers, simple music, design document checks and development films. Needs only Godot, ffmpeg and Python."
+          },
+          "tags": {
+            "es": [
+              "godot-capture",
+              "godot-trailer",
+              "game-music",
+              "trailer-music",
+              "godot-gdd",
+              "godot-gamedev"
+            ],
+            "en": [
+              "godot-capture",
+              "godot-trailer",
+              "game-music",
+              "trailer-music",
+              "godot-gdd",
+              "godot-gamedev"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "godot-testing",
+            "en": "godot-testing"
+          },
+          "text": {
+            "es": "Probar el juego corriéndolo: tests de capturas contra imágenes aprobadas, y comparaciones de rendimiento de antes y después.",
+            "en": "Check the game by running it: screenshot tests against approved images, and before and after performance comparisons."
+          },
+          "tags": {
+            "es": [
+              "godot-visual-test",
+              "godot-performance"
+            ],
+            "en": [
+              "godot-visual-test",
+              "godot-performance"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [
+        {
+          "label": {
+            "es": "Cualquier agente",
+            "en": "Any agent"
+          },
+          "command": "npx skills add dannroda/godot-agent-plugins"
+        },
+        {
+          "label": {
+            "es": "Claude Code",
+            "en": "Claude Code"
+          },
+          "command": "/plugin marketplace add dannroda/godot-agent-plugins"
+        }
+      ],
+      "buttons": [
+        {
+          "label": {
+            "es": "Ver el repo",
+            "en": "See the repo"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-agent-plugins",
+            "en": "https://github.com/dannroda/godot-agent-plugins"
+          },
+          "style": "plain"
+        }
+      ],
+      "note": {
+        "es": "MIT. Para lo básico, el marketplace de Claude Code también lista cuatro plugins de <a href=\"https://github.com/gamedev-skills/awesome-gamedev-agent-skills\">awesome-gamedev-agent-skills</a>.",
+        "en": "MIT. For the basics, the Claude Code marketplace also lists four plugins from <a href=\"https://github.com/gamedev-skills/awesome-gamedev-agent-skills\">awesome-gamedev-agent-skills</a>."
+      }
+    },
+    {
+      "id": "b9",
+      "type": "band",
+      "anchor": "install",
+      "heading": {
+        "es": "Tres pasos hasta el primer prompt.",
+        "en": "Three steps to the first prompt."
+      },
+      "notes": [
+        {
+          "text": {
+            "es": "Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.",
+            "en": "Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider."
+          }
+        },
+        {
+          "text": {
+            "es": "<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 sigue imprimiendo el error, aunque no se cayó en 12 corridas.",
+            "en": "<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 still prints the error, though it didn’t crash in 12 runs."
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "label": {
+            "es": "Descargar (GitHub)",
+            "en": "Download (GitHub)"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-agent/releases/latest",
+            "en": "https://github.com/dannroda/godot-agent/releases/latest"
+          },
+          "style": "plain"
+        },
+        {
+          "label": {
+            "es": "Primeros pasos",
+            "en": "Getting started"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-agent/wiki/Primeros-pasos",
+            "en": "https://github.com/dannroda/godot-agent/wiki/Getting-started"
+          },
+          "style": "ghost"
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "es": "Copiá <code>addons/godot_agent/</code> en la carpeta <code>addons/</code> de tu proyecto.",
+            "en": "Copy <code>addons/godot_agent/</code> into your project’s <code>addons/</code> folder."
+          }
+        },
+        {
+          "text": {
+            "es": "Proyecto → Configuración del proyecto → Plugins → habilitá <b>Godot Agent Harness</b>.",
+            "en": "Project → Project Settings → Plugins → enable <b>Godot Agent Harness</b>."
+          }
+        },
+        {
+          "text": {
+            "es": "En el dock Agent, tocá <b>Agregar</b> en Claude Code (u otro agente), entrá con tu cuenta y tocá <b>Iniciar sesión</b>.",
+            "en": "In the Agent dock, <b>Add</b> Claude Code (or another agent), sign in and <b>Start session</b>."
+          }
+        }
+      ],
+      "fine": {
+        "es": "Godot Agent Harness · MIT · <a href=\"https://github.com/dannroda/godot-agent/blob/main/PRIVACY.es.md\">Privacidad</a> · Sin telemetría ni servidor propio.",
+        "en": "Godot Agent Harness · MIT · <a href=\"https://github.com/dannroda/godot-agent/blob/main/PRIVACY.md\">Privacy</a> · No telemetry, no server of its own."
+      }
+    }
+  ]
+}

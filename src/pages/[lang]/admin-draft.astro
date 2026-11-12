@@ -1,0 +1,19 @@
+---
+// The admin's page preview: renders the page being edited, unsaved, from .astro/admin-draft.json (written by the
+// admin on every change). Only exists in `npm run dev`; the built site has no such page.
+import { readFileSync } from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import Blocks from '../../components/Blocks.astro';
+import { langs, type Lang } from '../../i18n';
+import { tx } from '../../blocks/util';
+
+export const getStaticPaths = () => (import.meta.env.DEV ? langs.map((lang) => ({ params: { lang } })) : []);
+const lang = Astro.params.lang as Lang;
+let draft: { slug?: string; page?: any } = {};
+try { draft = JSON.parse(readFileSync('.astro/admin-draft.json', 'utf8')); } catch {}
+const page = draft.page ?? { blocks: [] };
+---
+
+<Base lang={lang} title={tx(page.title, lang) || 'Vista previa'} path={draft.slug === 'home' ? '' : `${draft.slug}/`} mode="home">
+	<Blocks blocks={page.blocks ?? []} lang={lang} />
+</Base>
