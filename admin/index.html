@@ -90,6 +90,10 @@
 	.text-row[hidden] { display: none; }
 	.banner { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 8px; background: color-mix(in srgb, var(--danger) 15%, transparent); box-shadow: inset 0 0 0 1px var(--danger); }
 	.banner .grow { flex: 1 1 260px; }
+	.change { display: flex; flex-direction: column; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--surface-3); }
+	.change .grow { flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere; }
+	.editor h1.msg { font-size: 22px; line-height: 1.25; }
+	.diff .add { color: #8fd18a; } .diff .del { color: var(--danger); } .diff .hunk { color: var(--muted); }
 	.dirty::after { content: ' ●'; color: var(--warn); }
 	@media (max-width: 900px) {
 		.app, .app.preview { grid-template-columns: 1fr; height: auto; }
@@ -197,11 +201,11 @@ const select = (options, value, onpick) => h('select', { onchange: (e) => onpick
 function render() {
 	const app = $('#app');
 	app.className = 'app' + (preview ? ' preview' : '');
-	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['publish', 'Publicar']];
+	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['history', 'Historial'], ['publish', 'Publicar']];
 	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l]) =>
 		h('button', { 'aria-current': String(view === v), onclick: () => go(v) }, l, v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
 	), h('div.grow'), h('button', { onclick: () => { preview = !preview; render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
-	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, publish: publishView })[view]();
+	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
 	const live = url?.endsWith('/admin-preview/');
 	app.replaceChildren(nav, list, h('main', {}, editor), preview ? h('div.preview-pane', {}, h('div.bar', {}, h('span.grow', {}, live ? 'En vivo, sin guardar' : url || '/'), h('button.link', { onclick: () => { $('iframe').src = $('iframe').src; } }, 'Recargar')), h('iframe', { src: S.site + (url || `/${lang}/`), title: 'Vista previa' })) : '');
 	if (dirty) $('#save')?.classList.add('dirty');
@@ -608,6 +612,76 @@ function siteView() {
 	return [h('div.list', {}, h('div.empty', {}, 'Los textos fijos del sitio (títulos, menú) están en src/i18n.ts.')), editor, `/${lang}/links/`];
 }
 
+// ---------- History: every published change to the content, and what isn't published yet, each file undoable.
+let H = null, showBots = false;
+const ST = { M: 'Cambiado', A: 'Nuevo', D: 'Borrado', R: 'Renombrado', '?': 'Nuevo' };
+// "content/games/fracas.json" -> "Fracas (tu ficha)": what a file is, in the panel's words.
+function fileName(p) {
+	const game = (slug) => S.games.find((g) => g.slug === slug)?.store.title ?? slug;
+	const doc = (kind, slug) => (S[kind].find((d) => d.slug === slug)?.es ?? S[kind].find((d) => d.slug === slug)?.en)?.data.title;
+	let m;
+	if ((m = p.match(/^content\/games\/(.+)\.json$/))) return `${game(m[1])} · tu ficha`;
+	if ((m = p.match(/^content\/store\/(.+)\.json$/))) return `${game(m[1])} · datos de la tienda`;
+	if ((m = p.match(/^public\/games\/([^/]+)\/(.+)$/))) return `${game(m[1])} · imagen ${m[2]}`;
+	if ((m = p.match(/^content\/(blog|pages)\/(es|en)\/(.+)\.md$/))) return `${m[1] === 'blog' ? 'Post' : 'Página'} «${doc(m[1], m[3]) ?? m[3]}» (${m[2]})`;
+	if ((m = p.match(/^public\/media\/(.+)$/))) return `Medios · ${m[1]}`;
+	return { 'content/texts.json': 'Textos del sitio', 'content/sources.json': 'Lista de juegos y proyectos', 'content/profile.json': 'Links de contacto' }[p] ?? p;
+}
+function diffView(text) {
+	if (/^Binary files/m.test(text)) return h('p.hint', {}, 'Archivo binario (una imagen): no hay texto que comparar.');
+	const lines = text.split('\n').filter((l) => !/^(diff --git|index |--- |\+\+\+ |new file mode|deleted file mode)/.test(l));
+	return h('pre.log.diff', {}, lines.map((l) => h('span', { className: l[0] === '+' ? 'add' : l[0] === '-' ? 'del' : l.startsWith('@@') ? 'hunk' : '' }, l + '\n')));
+}
+async function loadHistory() {
+	try { H = await api('GET', 'history'); } catch (e) { H = []; toast(e.message, true); }
+	if (view === 'history') render();
+}
+function historyView() {
+	if (!H) { loadHistory(); return [h('div.list'), h('div.empty', {}, 'Leyendo el historial…'), null]; }
+	const commits = H.filter((c) => showBots || !c.bot);
+	// Unpublished changes: git status lines like " M path", "?? path", "R  old -> new".
+	const local = S.changes.map((l) => ({ status: l.slice(0, 2).trim()[0] ?? 'M', path: l.slice(3).split(' -> ').at(-1) }));
+	const when = (d) => new Date(d).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' });
+	const list = h('div.list', {},
+		h('div.list-head', {}, h('label.check', {}, h('input', { type: 'checkbox', checked: showBots, onchange: (e) => { showBots = e.target.checked; render(); } }), h('span.hint', {}, 'Mostrar las sincronizaciones automáticas de las tiendas'))),
+		h('button.item', { 'aria-current': String(sel === 'local'), onclick: () => go('history', 'local') }, h('span', {}, h('div.t', {}, 'Sin publicar'), h('div.s', {}, local.length ? `${local.length} archivo(s)` : 'nada'))),
+		commits.map((c) => h('button.item', { 'aria-current': String(sel === c.sha), onclick: () => go('history', c.sha) },
+			h('span', { style: 'min-width:0' }, h('div.t', {}, c.message), h('div.s', {}, when(c.date), c.bot && h('span.tag', {}, 'automático'), ` · ${c.files.length} archivo(s)`)))));
+	const c = sel === 'local' ? { sha: null, message: 'Cambios sin publicar', files: local } : H.find((x) => x.sha === sel);
+	if (!c) return [list, h('div.empty', {}, 'Cada vez que publicás (o la sincronización diaria trae datos nuevos) queda un cambio acá. Podés ver qué cambió en cada archivo y deshacerlo.'), null];
+	const undo = async (paths, what) => {
+		if (!confirm(c.sha ? `¿Deshacer ${what}? Los archivos vuelven a como estaban antes de este cambio (lo que cambió después, se pisa). Después hay que publicar.` : `¿Descartar ${what}? Vuelve a como está publicado.`)) return;
+		try {
+			await api('POST', 'restore', { sha: c.sha, path: paths });
+			await reload();
+			loadHistory();
+			toast(c.sha ? 'Deshecho. Publicá para que llegue al sitio.' : 'Descartado');
+		} catch (e) { toast(e.message, true); }
+	};
+	const row = (f) => {
+		const box = h('div');
+		let open = false;
+		const toggle = async () => {
+			open = !open;
+			if (!open) return box.replaceChildren();
+			const { text } = await api('POST', 'diff', { sha: c.sha, path: f.path });
+			box.replaceChildren(diffView(text));
+		};
+		return h('div.change', {},
+			h('div.bar', {}, h('span.tag', {}, ST[f.status] ?? f.status), h('span.grow', { title: f.path }, fileName(f.path), h('div.hint', {}, f.path)),
+				h('button', { onclick: toggle }, 'Ver cambios'), h('button.danger', { onclick: () => undo([f.path], `el cambio en «${fileName(f.path)}»`) }, c.sha ? 'Deshacer' : 'Descartar')),
+			box);
+	};
+	const editor = h('div.editor', {},
+		h('h1.msg', {}, c.message),
+		c.sha && h('p.hint', {}, `${when(c.date)} · ${c.author} · ${c.sha.slice(0, 7)}`),
+		c.files.length ? [
+			c.files.map(row),
+			c.files.length > 1 && h('div', {}, h('button.danger', { onclick: () => undo(c.files.map((f) => f.path), c.sha ? 'todo este cambio' : 'todos los cambios sin publicar') }, c.sha ? 'Deshacer todo este cambio' : 'Descartar todo'))
+		] : h('p.hint', {}, 'Todo publicado.'));
+	return [list, editor, null];
+}
+
 // ---------- Publish
 // What's worth a look before publishing; none of it blocks.
 function warnings() {
@@ -642,6 +716,7 @@ function publishView() {
 			toast(r.ok ? `${label}: listo` : `${label}: falló, mirá el registro`, !r.ok);
 		} catch (err) { toast(err.message, true); }
 		busy = '';
+		H = null;
 		await reload();
 	};
 	const msg = h('input', { placeholder: 'content: update from admin', 'aria-label': 'Mensaje del commit' });

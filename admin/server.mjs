@@ -94,7 +94,7 @@ async function state() {
 	}
 	// Landing pages: the site's own fixed pages plus the ones made here.
 	const fixed = (await ls('src/pages/[lang]')).filter((f) => f.endsWith('.astro') && !f.startsWith('[') && f !== 'index.astro').map((f) => f.slice(0, -6));
-	const { stdout: changes } = await run('git', ['status', '--porcelain', '--', 'content', 'public'], { cwd: root });
+	const { stdout: changes } = await run('git', ['status', '--porcelain', '--untracked-files=all', '--', 'content', 'public'], { cwd: root });
 	return {
 		games,
 		sources: await readJson('content/sources.json'),
@@ -151,6 +151,40 @@ async function publish(message) {
 		if (!r.ok) return { ok: false, log };
 	}
 	return { ok: true, log };
+}
+
+// ---------- History: git, limited to the files the panel edits.
+const shaRe = /^[0-9a-f]{7,40}$/;
+const pathOk = (p) => /^(content|public)\//.test(p) && !p.split('/').includes('..');
+async function history() {
+	const { stdout } = await run('git', ['log', '-n', '200', '--format=%x1e%H%x1f%an%x1f%aI%x1f%s', '--name-status', '--', 'content', 'public'], { cwd: root, maxBuffer: 1 << 24 });
+	return stdout.split('\x1e').filter(Boolean).map((block) => {
+		const [head, ...lines] = block.split('\n');
+		const [sha, author, date, message] = head.split('\x1f');
+		// "M\tpath", or "R100\told\tnew" for a rename: the file as it ended up.
+		const files = lines.filter(Boolean).map((l) => { const [st, ...ps] = l.split('\t'); return { status: st[0], path: ps.at(-1), from: ps.length > 1 ? ps[0] : null }; }).filter((f) => pathOk(f.path));
+		return { sha, author, date, message, bot: author.endsWith('[bot]'), files };
+	}).filter((c) => c.files.length);
+}
+async function diff(sha, path) {
+	if (!pathOk(path) || (sha && !shaRe.test(sha))) throw new Error('Pedido inválido');
+	if (sha) return (await run('git', ['show', '--format=', '--no-color', sha, '--', path], { cwd: root, maxBuffer: 1 << 24 })).stdout;
+	// Not published yet: against the last commit, or the whole file when it's new.
+	const { stdout } = await run('git', ['diff', '--no-color', 'HEAD', '--', path], { cwd: root, maxBuffer: 1 << 24 });
+	if (stdout) return stdout;
+	const text = await readFile(at(path), 'utf8').catch(() => '');
+	return text.split('\n').map((l) => '+' + l).join('\n');
+}
+// Put a file back as it was before `sha` (or as last published, with no sha). A file that didn't exist then is removed.
+async function restore(sha, path) {
+	if (!pathOk(path) || (sha && !shaRe.test(sha))) throw new Error('Pedido inválido');
+	const source = sha ? `${sha}^` : 'HEAD';
+	const existed = await run('git', ['cat-file', '-e', `${source}:${path}`], { cwd: root }).then(() => true, () => false);
+	if (existed) await run('git', ['restore', `--source=${source}`, '--staged', '--worktree', '--', path], { cwd: root });
+	else {
+		await run('git', ['rm', '-q', '--cached', '--ignore-unmatch', '--', path], { cwd: root });
+		await rm(at(path), { force: true });
+	}
 }
 
 const routes = {
@@ -214,6 +248,11 @@ const routes = {
 				const g = await readJson(`content/games/${f}`);
 				if (g.landing?.trim() === slug) await writeJson(`content/games/${f}`, { ...g, landing: to });
 			}
+	},
+	'GET history': () => history(),
+	'POST diff': (_, { sha, path }) => diff(sha, path).then((text) => ({ text })),
+	'POST restore': async (_, { sha, path }) => {
+		for (const p of [].concat(path)) await restore(sha, p);
 	},
 	'POST check': () => check(),
 	'POST sync': () => sh(process.execPath, ['scripts/sync-games.mjs']),
