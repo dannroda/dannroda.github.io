@@ -9,7 +9,6 @@
       "blog": "Blog",
       "links": "Links"
     },
-    "legendTitle": "Cómo leer este sitio",
     "legend": {
       "hand": [
         "Hecho a mano",
@@ -26,9 +25,6 @@
     },
     "published": "Juegos publicados",
     "other": "Otros juegos",
-    "allOnItch": "Todos en itch.io",
-    "details": "Ver ficha",
-    "back": "Volver",
     "onlyIn": "Solo en inglés",
     "theme": "Tema",
     "results": "Resultados",
@@ -69,16 +65,12 @@
     },
     "blog": "Blog",
     "blogIntro": "Notas sobre Godot, jams, herramientas y lo que voy aprendiendo con IA.",
-    "latest": "Últimos posts",
-    "allPosts": "Todos los posts",
     "tagged": "Posts con",
     "draft": "Borrador",
     "projects": "Proyectos",
-    "projectsSub": "Herramientas para Godot, apps y experimentos",
     "language": "Lenguaje",
     "license": "Licencia",
     "version": "Versión",
-    "stars": "Estrellas",
     "created": "Creado",
     "website": "Sitio",
     "archived": "Archivado",
@@ -90,49 +82,19 @@
     "home": "Ir al inicio",
     "navLabel": "Principal",
     "menu": "Menú",
-    "heroRole": "Hago juegos y herramientas en Godot",
-    "heroLine": "DTO en los créditos de las jams. Programo en GDScript y C++, y cada trabajo dice cuánta IA lleva.",
-    "tools": "Con qué trabajo",
     "contact": "Contacto",
-    "writeMe": "Escribime",
     "elsewhere": "En otros lados",
-    "place": "Godot 4 · Argentina",
     "iconCredit": "Íconos de nodos:",
-    "legendLead": "Cada juego y proyecto de este sitio dice cuánto se usó la IA para hacerlo.",
-    "filterLabel": "Mostrar",
     "filterAll": "Todo",
     "filterHand": "Hecho a mano",
-    "filterAi": "Con IA",
-    "jamsHeading": "Jams: un fin de semana, un juego",
     "entries": "Entradas",
     "projectPage": "Página del proyecto",
     "wiki": "Wiki",
     "wikiPages": "Páginas",
     "wikiSource": "De la documentación del repo, en su idioma.",
-    "about": "Sobre mí",
-    "aboutText": [
-      "Soy Daniel Rodriguez Aires, DTO en los créditos de las jams. Desde Argentina hago juegos en Godot y herramientas para el editor, en GDScript y en C++ con GDExtension.",
-      "Trabajé en Fracas, publicado en Steam en 2025, y hago jams desde 2022. Con IA encaro cosas que antes no hubiera hecho solo; por eso acá separo lo que hice a mano de lo que no."
-    ],
-    "facts": [
-      [
-        "Desde",
-        "Argentina"
-      ],
-      [
-        "Motor",
-        "Godot 4"
-      ],
-      [
-        "Lenguajes",
-        "GDScript · C++"
-      ]
-    ],
     "invite": "Un juego, una jam o una herramienta para el editor. Escribime por cualquiera de estos.",
     "site": "Sitio",
     "follow": "Seguir",
-    "languageLabel": "Idioma",
-    "top": "Arriba",
     "previous": "Anterior",
     "next": "Siguiente",
     "works": "trabajos",
@@ -161,7 +123,6 @@
       "blog": "Blog",
       "links": "Links"
     },
-    "legendTitle": "How to read this site",
     "legend": {
       "hand": [
         "Handmade",
@@ -178,9 +139,6 @@
     },
     "published": "Released games",
     "other": "Other games",
-    "allOnItch": "All on itch.io",
-    "details": "Details",
-    "back": "Back",
     "onlyIn": "Spanish only",
     "theme": "Theme",
     "results": "Results",
@@ -221,16 +179,12 @@
     },
     "blog": "Blog",
     "blogIntro": "Notes on Godot, jams, tools and what I keep learning with AI.",
-    "latest": "Latest posts",
-    "allPosts": "All posts",
     "tagged": "Posts tagged",
     "draft": "Draft",
     "projects": "Projects",
-    "projectsSub": "Godot tools, apps and experiments",
     "language": "Language",
     "license": "License",
     "version": "Version",
-    "stars": "Stars",
     "created": "Created",
     "website": "Website",
     "archived": "Archived",
@@ -242,49 +196,19 @@
     "home": "Go home",
     "navLabel": "Main",
     "menu": "Menu",
-    "heroRole": "I make games and tools in Godot",
-    "heroLine": "DTO in jam credits. I code in GDScript and C++, and every work says how much AI went into it.",
-    "tools": "What I work with",
     "contact": "Contact",
-    "writeMe": "Get in touch",
     "elsewhere": "Elsewhere",
-    "place": "Godot 4 · Argentina",
     "iconCredit": "Node icons:",
-    "legendLead": "Every game and project on this site says how much AI went into it.",
-    "filterLabel": "Show",
     "filterAll": "Everything",
     "filterHand": "Handmade",
-    "filterAi": "With AI",
-    "jamsHeading": "Jams: one weekend, one game",
     "entries": "Entries",
     "projectPage": "Project page",
     "wiki": "Wiki",
     "wikiPages": "Pages",
     "wikiSource": "From the repo's docs, in their own language.",
-    "about": "About",
-    "aboutText": [
-      "I am Daniel Rodriguez Aires, DTO in jam credits. From Argentina I make games in Godot and tools for its editor, in GDScript and in C++ with GDExtension.",
-      "I worked on Fracas, released on Steam in 2025, and have done jams since 2022. With AI I take on things I would not have done alone, so here I keep what I made by hand apart from what I did not."
-    ],
-    "facts": [
-      [
-        "From",
-        "Argentina"
-      ],
-      [
-        "Engine",
-        "Godot 4"
-      ],
-      [
-        "Languages",
-        "GDScript · C++"
-      ]
-    ],
     "invite": "A game, a jam or an editor tool. Reach me through any of these.",
     "site": "Site",
     "follow": "Follow",
-    "languageLabel": "Language",
-    "top": "Top",
     "previous": "Previous",
     "next": "Next",
     "works": "works",

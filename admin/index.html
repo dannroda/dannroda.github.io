@@ -26,16 +26,34 @@
 	button:disabled { opacity: 0.5; cursor: default; }
 	label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
 	.hint { font-weight: 400; color: var(--muted); font-size: 13px; }
-	.app { display: grid; grid-template-columns: 200px 300px minmax(0, 1fr); height: 100vh; }
+	/* --nav-w / --list-w: the side columns, narrowed or hidden by their collapse buttons */
+	.app { --nav-w: 200px; --list-w: 300px; display: grid; grid-template-columns: var(--nav-w) var(--list-w) minmax(0, 1fr); height: 100vh; }
+	.app.nav-min { --nav-w: 56px; }
+	.app.list-min { --list-w: 0px; }
+	/* Kept in the grid at zero width: taken out, the editor would slide into its column */
+	.app.list-min > .list { visibility: hidden; overflow: hidden; border: 0; }
 	/* --pw: the preview's width, set by dragging its left edge */
-	.app.preview { grid-template-columns: 200px 300px minmax(320px, 1fr) var(--pw, minmax(0, 1fr)); }
-	.app.full { grid-template-columns: 200px minmax(0, 1fr); }
+	.app.preview { grid-template-columns: var(--nav-w) var(--list-w) minmax(320px, 1fr) var(--pw, minmax(0, 1fr)); }
+	.app.full { grid-template-columns: var(--nav-w) minmax(0, 1fr); }
 	.app.full > .list, .app.full > main { display: none; }
 	nav { background: var(--surface); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
 	nav .brand { font: 700 22px 'Space Grotesk', system-ui; padding: 0 8px 16px; }
 	nav button { text-align: left; background: none; display: flex; justify-content: space-between; }
 	nav button[aria-current='true'] { background: var(--surface-3); }
 	nav .grow { flex: 1; }
+	nav .ico { display: none; width: 1.2em; text-align: center; }
+	.nav-min nav { padding: 12px 6px; align-items: stretch; }
+	.nav-min nav .brand { font-size: 0; padding: 0 0 8px; text-align: center; }
+	.nav-min nav .brand::first-letter { font-size: 22px; }
+	.nav-min nav .lbl { display: none; }
+	.nav-min nav .ico { display: inline; }
+	.nav-min nav button, .nav-min nav a { justify-content: center; padding: 8px 0; position: relative; }
+	.nav-min nav .badge { position: absolute; top: 4px; right: 6px; width: 9px; height: 9px; padding: 0; font-size: 0; }
+	.nav-min nav .langs { flex-direction: column; padding: 4px 0; }
+	.nav-collapse { color: var(--muted); }
+	main { position: relative; }
+	.list-toggle { position: sticky; top: 10px; float: left; margin: 10px 0 0 -1px; z-index: 4; padding: 6px 7px; border-radius: 0 6px 6px 0; background: var(--surface-3); color: var(--muted); font-size: 12px; line-height: 1; }
+	.list-toggle:hover { color: var(--ink); }
 	.badge { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 8px; font-size: 12px; font-weight: 700; }
 	.list { border-right: 1px solid var(--surface-3); overflow-y: auto; display: flex; flex-direction: column; }
 	.list-head { padding: 16px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--surface-3); position: sticky; top: 0; background: var(--bg); z-index: 1; }
@@ -141,6 +159,8 @@
 		.app, .app.preview, .app.full { grid-template-columns: 1fr; height: auto; }
 		.grip, .pane-full { display: none; }
 		nav { flex-direction: row; flex-wrap: wrap; } nav .grow { display: none; }
+		.list-toggle, .nav-collapse { display: none; }
+		.app.list-min > .list { visibility: visible; }
 		.list { border-right: 0; max-height: 40vh; }
 		.preview-pane { height: 70vh; }
 		.two, .row, .row.link { grid-template-columns: 1fr; }
@@ -253,7 +273,7 @@ let full = false;
 function setPaneWidth(px) {
 	const app = $('#app');
 	// Capped by the window, so a width saved on a big screen never squeezes the editor on a smaller one.
-	if (px) app.style.setProperty('--pw', `min(${px}px, calc(100vw - 820px))`); else app.style.removeProperty('--pw');
+	if (px) app.style.setProperty('--pw', `min(${px}px, calc(100vw - var(--nav-w) - var(--list-w) - 320px))`); else app.style.removeProperty('--pw');
 	try { px ? localStorage.setItem('pw', px) : localStorage.removeItem('pw'); } catch {}
 }
 function dragPane(e) {
@@ -261,25 +281,37 @@ function dragPane(e) {
 	const app = $('#app');
 	app.classList.add('dragging');
 	// Leave the editor at least 320px; the preview at least 320px.
-	const move = (ev) => setPaneWidth(Math.round(Math.min(innerWidth - 200 - 300 - 320, Math.max(320, innerWidth - ev.clientX))));
+	const side = $('nav').offsetWidth + ($('.list')?.offsetWidth ?? 0);
+	const move = (ev) => setPaneWidth(Math.round(Math.min(innerWidth - side - 320, Math.max(320, innerWidth - ev.clientX))));
 	const up = () => { app.classList.remove('dragging'); removeEventListener('pointermove', move); removeEventListener('pointerup', up); };
 	addEventListener('pointermove', move);
 	addEventListener('pointerup', up);
 }
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && full) { full = false; render(); } });
+// Side columns: the menu narrows to icons, the list hides. Remembered per browser.
+const remembered = (k) => { try { return localStorage.getItem(k) === '1'; } catch { return false; } };
+let navMin = remembered('navMin'), listMin = remembered('listMin');
+function side(k, v) {
+	if (k === 'navMin') navMin = v; else listMin = v;
+	try { localStorage.setItem(k, v ? '1' : '0'); } catch {}
+	render();
+}
 // The preview pane is built once and only pointed elsewhere, so clicking around doesn't reload the same page.
 let pane;
 function render() {
 	const app = $('#app');
-	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['history', 'Historial'], ['publish', 'Publicar']];
-	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: pagesView, media: mediaView, texts: textsView, site: siteView, history: historyView, publish: publishView })[view]();
+	const views = [['games', 'Juegos y proyectos', '▦'], ['blog', 'Blog', '✎'], ['pages', 'Páginas', '▤'], ['media', 'Medios', '▣'], ['site', 'Sitio', '⚙'], ['history', 'Historial', '↺'], ['publish', 'Publicar', '⇪']];
+	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: pagesView, media: mediaView, site: siteView, history: historyView, publish: publishView })[view]();
 	// Only screens with a page of the site to show get the pane (and its button).
 	const show = preview && !!url;
-	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l]) =>
-		h('button', { 'aria-current': String(view === v), onclick: () => go(v) }, l, v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
+	// Collapsed, the menu is a strip of icons; each keeps its name as a tooltip and for screen readers.
+	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l, ico]) =>
+		h('button', { 'aria-current': String(view === v), 'aria-label': l, title: navMin ? l : '', onclick: () => go(v) }, h('span.ico', { 'aria-hidden': 'true' }, ico), h('span.lbl.grow', {}, l), v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
 	), h('div.grow'),
 	h('div.seg.langs', { role: 'radiogroup', 'aria-label': 'Idioma que editás' }, Object.entries(LANGS).map(([l, n]) => h('label', { title: `Editar en ${n}` }, h('input', { type: 'radio', name: 'lang', 'aria-label': n, checked: lang === l, onchange: () => { lang = l; try { localStorage.setItem('lang', l); } catch {} render(); } }), l.toUpperCase()))),
-	url && h('button', { 'aria-pressed': String(preview), onclick: () => { preview = !preview; try { localStorage.setItem('preview', preview); } catch {} render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
+	url && h('button', { 'aria-pressed': String(preview), 'aria-label': preview ? 'Ocultar vista previa' : 'Vista previa', title: navMin ? (preview ? 'Ocultar vista previa' : 'Vista previa') : '', onclick: () => { preview = !preview; try { localStorage.setItem('preview', preview); } catch {} render(); } }, h('span.ico', { 'aria-hidden': 'true' }, '◧'), h('span.lbl', {}, preview ? 'Ocultar vista previa' : 'Vista previa')),
+	h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px', 'aria-label': 'Abrir el sitio', title: navMin ? 'Abrir el sitio' : '' }, h('span.ico', { 'aria-hidden': 'true' }, '↗'), h('span.lbl', {}, 'Abrir el sitio ↗')),
+	h('button.nav-collapse', { 'aria-label': navMin ? 'Mostrar el menú' : 'Achicar el menú', title: navMin ? 'Mostrar el menú' : 'Achicar el menú', onclick: () => side('navMin', !navMin) }, h('span.ico', { 'aria-hidden': 'true' }, '»'), h('span.lbl', {}, '« Achicar')));
 	pane ??= h('div.preview-pane', {},
 		h('div.grip', { title: 'Arrastrá para cambiar el ancho (doble clic: mitad y mitad)', onpointerdown: dragPane, ondblclick: () => setPaneWidth(null) }),
 		h('div.bar', {}, h('span.grow'),
@@ -297,8 +329,8 @@ function render() {
 		else sendTexts(); // same page, other texts (or none): re-mark it
 	}
 	if (!show) full = false;
-	app.className = 'app' + (show ? ' preview' : '') + (full ? ' full' : '');
-	const main = h('main', {}, editor);
+	app.className = 'app' + (show ? ' preview' : '') + (full ? ' full' : '') + (navMin ? ' nav-min' : '') + (listMin ? ' list-min' : '');
+	const main = h('main', {}, h('button.list-toggle', { 'aria-label': listMin ? 'Mostrar la lista' : 'Ocultar la lista', title: listMin ? 'Mostrar la lista' : 'Ocultar la lista', 'aria-expanded': String(!listMin), onclick: () => side('listMin', !listMin) }, listMin ? '›' : '‹'), editor);
 	if (!app.children.length) app.append(nav, list, main, pane);
 	else [nav, list, main].forEach((el, i) => app.children[i].replaceWith(el));
 	if (dirty) $('#save')?.classList.add('dirty');
@@ -897,7 +929,7 @@ function mediaView() {
 	return [list, editor, null];
 }
 
-// ---------- Fixed texts of the site (content/texts.json), and a landing's (content/landings/<slug>.json, from Páginas).
+// ---------- Interface texts (content/texts.json), edited under Sitio.
 // Visual editing, Storyblok style: click a text in the preview and its field opens here; type and the page changes live.
 // Texts the page doesn't show (alt texts, other pages' texts) stay in the list below.
 let onPage = null, onlyPage = true; // keys the preview found on its page; null until it answers
@@ -914,7 +946,7 @@ function sendTexts() {
 	onPage = null;
 	// Site texts, a page's blocks, or (anywhere else) nothing, which takes the outlines off.
 	if (view === 'pages' && draft?.blocks) return f.postMessage({ type: 'edit', texts: blockTexts(), blocks: true }, S.site);
-	const editing = draft && view === 'texts';
+	const editing = draft && view === 'site' && sel === 'texts';
 	f.postMessage({ type: 'edit', texts: editing ? Object.fromEntries(textKeys(draft[lang]).map((k) => [k, get(draft[lang], k)])) : {} }, S.site);
 }
 addEventListener('message', (e) => {
@@ -948,12 +980,12 @@ function pickRow(key) {
 	r.scrollIntoView({ block: 'center', behavior: 'smooth' });
 	r.querySelector('input,textarea').focus({ preventScroll: true });
 }
+// The interface texts (content/texts.json): menu, footer, game pages, blog, 404. Under Sitio.
 function textsView() {
-	const landing = null;
 	draft ??= clone(S.texts);
 	const other = lang === 'es' ? 'en' : 'es';
 	const save = async () => {
-		await api('PUT', landing ? `landing/${landing}` : 'texts', draft);
+		await api('PUT', 'texts', draft);
 		dirty = false; draft = null;
 		await reload();
 		toast('Guardado');
@@ -968,21 +1000,25 @@ function textsView() {
 			v.length > 60 || /<\w/.test(v) ? h('textarea', { ...attrs, rows: Math.min(6, Math.ceil(v.length / 70) + 1) }) : h('input', attrs));
 	};
 	const editor = h('div.editor', {},
-		h('div.bar', {}, h('h1.grow', {}, landing ? `Landing /${landing}/` : 'Textos del sitio'), h('span.tag', {}, LANGS[lang]), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
+		h('div.bar', {}, h('h1.grow', {}, 'Textos de la interfaz'), h('span.tag', {}, LANGS[lang]), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
 		h('p.hint', {}, preview
 			? 'Hacé clic en un texto de la vista previa para editarlo acá; mientras escribís, la página cambia. Podés navegar el sitio dentro de la vista previa.'
 			: 'Abrí la vista previa para elegir los textos haciendo clic en la página.',
-			landing && ` La estructura y el diseño de esta landing están en el código (src/pages/[lang]/${landing}.astro). Algunos textos llevan HTML simple como <em>.`),
+			' Son los textos fijos de las partes del sitio que no son páginas de bloques: el menú, el pie, la ficha de cada juego, el blog y la página de error. Lo que no se ve en la página abierta aparece al destildar «Solo los de esta página», o buscándolo.'),
 		h('div.bar', {},
 			h('input.grow', { id: 'find', type: 'search', placeholder: 'Buscar un texto…', 'aria-label': 'Buscar un texto', oninput: filterRows, style: 'flex:1 1 200px;width:auto' }),
 			preview && h('label.check', {}, h('input', { type: 'checkbox', checked: onlyPage, onchange: (e) => { onlyPage = e.target.checked; filterRows(); } }), 'Solo los de esta página', h('span.hint', { id: 'on-page' }))),
 		textKeys(draft[lang]).map(row));
 	queueMicrotask(filterRows);
-	return [h('div.list', {}, h('div.empty', {}, landing ? 'Textos de la landing.' : 'Lo que no se ve en la página (textos alternativos de imágenes, otras páginas) aparece al destildar «Solo los de esta página», o buscándolo.')), editor, landing ? `/${lang}/${landing}/` : `/${lang}/`];
+	return [siteList(), editor, `/${lang}/`];
 }
 
-// ---------- Site: contact links and wikis
+// ---------- Site: contact links and wikis, and the interface texts
+const siteList = () => h('div.list', {},
+	h('button.item', { 'aria-current': String(sel !== 'texts'), onclick: () => go('site') }, h('span', {}, h('div.t', {}, 'Links y wikis'), h('div.s', {}, 'Contacto, en el pie y en /links/'))),
+	h('button.item', { 'aria-current': String(sel === 'texts'), onclick: () => go('site', 'texts') }, h('span', {}, h('div.t', {}, 'Textos de la interfaz'), h('div.s', {}, 'Menú, pie, fichas de juegos, blog'))));
 function siteView() {
+	if (sel === 'texts') return textsView();
 	draft ??= { profile: clone(S.profile), wikis: clone(S.sources.wikis ?? []) };
 	const links = draft.profile.links;
 	const box = h('div', { style: 'display:flex;flex-direction:column;gap:8px' });
@@ -1007,7 +1043,7 @@ function siteView() {
 		h('fieldset', {}, h('legend', {}, 'Wikis'), h('span.hint', {}, 'Una por línea: usuario/repo usa su carpeta docs/; para otra carpeta, su link github.com/usuario/repo/tree/main/carpeta. Se publica en /wiki/<repo>/ al traer datos de las tiendas.'),
 			h('textarea', { rows: 4, value: draft.wikis.join('\n'), oninput: (e) => { draft.wikis = e.target.value.split('\n'); touch(); } }))
 	);
-	return [h('div.list', {}, h('div.empty', {}, 'Los textos fijos del sitio (títulos, menú) están en src/i18n.ts.')), editor, `/${lang}/links/`];
+	return [siteList(), editor, `/${lang}/links/`];
 }
 
 // ---------- History: every published change to the content, and what isn't published yet, each file undoable.
@@ -1149,7 +1185,7 @@ function publishView() {
 	return [h('div.list', {}, h('div.empty', {}, 'Guardar escribe los archivos en tu equipo. Publicar los sube.')), editor, null];
 }
 
-try { const pw = Number(localStorage.getItem('pw')); if (pw) $('#app').style.setProperty('--pw', `min(${pw}px, calc(100vw - 820px))`); } catch {}
+try { const pw = Number(localStorage.getItem('pw')); if (pw) $('#app').style.setProperty('--pw', `min(${pw}px, calc(100vw - var(--nav-w) - var(--list-w) - 320px))`); } catch {}
 reload().catch((e) => { document.body.textContent = `No pude leer el contenido: ${e.message}`; });
 </script>
 </body>
