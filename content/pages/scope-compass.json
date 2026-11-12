@@ -1,0 +1,866 @@
+{
+  "title": {
+    "es": "Scope Compass",
+    "en": "Scope Compass"
+  },
+  "description": {
+    "es": "Un organizador de proyectos de videojuegos con los datos en git: tablero por hito, documentos del juego, playtests, un servidor MCP para Claude Code y un dock para Godot. Local, sin cuentas ni nube.",
+    "en": "A game project organizer that keeps its data in git: a board per milestone, design docs, playtests, an MCP server for Claude Code and a Godot dock. Local, no accounts, no cloud."
+  },
+  "project": "",
+  "image": "",
+  "draft": true,
+  "blocks": [
+    {
+      "id": "b1",
+      "type": "hero",
+      "layout": "stacked",
+      "title": {
+        "es": "Tu proyecto de juego, organizado <em>en git</em>.",
+        "en": "Your game project, organized <em>in git</em>."
+      },
+      "intro": {
+        "es": "Un tablero de tareas por hito que se guarda como un JSON por tarea en <code>compass/</code>, dentro de tu proyecto. Una CLI, un hub local con UI web y un dock para el editor de Godot lo hacen cómodo de usar, y un servidor MCP deja que Claude Code lo opere. La app es opcional: los datos se leen y se editan con git y un editor de texto. Gratis y con licencia MIT.",
+        "en": "A task board per milestone, saved as one JSON file per task in <code>compass/</code>, inside your project. A CLI, a local hub with a web UI and a Godot editor dock make it comfortable to use, and an MCP server lets Claude Code work the board. The app is optional: the data reads and edits with git and a text editor. Free and MIT licensed."
+      },
+      "buttons": [
+        {
+          "label": {
+            "es": "Descargar (GitHub)",
+            "en": "Download (GitHub)"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/scope-compass/releases/latest",
+            "en": "https://github.com/dannroda/scope-compass/releases/latest"
+          },
+          "style": "primary"
+        },
+        {
+          "label": {
+            "es": "Ver el código",
+            "en": "View the source"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/scope-compass",
+            "en": "https://github.com/dannroda/scope-compass"
+          },
+          "style": "plain"
+        }
+      ],
+      "game": "scope-compass",
+      "chips": [
+        {
+          "text": {
+            "es": "datos en git",
+            "en": "data in git"
+          }
+        },
+        {
+          "text": {
+            "es": "MCP para Claude Code",
+            "en": "MCP for Claude Code"
+          }
+        },
+        {
+          "text": {
+            "es": "dock de Godot",
+            "en": "Godot dock"
+          }
+        },
+        {
+          "text": {
+            "es": "Linux y Windows",
+            "en": "Linux & Windows"
+          }
+        }
+      ],
+      "side": "none",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageMobile": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b2",
+      "type": "cards",
+      "anchor": "data",
+      "eyebrow": {
+        "es": "compass/ · un JSON por tarea",
+        "en": "compass/ · one JSON per task"
+      },
+      "heading": {
+        "es": "Los datos viven en git. La app es opcional.",
+        "en": "The data lives in git. The app is optional."
+      },
+      "intro": {
+        "es": "Si la app no está instalada, se rompió o no está corriendo, el tablero sigue ahí: se lee, se edita y se versiona como cualquier otro archivo del repo.",
+        "en": "If the app isn’t installed, breaks or isn’t running, the board is still there: you read, edit and version it like any other file in the repo."
+      },
+      "style": "rules",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Un archivo por tarea",
+            "en": "One file per task"
+          },
+          "text": {
+            "es": "Cada hito y cada tarea es un JSON chico dentro de <code>compass/</code>. Se mira con <code>git diff</code>, se revisa en un PR y se arregla a mano si hace falta.",
+            "en": "Every milestone and every task is a small JSON file inside <code>compass/</code>. Read it with <code>git diff</code>, review it in a PR, fix it by hand if you need to."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Una copia legible",
+            "en": "A readable copy"
+          },
+          "text": {
+            "es": "Cada cambio regenera <code>docs/tareas.md</code>: el plan entero en markdown, para leerlo en GitHub o en cualquier editor.",
+            "en": "Every change regenerates <code>docs/tareas.md</code>: the whole plan in markdown, to read on GitHub or in any editor."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Local primero",
+            "en": "Local first"
+          },
+          "text": {
+            "es": "El hub escucha en <code>127.0.0.1</code>. Sin cuentas y sin nube. Un mismo proyecto en Linux y en Windows se sincroniza con git.",
+            "en": "The hub listens on <code>127.0.0.1</code>. No accounts, no cloud. The same project on Linux and on Windows syncs through git."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b3",
+      "type": "cards",
+      "anchor": "features",
+      "eyebrow": {
+        "es": "Hub y UI web",
+        "en": "Hub and web UI"
+      },
+      "heading": {
+        "es": "Todo lo que un proyecto de juego necesita tener a la vista.",
+        "en": "Everything a game project needs in view."
+      },
+      "intro": {
+        "es": "El hub sirve la UI en el navegador y avisa en vivo a la web, al dock y a la CLI cuando algo cambia.",
+        "en": "The hub serves the UI in your browser and tells the web, the dock and the CLI live when something changes."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Tablero y lista",
+            "en": "Board and list"
+          },
+          "text": {
+            "es": "Tareas por hito en cinco columnas: Pendiente, Pausado, En curso, Revisión y Hecho. Una vista de lista con filtros por etiqueta, prioridad y responsable, pasos con casilla, fechas, capturas e historial.",
+            "en": "Tasks per milestone in five columns: To do, Paused, Doing, Review and Done. A list view filtered by tag, priority and assignee, checklists, due dates, screenshots and history."
+          },
+          "tags": {
+            "es": [
+              "hitos",
+              "etiquetas",
+              "prioridad",
+              "historial"
+            ],
+            "en": [
+              "milestones",
+              "tags",
+              "priority",
+              "history"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Documentos y GDD",
+            "en": "Docs and GDD"
+          },
+          "text": {
+            "es": "Los markdown del proyecto en una biblioteca con carpetas, búsqueda y su estado de git. Las tareas citan una sección del GDD con un id estable, que sobrevive a los cambios de título.",
+            "en": "Your project’s markdown in a library with folders, search and git status. Tasks cite a GDD section by a stable id that survives title changes."
+          },
+          "tags": {
+            "es": [
+              "GDD",
+              "referencias",
+              "búsqueda"
+            ],
+            "en": [
+              "GDD",
+              "references",
+              "search"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Playtests",
+            "en": "Playtests"
+          },
+          "text": {
+            "es": "Armá una sesión con las tareas en Revisión, en el orden en que las vas a probar. Marcá cada una como anda o falla, con una nota, y pasala a Hecho o de vuelta a En curso.",
+            "en": "Build a session from the tasks in Review, in the order you’ll test them. Mark each one pass or fail with a note, then move it to Done or back to Doing."
+          },
+          "tags": {
+            "es": [
+              "anda",
+              "falla",
+              "nota"
+            ],
+            "en": [
+              "pass",
+              "fail",
+              "note"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Decisiones del agente",
+            "en": "Agent decisions"
+          },
+          "text": {
+            "es": "Cuando un agente elige entre alternativas razonables, lo anota en la tarea con el porqué y lo que descartó. Lo que decidió solo queda en una bandeja para revisar; lo que pregunta te espera en Hoy. Marcá una para revertir y el agente la deshace.",
+            "en": "When an agent picks between reasonable alternatives, it writes it on the task with the why and what it ruled out. What it decided alone waits in a review inbox; what it asks waits for you in Today. Flag one to revert and the agent undoes it."
+          },
+          "tags": {
+            "es": [
+              "sin revisar",
+              "preguntas",
+              "revertir"
+            ],
+            "en": [
+              "unreviewed",
+              "questions",
+              "revert"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Archivos del repo",
+            "en": "Repo files"
+          },
+          "text": {
+            "es": "Una tarea lista los scripts y escenas que toca. La pestaña Archivos muestra el repo con su estado de git y las tareas de cada archivo.",
+            "en": "A task lists the scripts and scenes it touches. The Files tab shows the repo with its git status and the tasks for each file."
+          },
+          "tags": {
+            "es": [
+              "res://",
+              "git status"
+            ],
+            "en": [
+              "res://",
+              "git status"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Chat con tu Claude Code",
+            "en": "Chat with your Claude Code"
+          },
+          "text": {
+            "es": "Un panel corre el <code>claude</code> que ya tenés instalado, con tu cuenta, sobre el proyecto: lee el código y opera el tablero, pero no edita archivos ni corre comandos. Solo aparece en tu equipo.",
+            "en": "A panel runs the <code>claude</code> you already have installed, with your account, on the project: it reads the code and works the board, but doesn’t edit files or run commands. It only shows up on your own machine."
+          },
+          "tags": {
+            "es": [
+              "opcional",
+              "solo 127.0.0.1"
+            ],
+            "en": [
+              "optional",
+              "127.0.0.1 only"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b4",
+      "type": "cards",
+      "anchor": "home",
+      "eyebrow": {
+        "es": "Inicio · scompass home",
+        "en": "Home · scompass home"
+      },
+      "heading": {
+        "es": "Todos tus proyectos en una página.",
+        "en": "All your projects on one page."
+      },
+      "intro": {
+        "es": "El Inicio sirve cada tablero desde un solo puerto, con un ícono en la bandeja del sistema. Sirve también para lo que no es un juego: un proyecto con la plantilla Personal es un conjunto de listas.",
+        "en": "Home serves every board from a single port, with an icon in the system tray. It works for things that aren’t games too: a project from the Personal template is a set of lists."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Hoy y esta semana",
+            "en": "Today and this week"
+          },
+          "text": {
+            "es": "Lo vencido y lo de hoy de todos los proyectos, lo que está en curso y lo que vence en los próximos siete días, filtrable por etiqueta.",
+            "en": "What’s overdue or due today across every project, what’s in progress and what’s due in the next seven days, filterable by tag."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Listas",
+            "en": "Lists"
+          },
+          "text": {
+            "es": "Listas con fecha límite y repetición (cada día, cada 2 semanas) y un campo para anotar algo rápido sin abrir el proyecto.",
+            "en": "Lists with due dates and repeats (every day, every 2 weeks) and a quick field to jot something down without opening the project."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Plantillas",
+            "en": "Templates"
+          },
+          "text": {
+            "es": "Creá un proyecto desde el Inicio con la plantilla Juego, Personal o Vacío, o con <code>scompass init --template juego</code>.",
+            "en": "Create a project from Home with the Game, Personal or Empty template (<code>juego</code>, <code>personal</code>, <code>vacio</code>), or with <code>scompass init --template juego</code>."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Desde el teléfono",
+            "en": "From your phone"
+          },
+          "text": {
+            "es": "Con <code>--lan</code>, la web se abre desde el teléfono en la red de casa, con una vista pensada para pantallas chicas. No hay login: usalo solo en una red de confianza.",
+            "en": "With <code>--lan</code>, the web opens from your phone on your home network, with a layout made for small screens. There’s no login: use it only on a network you trust."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b5",
+      "type": "panels",
+      "anchor": "integrations",
+      "panels": [
+        {
+          "eyebrow": {
+            "es": "Addon de Godot",
+            "en": "Godot addon"
+          },
+          "heading": {
+            "es": "El tablero, al lado del Inspector.",
+            "en": "The board, next to the Inspector."
+          },
+          "text": {
+            "es": "El dock Tablero muestra las tareas del hito y, arriba, las del script o la escena que tenés abiertos. Un clic en un archivo de la tarea lo abre en el editor, y las secciones del GDD se leen con el resaltado de GDScript de tu tema. Sin el hub, el dock igual lee <code>compass/</code>.",
+            "en": "The <b>Board</b> dock shows the milestone’s tasks and, on top, the ones for the script or scene you have open. Click a file on a task to open it in the editor, and GDD sections read with your theme’s GDScript highlighting. Without the hub, the dock still reads <code>compass/</code>."
+          },
+          "image": {
+            "es": "",
+            "en": ""
+          },
+          "imageAlt": {
+            "es": "",
+            "en": ""
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        },
+        {
+          "eyebrow": {
+            "es": "MCP · scompass mcp",
+            "en": "MCP · scompass mcp"
+          },
+          "heading": {
+            "es": "Claude Code opera el tablero con herramientas, no con Bash.",
+            "en": "Claude Code works the board with tools, not Bash."
+          },
+          "text": {
+            "es": "Más de 30 herramientas: listar y mostrar tareas, crearlas, moverlas, tildar pasos, vincular archivos, buscar en los documentos, anotar decisiones y cargar resultados de playtest. Las escrituras pasan por el hub, así la web y el dock se enteran al instante.",
+            "en": "More than 30 tools: list and show tasks, create and move them, check off steps, link files, search the docs, log decisions and record playtest results. Writes go through the hub, so the web and the dock see them instantly."
+          },
+          "image": {
+            "es": "",
+            "en": ""
+          },
+          "imageAlt": {
+            "es": "",
+            "en": ""
+          },
+          "code": {
+            "es": "<span class=\"k\">claude mcp add</span> --scope user scompass -- scompass mcp\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>",
+            "en": "<span class=\"k\">claude mcp add</span> --scope user scompass -- scompass mcp\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>"
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "b6",
+      "type": "cards",
+      "anchor": "",
+      "eyebrow": {
+        "es": "Reglas",
+        "en": "Rules"
+      },
+      "heading": {
+        "es": "Lo que nunca va a hacer.",
+        "en": "What it will never do."
+      },
+      "intro": {
+        "es": "",
+        "en": ""
+      },
+      "style": "rules",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Guardar tus datos en otro lado",
+            "en": "Keep your data anywhere else"
+          },
+          "text": {
+            "es": "No hay base de datos ni copia en la nube: todo está en <code>compass/</code>, en tu repo.",
+            "en": "There’s no database and no cloud copy: everything is in <code>compass/</code>, in your repo."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Pedirte una cuenta",
+            "en": "Ask you for an account"
+          },
+          "text": {
+            "es": "No hay registro ni login. El chat usa el login de tu propio Claude Code, y el hub no guarda claves.",
+            "en": "No sign-up, no login. The chat uses your own Claude Code login, and the hub stores no keys."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Escuchar fuera de tu máquina sin que lo pidas",
+            "en": "Listen outside your machine unless you ask"
+          },
+          "text": {
+            "es": "El hub escucha en <code>127.0.0.1</code>. Solo con <code>--lan</code> se abre a tu red, y aun así el chat sigue solo en tu equipo.",
+            "en": "The hub listens on <code>127.0.0.1</code>. Only <code>--lan</code> opens it to your network, and even then the chat stays on your machine."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Dejar que el chat toque tu código",
+            "en": "Let the chat touch your code"
+          },
+          "text": {
+            "es": "El chat de la web lee archivos y opera el tablero. Editar y correr comandos queda para la terminal, donde aprobás cada permiso.",
+            "en": "The web chat reads files and works the board. Editing and running commands stay in the terminal, where you approve every permission."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b7",
+      "type": "band",
+      "anchor": "install",
+      "heading": {
+        "es": "Dos descargas, tres pasos.",
+        "en": "Two downloads, three steps."
+      },
+      "notes": [
+        {
+          "text": {
+            "es": "Cada release trae dos descargas: el binario de <code>scompass</code> (CLI, hub y UI web) y el addon de Godot en un zip. Git para los datos; Godot 4.8 para el addon; Claude Code solo si querés el chat o el MCP. Linux y Windows 10/11. MIT y gratis.",
+            "en": "Each release has two downloads: the <code>scompass</code> binary (CLI, hub and web UI) and the Godot addon as a zip. Git for the data; Godot 4.8 for the addon; Claude Code only if you want the chat or the MCP. Linux and Windows 10/11. Free and MIT licensed."
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "label": {
+            "es": "Descargar (GitHub)",
+            "en": "Download (GitHub)"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/scope-compass/releases/latest",
+            "en": "https://github.com/dannroda/scope-compass/releases/latest"
+          },
+          "style": "plain"
+        },
+        {
+          "label": {
+            "es": "Ver el código",
+            "en": "View the source"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/scope-compass",
+            "en": "https://github.com/dannroda/scope-compass"
+          },
+          "style": "ghost"
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "es": "Poné <code>scompass</code> en tu PATH y corré <code>scompass home --tray</code>.",
+            "en": "Put <code>scompass</code> on your PATH and run <code>scompass home --tray</code>."
+          }
+        },
+        {
+          "text": {
+            "es": "Descomprimí el addon en la raíz de tu proyecto de Godot y habilitá <b>Scope Compass</b> en Proyecto → Configuración del proyecto → Plugins.",
+            "en": "Unzip the addon into your Godot project’s root and enable <b>Scope Compass</b> in Project → Project Settings → Plugins."
+          }
+        },
+        {
+          "text": {
+            "es": "En el dock <b>Tablero</b>, tocá <b>Crear compass/</b> y elegí la plantilla Juego.",
+            "en": "In the <b>Board</b> dock, click <b>Create compass/</b> and pick the <b>Game</b> template."
+          }
+        }
+      ],
+      "fine": {
+        "es": "Scope Compass · MIT · Sin cuentas y sin nube. Interfaz en castellano e inglés.",
+        "en": "Scope Compass · MIT · No accounts, no cloud. Interface in English and Spanish."
+      }
+    }
+  ]
+}

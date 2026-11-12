@@ -119,8 +119,8 @@
         "en": "Five modes. You decide what each one may touch."
       },
       "intro": {
-        "es": "Cada acción pertenece a un grupo, y cada grupo tiene una decisión por modo. Preguntar muestra una tarjeta con el diff; Denegar le explica al agente por qué. La matriz vive en <code>project_config.tres</code>, así que tu equipo la comparte.",
-        "en": "Every action belongs to a group, and each group has a decision per mode. Ask shows a card with the diff; Deny tells the agent why. The matrix lives in <code>project_config.tres</code>, so your team shares it."
+        "es": "Cada acción pertenece a un grupo, y cada grupo tiene una decisión por modo. Preguntar muestra una tarjeta con el diff; Denegar le explica al agente por qué. La matriz vive en <code>project_config.tres</code>, así que tu equipo la comparte. Sobre cualquiera de ellos, un <b>modo del proyecto</b> (<code>res://agent_modes/*.json</code>) con su nombre, sus instrucciones y su modelo limita qué archivos puede escribir el agente, también en One-shot, y nunca permite más que su modo base. Si la tarea pide otro modo, el agente lo propone en una tarjeta con el motivo y vos decidís.",
+        "en": "Every action belongs to a group, and each group has a decision per mode. Ask shows a card with the diff; Deny tells the agent why. The matrix lives in <code>project_config.tres</code>, so your team shares it. On top of any of them, a <b>project mode</b> (<code>res://agent_modes/*.json</code>) with its own name, instructions and model limits which files the agent may write, in One-shot too, and never allows more than its base mode. When the task calls for another mode, the agent proposes it on a card with its reason, and you decide."
       },
       "image": {
         "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/permission.png",
@@ -365,21 +365,23 @@
             "en": "Run and look"
           },
           "text": {
-            "es": "Corre una escena con input simulado, lee los errores reales y captura frames. El input va por frame de física, así que la corrida se repite igual a cualquier framerate. Playtest contesta pasó, falló o no se pudo probar, con evidencia y video opcional.",
-            "en": "Run a scene with simulated input, read the real errors, capture frames. Input plays by physics frame, so a run reproduces at any framerate. Playtest answers passed, failed or could not test, with evidence and optional video."
+            "es": "Corre una escena con input simulado, lee los errores reales y captura frames. El input va por frame de física, así que la corrida se repite igual a cualquier framerate. Playtest contesta pasó, falló o no se pudo probar, con evidencia y video opcional. Hasta 4 instancias a la vez, para probar multijugador.",
+            "en": "Run a scene with simulated input, read the real errors, capture frames. Input plays by physics frame, so a run reproduces at any framerate. Playtest answers passed, failed or could not test, with evidence and optional video. Up to 4 instances at once, to test multiplayer."
           },
           "tags": {
             "es": [
               "run_scene",
               "capture_game_frame",
               "game_input",
-              "game_wait"
+              "game_wait",
+              "game_instance"
             ],
             "en": [
               "run_scene",
               "capture_game_frame",
               "game_input",
-              "game_wait"
+              "game_wait",
+              "game_instance"
             ]
           },
           "command": "",
@@ -484,6 +486,64 @@
               "create_resource",
               "asset_search",
               "asset_install"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Hornear y exportar",
+            "en": "Bake and export"
+          },
+          "text": {
+            "es": "Rehace la navegación después de cambiar un nivel, hornea lightmaps y occluders con el propio botón del editor, y exporta con tus presets en un Godot headless aparte, con errores, tiempo y tamaño. <code>export_presets.cfg</code> nunca cambia.",
+            "en": "Rebuilds navigation after a level changes, bakes lightmaps and occluders with the editor’s own Bake button, and exports with your presets in a separate headless Godot, with errors, time and size. <code>export_presets.cfg</code> never changes."
+          },
+          "tags": {
+            "es": [
+              "bake",
+              "export_project"
+            ],
+            "en": [
+              "bake",
+              "export_project"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Herramientas del proyecto",
+            "en": "Project tools"
+          },
+          "text": {
+            "es": "Dale al agente herramientas propias en GDScript: cada <code>res://agent_tools/&lt;nombre&gt;.gd</code> se vuelve <code>godot.&lt;nombre&gt;</code>. Solo cargan en una máquina donde aprobaste su código, y cada llamada pide permiso.",
+            "en": "Give the agent your own tools in GDScript: each <code>res://agent_tools/&lt;name&gt;.gd</code> becomes <code>godot.&lt;name&gt;</code>. They only load on a machine where you approved their code, and every call asks for permission."
+          },
+          "tags": {
+            "es": [
+              "res://agent_tools/"
+            ],
+            "en": [
+              "res://agent_tools/"
             ]
           },
           "command": "",
@@ -741,8 +801,8 @@
             "en": "Regressions without tokens"
           },
           "text": {
-            "es": "Un playtest que pasa deja un script que repite la comprobación. <b>Correr regresiones</b> en el panel de hallazgos los corre todos sin el agente y sin gastar tokens, y dice cuáles fallan. Para CI, commiteá <code>res://.godot_agent/playtests/regressions/</code> y corré:",
-            "en": "A playtest that passes leaves a script that repeats the check. <b>Run regressions</b> in the findings panel runs them all without the agent and without using tokens, and says which ones fail. For CI, commit <code>res://.godot_agent/playtests/regressions/</code> and run:"
+            "es": "Un playtest que pasa deja un script que repite la comprobación. <b>Correr regresiones</b> en el panel de hallazgos los corre todos sin el agente y sin gastar tokens, y dice cuáles fallan. <b>Medir regresiones</b> mete bugs chicos en una copia en memoria del juego y te dice cuáles detectan. <b>CI workflow…</b> escribe el workflow de GitHub Actions que las corre en cada push. Para CI, commiteá <code>res://.godot_agent/playtests/regressions/</code> y corré:",
+            "en": "A playtest that passes leaves a script that repeats the check. <b>Run regressions</b> in the findings panel runs them all without the agent and without using tokens, and says which ones fail. <b>Measure regressions</b> plants small bugs in an in-memory copy of the game and tells you which ones they catch. <b>CI workflow…</b> writes the GitHub Actions workflow that runs them on every push. For CI, commit <code>res://.godot_agent/playtests/regressions/</code> and run:"
           },
           "tags": {
             "es": [],
@@ -901,8 +961,8 @@
             "en": "Findings land on the line."
           },
           "text": {
-            "es": "Bugs, estructura, rendimiento y estilo aparecen como marcas en el Script Editor, con Aplicar arreglo, Preguntar y Descartar. Traé los comentarios de un PR de GitHub como hallazgos, o exportá la revisión a <code>CLAUDE.md</code> como convenciones.",
-            "en": "Bugs, structure, performance and style show as marks in the Script Editor, with Apply fix, Ask and Dismiss. Pull a GitHub PR’s comments in as findings, or export the review to <code>CLAUDE.md</code> as conventions."
+            "es": "Bugs, estructura, rendimiento y estilo aparecen como marcas en el Script Editor, con Aplicar arreglo, Preguntar y Descartar. Traé los comentarios de un PR de GitHub como hallazgos, o exportá la revisión a <code>CLAUDE.md</code> como convenciones. Y después de cada turno, los cambios del agente quedan marcados en el margen: <b>✓</b> los conserva, <b>✗</b> rechaza solo ese.",
+            "en": "Bugs, structure, performance and style show as marks in the Script Editor, with Apply fix, Ask and Dismiss. Pull a GitHub PR’s comments in as findings, or export the review to <code>CLAUDE.md</code> as conventions. And after each turn, the agent’s changes are marked in the gutter: <b>✓</b> keeps one, <b>✗</b> rejects just that one."
           },
           "image": {
             "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/review.png",
@@ -962,6 +1022,210 @@
           }
         }
       ]
+    },
+    {
+      "id": "b10",
+      "type": "cards",
+      "anchor": "workflow",
+      "eyebrow": {
+        "es": "Trabajar con el agente",
+        "en": "Working with the agent"
+      },
+      "heading": {
+        "es": "Planes que se verifican jugando.",
+        "en": "Plans checked by playing."
+      },
+      "intro": {
+        "es": "Pedí un plan con <code>/plan</code>, editalo o aprobalo, y el agente lo construye en Construir.",
+        "en": "Ask for a plan with <code>/plan</code>, edit or approve it, and the agent builds it in Build."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Criterios jugables",
+            "en": "Playable criteria"
+          },
+          "text": {
+            "es": "Cada criterio del plan («CUANDO el jugador toca un enemigo, EL JUEGO PIERDE una vida») se juega después de construir, sin cambiar el proyecto. Los que fallan vuelven al agente con lo que vio el playtest, y solo esos se juegan de nuevo.",
+            "en": "Each criterion in the plan (“WHEN the player touches an enemy, THE GAME SHALL take one life away”) is played after the build, without changing the project. The ones that fail go back to the agent with what the playtest saw, and only those are played again."
+          },
+          "tags": {
+            "es": [
+              "/plan",
+              "4 ✓ · 1 ✗ · 1 ⊘"
+            ],
+            "en": [
+              "/plan",
+              "4 ✓ · 1 ✗ · 1 ⊘"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Segunda opinión",
+            "en": "Second opinion"
+          },
+          "text": {
+            "es": "Otro agente, de solo lectura y sin la conversación, revisa los cambios de un turno, un plan o tu pregunta. Su respuesta llega al agente solo si la mandás.",
+            "en": "Another agent, read-only and without the conversation, reviews a turn’s changes, a plan or your question. Its answer reaches the agent only if you send it."
+          },
+          "tags": {
+            "es": [
+              "/second-opinion"
+            ],
+            "en": [
+              "/second-opinion"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Recetas",
+            "en": "Recipes"
+          },
+          "text": {
+            "es": "Guardá un pedido que repetís (un enemigo nuevo, una pantalla de opciones) en <code>res://agent_recipes/</code>, con parámetros y chequeos que el resultado tiene que pasar. <code>/recipe</code> abre un formulario hecho con sus parámetros.",
+            "en": "Save a request you repeat (a new enemy, an options screen) in <code>res://agent_recipes/</code>, with parameters and checks the result must pass. <code>/recipe</code> opens a form built from its parameters."
+          },
+          "tags": {
+            "es": [
+              "/recipe"
+            ],
+            "en": [
+              "/recipe"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Reglas por archivo",
+            "en": "Rules by file"
+          },
+          "text": {
+            "es": "Las reglas de <code>.agents/rules</code>, <code>.claude/rules</code> o <code>.cursor/rules</code> le llegan a cualquier agente cuando un turno toca un archivo que coincide.",
+            "en": "Rules in <code>.agents/rules</code>, <code>.claude/rules</code> or <code>.cursor/rules</code> reach any agent when a turn touches a matching file."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Hooks y chequeos del proyecto",
+            "en": "Project hooks and checks"
+          },
+          "text": {
+            "es": "Corré las regresiones, tus tests de GUT o gdUnit4 o un comando después de cada turno que cambia archivos; una falla vuelve al agente para que la arregle. Los hooks reaccionan a guardar, terminar el juego o exportar.",
+            "en": "Run the regressions, your GUT or gdUnit4 tests or a command after each turn that changes files; a failure goes back to the agent to fix. Hooks react to saving, the game ending or an export."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Seguir al agente",
+            "en": "Follow the agent"
+          },
+          "text": {
+            "es": "El editor salta a lo que el agente edita: el script en la línea que cambió, o la escena con el nodo seleccionado. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> manda el mensaje y lo sigue durante ese pedido.",
+            "en": "The editor jumps to what the agent edits: the script at the changed line, or the scene with the node selected. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends your message and follows it for that request."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
     },
     {
       "id": "b7",
@@ -1097,6 +1361,54 @@
           "text": {
             "es": "Nada del addon llega a un juego exportado.",
             "en": "Nothing from the addon reaches an exported build."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Correr el código de un proyecto clonado sin tu aprobación",
+            "en": "Run a cloned project’s code without your approval"
+          },
+          "text": {
+            "es": "Los servidores MCP, las herramientas, los hooks y los comandos de recetas del proyecto solo arrancan en una máquina donde los aprobaste, viendo antes qué corren.",
+            "en": "The project’s MCP servers, tools, hooks and recipe commands only start on a machine where you approved them, after seeing what they run."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Dejar que una sesión le dé órdenes a otra",
+            "en": "Let one session give orders to another"
+          },
+          "text": {
+            "es": "Un mensaje entre pestañas pide permiso, llega como datos y no como instrucciones, y nunca va a una sesión con más permisos.",
+            "en": "A message between tabs asks for permission, arrives as data rather than instructions, and never goes to a session with more permissions."
           },
           "tags": {
             "es": [],
@@ -1409,14 +1721,14 @@
       "notes": [
         {
           "text": {
-            "es": "Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.",
-            "en": "Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider."
+            "es": "Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Godot 4.7.2, 4.8-beta3 y Godot .NET 4.7.2, en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.",
+            "en": "Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Godot 4.7.2, 4.8-beta3 and Godot .NET 4.7.2, on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider."
           }
         },
         {
           "text": {
-            "es": "<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 sigue imprimiendo el error, aunque no se cayó en 12 corridas.",
-            "en": "<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 still prints the error, though it didn’t crash in 12 runs."
+            "es": "<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 y 4.8-beta3 siguen imprimiendo el error; 4.8-beta2 no se cayó en 12 corridas.",
+            "en": "<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 and 4.8-beta3 still print the error; 4.8-beta2 didn’t crash in 12 runs."
           }
         }
       ],

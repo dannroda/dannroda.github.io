@@ -16,18 +16,18 @@
       "repo": ""
     },
     {
-      "url": "https://emarod.itch.io/rescue-signal",
+      "url": "https://sergiogp11.itch.io/revenge-of-lord-chicken",
       "repo": ""
     }
   ],
   "github": [
-    "dannroda/dannroda.github.io",
     "dannroda/godot-agent",
     "dannroda/godot-agent-plugins",
     "dannroda/Asteroids",
     "dannroda/scope-compass",
     "dannroda/project-epiphany",
-    "lonewolftechnology/godot-dojo"
+    "lonewolftechnology/godot-dojo",
+    "dannroda/scope-compass"
   ],
   "assetlib": [],
   "wikis": []
