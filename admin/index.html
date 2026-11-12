@@ -22,7 +22,7 @@
 	button:hover { filter: brightness(1.15); }
 	button.primary { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 	button.danger { background: none; color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
-	button.link { background: none; padding: 0; color: var(--accent); text-decoration: underline; }
+	button.link { background: none; padding: 0; color: var(--accent); text-decoration: underline; text-align: left; }
 	button:disabled { opacity: 0.5; cursor: default; }
 	label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
 	.hint { font-weight: 400; color: var(--muted); font-size: 13px; }
@@ -51,7 +51,7 @@
 	.bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 	.bar .grow { flex: 1; }
 	.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-	fieldset { border: 1px solid var(--surface-3); border-radius: 8px; padding: 14px; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+	fieldset { border: 1px solid var(--surface-3); border-radius: 8px; padding: 14px; margin: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 	legend { padding: 0 6px; font-weight: 600; }
 	.seg { display: flex; flex-wrap: wrap; gap: 6px; }
 	.seg label { flex-direction: row; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-2); border-radius: 999px; font-weight: 400; cursor: pointer; }
@@ -71,6 +71,23 @@
 	.preview-pane iframe { flex: 1; border: 0; background: #fff; width: 100%; }
 	.toast { position: fixed; bottom: 20px; left: 50%; translate: -50%; background: var(--surface-3); padding: 10px 18px; border-radius: 8px; box-shadow: 0 6px 24px #0008; z-index: 9; }
 	.toast.err { background: var(--danger); color: var(--accent-ink); }
+	.toolbar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 6px; background: var(--surface); border: 1px solid var(--surface-3); border-bottom: 0; border-radius: 6px 6px 0 0; }
+	.toolbar button { padding: 4px 10px; background: none; min-width: 34px; }
+	.toolbar button:hover { background: var(--surface-3); }
+	.toolbar select { width: auto; padding: 4px 8px; }
+	.md textarea { border-radius: 0 0 6px 6px; }
+	.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+	.grid.big { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+	.thumb { display: flex; flex-direction: column; gap: 4px; padding: 6px; background: var(--surface-2); text-align: left; font-size: 12px; overflow: hidden; }
+	.thumb img, .card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; background: repeating-conic-gradient(#2a2d35 0 25%, #1b1d23 0 50%) 0 0 / 16px 16px; }
+	.thumb span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.card { background: var(--surface); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+	.card .t { font-weight: 500; overflow-wrap: anywhere; }
+	dialog.picker { width: min(900px, 92vw); max-height: 85vh; background: var(--bg); color: var(--ink); border: 1px solid var(--surface-3); border-radius: 10px; padding: 16px; }
+	dialog.picker::backdrop { background: #000a; }
+	dialog.picker .bar { margin-bottom: 12px; }
+	.text-row { display: flex; flex-direction: column; gap: 4px; }
+	.text-row[hidden] { display: none; }
 	.dirty::after { content: ' ●'; color: var(--warn); }
 	@media (max-width: 900px) {
 		.app, .app.preview { grid-template-columns: 1fr; height: auto; }
@@ -114,7 +131,7 @@ function detect(link) {
 }
 
 let S; // everything the server read from disk
-let view = 'games', sel = null, lang = 'es', draft = null, dirty = false, preview = false, busy = '', lastLog = '';
+let view = 'games', sel = null, lang = 'es', draft = null, dirty = false, preview = innerWidth > 1300, busy = '', lastLog = '';
 const $ = (q) => document.querySelector(q);
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -178,12 +195,13 @@ const select = (options, value, onpick) => h('select', { onchange: (e) => onpick
 function render() {
 	const app = $('#app');
 	app.className = 'app' + (preview ? ' preview' : '');
-	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['site', 'Sitio'], ['publish', 'Publicar']];
+	const views = [['games', 'Juegos y proyectos'], ['blog', 'Blog'], ['pages', 'Páginas'], ['media', 'Medios'], ['texts', 'Textos'], ['site', 'Sitio'], ['publish', 'Publicar']];
 	const nav = h('nav', {}, h('div.brand', {}, 'dann'), views.map(([v, l]) =>
 		h('button', { 'aria-current': String(view === v), onclick: () => go(v) }, l, v === 'publish' && S.changes.length ? h('span.badge', { title: 'Cambios sin publicar' }, S.changes.length) : null)
 	), h('div.grow'), h('button', { onclick: () => { preview = !preview; render(); } }, preview ? 'Ocultar vista previa' : 'Vista previa'), h('a', { href: S.site, target: '_blank', style: 'padding:8px 14px' }, 'Abrir el sitio ↗'));
-	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), site: siteView, publish: publishView })[view]();
-	app.replaceChildren(nav, list, h('main', {}, editor), preview ? h('div.preview-pane', {}, h('div.bar', {}, h('span.grow', {}, url || '/'), h('button.link', { onclick: () => { $('iframe').src = $('iframe').src; } }, 'Recargar')), h('iframe', { src: S.site + (url || `/${lang}/`), title: 'Vista previa' })) : '');
+	const [list, editor, url] = ({ games: gamesView, blog: () => docsView('blog'), pages: () => docsView('pages'), media: mediaView, texts: textsView, site: siteView, publish: publishView })[view]();
+	const live = url?.endsWith('/admin-preview/');
+	app.replaceChildren(nav, list, h('main', {}, editor), preview ? h('div.preview-pane', {}, h('div.bar', {}, h('span.grow', {}, live ? 'En vivo, sin guardar' : url || '/'), h('button.link', { onclick: () => { $('iframe').src = $('iframe').src; } }, 'Recargar')), h('iframe', { src: S.site + (url || `/${lang}/`), title: 'Vista previa' })) : '');
 	if (dirty) $('#save')?.classList.add('dirty');
 }
 
@@ -278,7 +296,6 @@ function gamesView() {
 }
 
 // ---------- Blog and pages: one file per language, the shared fields kept equal in both.
-const SHARED = { blog: ['date', 'tags', 'draft'], pages: ['project', 'draft'] };
 function newDoc(kind, title = '', data = {}) {
 	if (!leave()) return;
 	title = prompt(kind === 'blog' ? 'Título del post' : 'Título de la página', title);
@@ -289,56 +306,255 @@ function newDoc(kind, title = '', data = {}) {
 	draft = { slug, isNew: true, es: { data: { title, ...(kind === 'blog' ? { date: today(), description: '', tags: [], draft: true } : { description: '', project: '', draft: true }), ...data }, body: '' } };
 	render();
 }
+const scheduled = (m) => !m.draft && String(m.date ?? '') > today();
+const fmtDay = (d) => new Date(`${String(d).slice(0, 10)}T12:00`).toLocaleDateString('es-AR', { dateStyle: 'long' });
+
+// Live preview: the site's own empty post page (/<lang>/admin-preview/) filled with the rendered text on every change.
+let previewTimer;
+function sendPreview() {
+	clearTimeout(previewTimer);
+	previewTimer = setTimeout(async () => {
+		const frame = $('iframe');
+		const d = draft?.[lang];
+		if (!frame || !d || !['blog', 'pages'].includes(view)) return;
+		const { html, error } = await api('POST', 'render', { md: d.body ?? '', kind: view, lang });
+		const m = d.data;
+		const meta = view === 'blog' ? [m.date && fmtDay(m.date), m.draft && 'Borrador', scheduled(m) && 'Programado'].filter(Boolean).join(' · ') : (S.games.find((g) => g.slug === m.project)?.store.title ?? '');
+		frame.contentWindow?.postMessage({ title: m.title, meta, description: m.description, html: error ? `<p style="color:#f27a6b"><strong>Error:</strong> ${error.replace(/</g, '&lt;')}</p>${html ?? ''}` : html }, S.site);
+	}, 200);
+}
+addEventListener('message', (e) => { if (e.origin === S?.site && e.data === 'preview-ready') sendPreview(); });
+
+// Pictures: big photos are scaled to 1600px wide WebP before upload; GIFs and SVGs go as they are.
+async function prepare(file) {
+	if (!/^image\/(png|jpeg|webp)$/.test(file.type)) return file;
+	const img = await createImageBitmap(file);
+	if (img.width <= 1600 && file.size < 400_000) return file;
+	const scale = Math.min(1, 1600 / img.width);
+	const canvas = Object.assign(document.createElement('canvas'), { width: Math.round(img.width * scale), height: Math.round(img.height * scale) });
+	canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+	const blob = await new Promise((r) => canvas.toBlob(r, 'image/webp', 0.85));
+	return new File([blob], file.name.replace(/\.\w+$/, '') + '.webp', { type: 'image/webp' });
+}
+async function upload(file) {
+	const f = await prepare(file);
+	const bytes = new Uint8Array(await f.arrayBuffer());
+	let bin = '';
+	for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+	return (await api('POST', 'media', { name: f.name, data: btoa(bin) })).url;
+}
+const kb = (n) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.round(n / 1e3)} KB`);
+
+// Picture picker: the library plus an upload button; resolves with the chosen /media/ address, or null.
+function pickMedia() {
+	return new Promise((done) => {
+		const dlg = h('dialog.picker', { onclose: () => { dlg.remove(); done(dlg.returnValue || null); } });
+		const file = h('input', { type: 'file', accept: 'image/*', hidden: true, onchange: async (e) => {
+			try { dlg.close(await upload(e.target.files[0])); } catch (err) { toast(err.message, true); }
+		} });
+		dlg.append(h('div.bar', {}, h('strong.grow', {}, 'Elegí una imagen'), h('button.primary', { onclick: () => file.click() }, 'Subir…'), h('button', { onclick: () => dlg.close() }, 'Cancelar')), file,
+			h('div.grid', {}, S.media.map((m) => h('button.thumb', { onclick: () => dlg.close(m.url), title: m.name }, h('img', { src: '/public' + m.url, alt: '' }), h('span', {}, m.name)))),
+			!S.media.length && h('p.hint', {}, 'La biblioteca está vacía: subí la primera.'));
+		document.body.append(dlg);
+		dlg.showModal();
+	});
+}
+
+// Markdown editor: a toolbar, Ctrl+B / Ctrl+I / Ctrl+K, and pictures pasted or dropped straight in.
+function mdEditor(d) {
+	const ta = h('textarea.body', { value: d.body ?? '', placeholder: 'Escribí en Markdown. Pegá o arrastrá imágenes acá.', 'aria-label': 'Texto' });
+	const changed = () => { d.body = ta.value; touch(); sendPreview(); };
+	ta.addEventListener('input', changed);
+	const put = (text, selStart = text.length, selEnd = selStart) => {
+		const at = ta.selectionStart;
+		ta.focus();
+		ta.setRangeText(text, ta.selectionStart, ta.selectionEnd, 'end');
+		ta.setSelectionRange(at + selStart, at + selEnd);
+		changed();
+	};
+	// **x** around the selection, or around a placeholder that stays selected for typing over.
+	const wrap = (a, b, ph) => {
+		const s = ta.value.slice(ta.selectionStart, ta.selectionEnd) || ph;
+		put(a + s + b, a.length, a.length + s.length);
+	};
+	// "## " or "- " at the start of each selected line.
+	const prefix = (p) => {
+		const start = ta.value.lastIndexOf('\n', ta.selectionStart - 1) + 1;
+		ta.setSelectionRange(start, ta.selectionEnd);
+		const lines = ta.value.slice(start, ta.selectionEnd).split('\n');
+		put(lines.map((l, i) => (typeof p === 'function' ? p(i) : p) + l.replace(/^(#{1,6} |[-*] |\d+\. |> )/, '')).join('\n'));
+	};
+	const link = () => {
+		const s = ta.value.slice(ta.selectionStart, ta.selectionEnd) || 'texto';
+		put(`[${s}](https://)`, s.length + 3, s.length + 11);
+	};
+	const image = async () => { const url = await pickMedia(); if (url) put(`![](${url})`, 2, 2); };
+	const insertFiles = async (files) => {
+		for (const f of files) if (f.type.startsWith('image/')) {
+			try { put(`![${f.name.replace(/\.\w+$/, '')}](${await upload(f)})\n`); } catch (e) { toast(e.message, true); }
+		}
+		S.media = (await api('GET', 'state')).media;
+	};
+	ta.addEventListener('keydown', (e) => {
+		if (!(e.ctrlKey || e.metaKey)) return;
+		const k = e.key.toLowerCase();
+		if (k === 'b') wrap('**', '**', 'negrita');
+		else if (k === 'i') wrap('_', '_', 'cursiva');
+		else if (k === 'k') link();
+		else return;
+		e.preventDefault();
+	});
+	ta.addEventListener('paste', (e) => { const fs = [...e.clipboardData.files]; if (fs.length) { e.preventDefault(); insertFiles(fs); } });
+	ta.addEventListener('dragover', (e) => e.preventDefault());
+	ta.addEventListener('drop', (e) => { const fs = [...e.dataTransfer.files]; if (fs.length) { e.preventDefault(); ta.setSelectionRange(ta.selectionEnd, ta.selectionEnd); insertFiles(fs); } });
+	const b = (label, title, fn) => h('button', { type: 'button', title, 'aria-label': title, onclick: fn }, label);
+	const tools = h('div.toolbar', { role: 'toolbar', 'aria-label': 'Formato' },
+		b(h('b', {}, 'B'), 'Negrita (Ctrl+B)', () => wrap('**', '**', 'negrita')),
+		b(h('i', {}, 'I'), 'Cursiva (Ctrl+I)', () => wrap('_', '_', 'cursiva')),
+		b('H2', 'Título de sección', () => prefix('## ')),
+		b('H3', 'Subtítulo', () => prefix('### ')),
+		b('🔗', 'Link (Ctrl+K)', link),
+		b('•', 'Lista', () => prefix('- ')),
+		b('1.', 'Lista numerada', () => prefix((i) => `${i + 1}. `)),
+		b('❝', 'Cita', () => prefix('> ')),
+		b('</>', 'Código', () => (ta.value.slice(ta.selectionStart, ta.selectionEnd).includes('\n') ? wrap('\n```\n', '\n```\n', 'código') : wrap('`', '`', 'código'))),
+		b('🖼', 'Imagen', image),
+		select([['', 'Insertar…'], ...S.shortcodes.map((s) => [s.name, s.label])], '', (v) => {
+			const sc = S.shortcodes.find((s) => s.name === v);
+			if (!sc) return;
+			// A shortcode is its own paragraph: blank lines around it.
+			const before = ta.value.slice(0, ta.selectionStart);
+			const pad = !before || before.endsWith('\n\n') ? '' : before.endsWith('\n') ? '\n' : '\n\n';
+			const i = pad.length + sc.insert.indexOf('…');
+			put(`${pad}${sc.insert}\n\n`, i, i + 1);
+			tools.querySelector('select').value = '';
+		}),
+		h('a', { href: 'https://www.markdownguide.org/basic-syntax/', target: '_blank', class: 'hint', style: 'margin-left:auto' }, 'Ayuda de Markdown ↗'));
+	return h('div.md', {}, tools, ta);
+}
+
 function docsView(kind) {
 	const docs = [...S[kind]].sort((a, b) => kind === 'blog' ? String((b.es ?? b.en).data.date).localeCompare(String((a.es ?? a.en).data.date)) : a.slug.localeCompare(b.slug));
 	const list = h('div.list', {}, h('div.list-head', {}, h('button.primary', { onclick: () => newDoc(kind) }, kind === 'blog' ? '+ Nuevo post' : '+ Nueva página')),
 		docs.map((d) => { const m = (d.es ?? d.en).data; return h('button.item', { 'aria-current': String(sel === d.slug), onclick: () => go(kind, d.slug) },
-			h('span', { style: 'min-width:0' }, h('div.t', {}, m.title), h('div.s', {}, kind === 'blog' ? String(m.date ?? '') : `/${d.slug}/`, m.draft && h('span.tag.off', {}, 'borrador'), Object.keys(LANGS).map((l) => d[l] && h('span.tag', {}, l))))); }),
+			h('span', { style: 'min-width:0' }, h('div.t', {}, m.title), h('div.s', {}, kind === 'blog' ? String(m.date ?? '') : `/${d.slug}/`, m.draft && h('span.tag.off', {}, 'borrador'), scheduled(m) && h('span.tag.on', {}, 'programado'), Object.keys(LANGS).map((l) => d[l] && h('span.tag', {}, l))))); }),
 		!docs.length && h('div.empty', {}, 'Nada todavía.'));
 	const doc = S[kind].find((d) => d.slug === sel);
 	if (!doc && !draft?.isNew) return [list, h('div.empty', {}, kind === 'blog' ? 'Elegí un post o creá uno.' : 'Las páginas se publican en /es/<nombre>/ y /en/<nombre>/: landings y todo lo que no es un post.')];
 	draft ??= clone(doc);
 	if (!draft[lang]) lang = draft.es ? 'es' : 'en';
 	const d = draft[lang];
-	const shared = (k, v) => { for (const l of Object.keys(LANGS)) if (draft[l]) draft[l].data[k] = v; touch(); };
+	const shared = (k, v) => { for (const l of Object.keys(LANGS)) if (draft[l]) draft[l].data[k] = v; touch(); sendPreview(); };
 	const save = async () => {
 		await api('PUT', `${kind}/${draft.slug}`, { es: draft.es, en: draft.en });
 		dirty = false; draft = null;
 		await reload();
 		toast('Guardado');
 	};
-	const body = area(d, 'body', { className: 'body', placeholder: 'Markdown' });
-	const upload = h('input', { type: 'file', accept: 'image/*', hidden: true, onchange: async (e) => {
-		const f = e.target.files[0];
-		if (!f) return;
-		const data = btoa(Array.from(new Uint8Array(await f.arrayBuffer()), (b) => String.fromCharCode(b)).join(''));
+	const renameIt = async () => {
+		if (!leave()) return;
+		const to = prompt(`Nuevo nombre (la dirección pasa a ser /${kind === 'blog' ? 'blog/' : ''}<nombre>/). Los links que ya compartiste a la anterior dejan de andar.`, draft.slug);
+		if (!to || to === draft.slug) return;
 		try {
-			const { url } = await api('POST', 'media', { name: f.name, data });
-			const md = `![${f.name.replace(/\.\w+$/, '')}](${url})`;
-			body.setRangeText(md, body.selectionStart, body.selectionEnd, 'end');
-			set(d, 'body', body.value);
-		} catch (err) { toast(err.message, true); }
-	} });
+			await api('POST', `rename/${kind}/${draft.slug}`, { to: slugify(to) });
+			dirty = false; draft = null; sel = slugify(to);
+			await reload();
+			toast('Renombrado');
+		} catch (e) { toast(e.message, true); }
+	};
+	const live = (input) => { input.addEventListener('input', sendPreview); return input; };
 	const path = kind === 'blog' ? `/${lang}/blog/${draft.slug}/` : `/${lang}/${draft.slug}/`;
 	const editor = h('div.editor', {},
 		h('div.bar', {}, h('h1.grow', {}, d.data.title || '(sin título)'), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
-		h('div.hint', {}, path, draft.isNew && ' · nuevo, todavía sin guardar'),
+		h('div.bar.hint', {}, h('span', {}, path), draft.isNew ? h('span', {}, '· nuevo, todavía sin guardar') : h('button.link', { onclick: renameIt }, 'Cambiar nombre')),
 		h('div.tabs', { role: 'tablist' }, Object.entries(LANGS).map(([l, n]) => draft[l]
 			? h('button', { role: 'tab', 'aria-selected': String(lang === l), onclick: () => { lang = l; render(); } }, n)
 			: h('button', { onclick: () => { draft[l] = { data: { ...clone(d.data), title: '', description: '' }, body: '' }; lang = l; touch(); render(); } }, `+ ${n}`))),
-		field('Título', text(d.data, 'title', { oninput: (e) => { set(d.data, 'title', e.target.value); $('h1').textContent = e.target.value; } })),
-		field('Bajada', area(d.data, 'description', { rows: 2 }), 'Debajo del título y en buscadores y redes.'),
+		field('Título', live(text(d.data, 'title', { oninput: (e) => { set(d.data, 'title', e.target.value); $('h1').textContent = e.target.value; } }))),
+		field('Bajada', live(area(d.data, 'description', { rows: 2 })), 'Debajo del título y en buscadores y redes.'),
 		h('div.two', {},
-			kind === 'blog' && field('Fecha', h('input', { type: 'date', value: String(d.data.date ?? '').slice(0, 10), onchange: (e) => shared('date', e.target.value) })),
+			kind === 'blog' && field('Fecha', h('input', { type: 'date', value: String(d.data.date ?? '').slice(0, 10), onchange: (e) => { shared('date', e.target.value); render(); } }),
+				scheduled(d.data) ? `Programado: sale el ${fmtDay(d.data.date)}, con el deploy diario de las 6:00 (hora argentina). Publicalo antes.` : 'Con una fecha futura, el post queda programado.'),
 			kind === 'blog' && field('Tags', h('input', { value: (d.data.tags ?? []).join(', '), onchange: (e) => shared('tags', e.target.value.split(',').map((s) => s.trim()).filter(Boolean)) }), 'Separados por comas.'),
 			kind === 'pages' && field('Proyecto', select([['', 'Ninguno'], ...[...S.games].sort((a, b) => a.store.title.localeCompare(b.store.title)).map((g) => [g.slug, g.store.title])], d.data.project, (v) => shared('project', v)), 'Su ficha linkea a esta página.')),
-		h('label.check', {}, h('input', { type: 'checkbox', checked: !!d.data.draft, onchange: (e) => shared('draft', e.target.checked) }), 'Borrador', h('span.hint', {}, '(solo se ve en la vista previa, no se publica)')),
-		h('label', {}, h('span.bar', {}, h('span.grow', {}, 'Texto'), h('button', { onclick: () => upload.click() }, 'Insertar imagen')), body, upload),
+		h('label.check', {}, h('input', { type: 'checkbox', checked: !!d.data.draft, onchange: (e) => { shared('draft', e.target.checked); render(); } }), 'Borrador', h('span.hint', {}, '(solo se ve en la vista previa, no se publica)')),
+		mdEditor(d),
 		!draft.isNew && h('div.bar', {},
 			draft.es && draft.en && h('button.danger', { onclick: async () => { if (!confirm(`¿Borrar la versión en ${LANGS[lang]}?`)) return; await api('DELETE', `${kind}/${draft.slug}?lang=${lang}`); dirty = false; draft = null; await reload(); } }, `Borrar versión en ${LANGS[lang]}`),
 			h('button.danger', { onclick: async () => { if (!confirm(`¿Borrar «${d.data.title}» en todos los idiomas?`)) return; await api('DELETE', `${kind}/${draft.slug}`); dirty = false; go(kind); await reload(); } }, 'Borrar todo'))
 	);
-	return [list, editor, path];
+	return [list, editor, `/${lang}/admin-preview/`];
+}
+
+// ---------- Media library
+// Which admin screen edits a content file, to jump from a picture to where it's used.
+function openFile(f) {
+	const m = f.match(/^content\/(blog|pages)\/(es|en)\/(.+)\.md$/) ?? f.match(/^content\/(games)\/(.+)\.json$/);
+	if (!m) return null;
+	return m[1] === 'games' ? () => go('games', m[2]) : () => { lang = m[2]; go(m[1], m[3]); };
+}
+function mediaView() {
+	const file = h('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true, onchange: (e) => add([...e.target.files]) });
+	const add = async (files) => {
+		for (const f of files) try { await upload(f); } catch (err) { toast(err.message, true); }
+		await reload();
+		toast(files.length > 1 ? `${files.length} imágenes subidas` : 'Imagen subida');
+	};
+	const list = h('div.list', {}, h('div.list-head', {}, h('button.primary', { onclick: () => file.click() }, 'Subir imágenes…'), file),
+		h('div.empty', {}, 'También podés arrastrarlas a esta pantalla, o pegarlas y arrastrarlas en el texto de un post. Las fotos grandes se achican a 1600px de ancho en WebP.'));
+	const items = [...S.media].sort((a, b) => a.name.localeCompare(b.name));
+	const editor = h('div.editor', { ondragover: (e) => e.preventDefault(), ondrop: (e) => { e.preventDefault(); add([...e.dataTransfer.files].filter((f) => f.type.startsWith('image/'))); } },
+		h('h1', {}, 'Medios'),
+		h('p.hint', {}, `${items.length} imágenes en public/media/ · ${kb(items.reduce((n, m) => n + m.size, 0))}`),
+		h('div.grid.big', {}, items.map((m) => h('div.card', {},
+			h('img', { src: '/public' + m.url, alt: '', loading: 'lazy' }),
+			h('div.t', {}, m.name), h('div.hint', {}, kb(m.size)),
+			h('div.hint', {}, m.usedIn.length ? ['Usada en: ', m.usedIn.map((f) => { const open = openFile(f); return open ? h('button.link', { onclick: open, style: 'margin-right:8px' }, f.replace(/^content\//, '')) : f.replace(/^content\//, '') + ' '; })] : 'Sin usar'),
+			h('div.bar', {},
+				h('button', { onclick: async () => { await navigator.clipboard.writeText(`![](${m.url})`); toast('Copiado'); } }, 'Copiar Markdown'),
+				h('button.danger', { onclick: async () => {
+					if (!confirm(m.usedIn.length ? `«${m.name}» se usa en ${m.usedIn.length} lugar(es); ahí va a quedar una imagen rota. ¿Borrarla igual?` : `¿Borrar «${m.name}»?`)) return;
+					await api('DELETE', `media/${m.name}`);
+					await reload();
+				} }, 'Borrar'))))),
+		!items.length && h('p', {}, 'Todavía no hay imágenes.'));
+	return [list, editor, null];
+}
+
+// ---------- Fixed texts of the site (content/texts.json): one row per text, Spanish and English side by side.
+function textsView() {
+	draft ??= clone(S.texts);
+	const rows = [];
+	const walk = (es, en, path) => {
+		for (const k of Object.keys(es)) {
+			const p = [...path, k];
+			if (p.join('.') === 'dateLocale') continue; // a setting, not a text: breaking it breaks every date
+			if (es[k] && typeof es[k] === 'object') walk(es[k], en[k], p);
+			else rows.push(p);
+		}
+	};
+	walk(draft.es, draft.en, []);
+	const find = h('input', { type: 'search', placeholder: 'Buscar un texto…', 'aria-label': 'Buscar un texto', oninput: () => {
+		const q = find.value.toLowerCase();
+		for (const r of document.querySelectorAll('.text-row')) r.hidden = !!q && !r.textContent.toLowerCase().includes(q) && ![...r.querySelectorAll('input,textarea')].some((i) => i.value.toLowerCase().includes(q));
+	} });
+	const save = async () => {
+		await api('PUT', 'texts', draft);
+		dirty = false; draft = null;
+		await reload();
+		toast('Guardado');
+	};
+	const input = (l, p) => {
+		const v = String(get(draft[l], p.join('.')) ?? '');
+		const attrs = { value: v, 'aria-label': `${p.join('.')} (${l})`, oninput: (e) => set(draft[l], p.join('.'), e.target.value) };
+		return v.length > 60 ? h('textarea', { ...attrs, rows: 2 }) : h('input', attrs);
+	};
+	const editor = h('div.editor', {},
+		h('div.bar', {}, h('h1.grow', {}, 'Textos del sitio'), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
+		h('p.hint', {}, 'Títulos, menú, botones y avisos fijos, en los dos idiomas. Los textos de cada juego se editan en su ficha.'),
+		find,
+		rows.map((p) => h('div.text-row', {}, h('div.hint', {}, p.join(' › ')), h('div.two', {}, input('es', p), input('en', p)))));
+	return [h('div.list', {}, h('div.empty', {}, 'Buscá por palabra, en cualquiera de los dos idiomas. El primer pantallazo de la home: heroTitle y heroIntro.')), editor, `/${lang}/`];
 }
 
 // ---------- Site: contact links and wikis
@@ -371,6 +587,27 @@ function siteView() {
 }
 
 // ---------- Publish
+// What's worth a look before publishing; none of it blocks.
+function warnings() {
+	const w = [];
+	for (const kind of ['blog', 'pages']) for (const d of S[kind]) {
+		const m = (d.es ?? d.en).data;
+		const name = `${kind === 'blog' ? 'Post' : 'Página'} «${m.title}»`;
+		const open = () => go(kind, d.slug);
+		if (!d.es || !d.en) w.push([`${name}: solo en ${d.es ? 'español' : 'inglés'}`, open]);
+		if (m.draft) w.push([`${name}: es borrador, no se publica`, open]);
+		else if (scheduled(m)) w.push([`${name}: programado para el ${fmtDay(m.date)}`, open]);
+	}
+	for (const g of S.games) {
+		const o = g.own;
+		for (const [k, label] of [['summary', 'texto propio'], ['role', 'rol']]) {
+			if (o.show === 'hidden') continue;
+			const es = o[k]?.es?.trim(), en = o[k]?.en?.trim();
+			if (!!es !== !!en) w.push([`«${g.store.title}»: ${label} solo en ${es ? 'español' : 'inglés'}`, () => go('games', g.slug)]);
+		}
+	}
+	return w;
+}
 function publishView() {
 	const runIt = (label, path, body) => async (e) => {
 		if (busy) return;
@@ -386,16 +623,21 @@ function publishView() {
 		await reload();
 	};
 	const msg = h('input', { placeholder: 'content: update from admin', 'aria-label': 'Mensaje del commit' });
+	const warn = warnings();
 	const editor = h('div.editor', {},
 		h('h1', {}, 'Publicar'),
 		h('fieldset', {}, h('legend', {}, 'Datos de las tiendas'),
 			h('span.hint', {}, 'Trae títulos, imágenes y textos de Steam, itch.io, GitHub y el Asset Library, y las wikis; saca lo que quitaste de la lista. También corre solo en cada deploy y todos los días.'),
 			h('div', {}, h('button', { onclick: runIt('Traer datos de las tiendas', 'sync') }, 'Traer datos de las tiendas'))),
+		h('fieldset', {}, h('legend', {}, `Para revisar (${warn.length})`),
+			warn.length ? h('ul', { style: 'margin:0;padding-left:1.2em' }, warn.map(([t, open]) => h('li', {}, h('button.link', { onclick: open }, t)))) : h('span.hint', {}, 'Nada: todo traducido y sin borradores.')),
 		h('fieldset', {}, h('legend', {}, `Cambios sin publicar (${S.changes.length})`),
 			S.changes.length ? h('pre.log', {}, S.changes.join('\n')) : h('span.hint', {}, 'Todo publicado.'),
 			field('Mensaje', msg),
-			h('div', {}, h('button.primary', { disabled: !S.changes.length, onclick: (e) => runIt('Publicar', 'publish', { message: msg.value })(e) }, 'Publicar')),
-			h('span.hint', {}, 'Hace commit de content/ y public/ y lo sube a main; el sitio se actualiza en unos minutos.')),
+			h('div.bar', {},
+				h('button.primary', { disabled: !S.changes.length, onclick: (e) => runIt('Publicar', 'publish', { message: msg.value })(e) }, 'Publicar'),
+				h('button', { onclick: runIt('Comprobar', 'check') }, 'Comprobar sin publicar')),
+			h('span.hint', {}, 'Primero compila el sitio entero; si algo falla (un dato roto, un shortcode mal escrito) no publica nada y muestra el error. Si anda, hace commit de content/ y public/ y lo sube a main; el sitio se actualiza en unos minutos.')),
 		lastLog && h('fieldset', {}, h('legend', {}, 'Registro'), h('pre.log', {}, lastLog))
 	);
 	return [h('div.list', {}, h('div.empty', {}, 'Guardar escribe los archivos en tu equipo. Publicar los sube.')), editor, `/${lang}/`];

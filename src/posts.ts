@@ -1,9 +1,11 @@
 import { getCollection } from 'astro:content';
 import type { Lang } from './i18n';
 
-// Drafts show up in `npm run dev` only.
+// Drafts and scheduled posts (dated in the future) show up in `npm run dev` only.
+// A scheduled post goes live with the first build on or after its date: the deploy workflow rebuilds daily at 09:00 UTC.
 export async function posts(lang: Lang) {
-	return (await getCollection('blog', (p) => p.id.startsWith(`${lang}/`) && (import.meta.env.DEV || !p.data.draft))).sort(
+	const now = new Date();
+	return (await getCollection('blog', (p) => p.id.startsWith(`${lang}/`) && (import.meta.env.DEV || (!p.data.draft && p.data.date <= now)))).sort(
 		(a, b) => b.data.date.getTime() - a.data.date.getTime()
 	);
 }

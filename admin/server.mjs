@@ -3,9 +3,11 @@
 import { createServer } from 'node:http';
 import { spawn, execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
+import { markdownToHtml } from 'satteri';
+import { shortcodePlugin, shortcodes, markdownFeatures } from '../src/shortcodes.mjs';
 
 const PORT = Number(process.env.ADMIN_PORT ?? 4322);
 const SITE = Number(process.env.SITE_PORT ?? 4321);
@@ -14,7 +16,7 @@ const at = (...p) => resolve(root, ...p);
 const langs = ['es', 'en'];
 const slugRe = /^[a-z0-9][a-z0-9-]*$/;
 // Paths the site already serves under /<lang>/.
-const reserved = ['blog', 'games', 'wiki', 'links', 'rss.xml', 'godot-agent'];
+const reserved = ['blog', 'games', 'wiki', 'links', 'rss.xml', 'godot-agent', 'admin-preview'];
 // Every write and command needs it, so another site open in the browser can't drive this server.
 const token = randomBytes(16).toString('hex');
 const run = promisify(execFile);
@@ -45,6 +47,26 @@ export const writeMd = ({ data, body }) =>
 const readJson = (f) => readFile(at(f), 'utf8').then(JSON.parse);
 const writeJson = (f, v) => writeFile(at(f), JSON.stringify(v, null, 2) + '\n');
 const ls = (d) => readdir(at(d)).catch(() => []);
+// Every text file under content/, to find where a picture is used.
+async function contentFiles(dir = 'content') {
+	const out = [];
+	for (const e of await readdir(at(dir), { withFileTypes: true }).catch(() => [])) {
+		const p = `${dir}/${e.name}`;
+		if (e.isDirectory()) out.push(...(await contentFiles(p)));
+		else if (/\.(md|json)$/.test(e.name)) out.push(p);
+	}
+	return out;
+}
+async function media() {
+	const files = (await readdir(at('public/media'), { withFileTypes: true }).catch(() => [])).filter((e) => e.isFile()).map((e) => e.name);
+	const texts = await Promise.all((await contentFiles()).map(async (f) => [f, await readFile(at(f), 'utf8')]));
+	return Promise.all(files.map(async (name) => ({
+		name,
+		url: `/media/${name}`,
+		size: (await stat(at('public/media', name))).size,
+		usedIn: texts.filter(([, t]) => t.includes(`/media/${name}`)).map(([f]) => f)
+	})));
+}
 
 // content/<kind>/<lang>/<slug>.md, grouped by slug.
 async function docs(kind) {
@@ -80,6 +102,9 @@ async function state() {
 		blog: await docs('blog'),
 		pages: await docs('pages'),
 		fixedPages: fixed,
+		texts: await readJson('content/texts.json'),
+		media: await media(),
+		shortcodes: shortcodes.map(({ name, label, insert }) => ({ name, label, insert })),
 		reserved,
 		changes: changes.split('\n').filter(Boolean),
 		site: `http://localhost:${SITE}`
@@ -107,7 +132,12 @@ async function sh(cmd, args) {
 	}
 }
 
+// The site's own build, into a scratch folder: whatever would break the deploy breaks here first.
+const check = () => sh(at('node_modules/.bin/astro'), ['build', '--outDir', '.astro/check-dist']);
+
 async function publish(message) {
+	const built = await check();
+	if (!built.ok) return { ok: false, log: `La compilación del sitio falló; no se publicó nada.\n\n${built.log}` };
 	const steps = [
 		['git', ['add', '-A', '--', 'content', 'public']],
 		['git', ['commit', '-m', message || 'content: update from admin']],
@@ -140,9 +170,47 @@ const routes = {
 		const clean = String(name).toLowerCase().replace(/[^a-z0-9.-]+/g, '-').replace(/^[-.]+/, '');
 		if (!/\.(png|jpe?g|gif|webp|svg)$/.test(clean)) throw new Error('Solo imágenes png, jpg, gif, webp o svg');
 		await mkdir(at('public/media'), { recursive: true });
-		await writeFile(at('public/media', clean), Buffer.from(data, 'base64'));
-		return { url: `/media/${clean}` };
+		// Never replace a picture already in use: a taken name gets -2, -3…
+		let file = clean;
+		for (let i = 2; await stat(at('public/media', file)).then(() => true, () => false); i++) file = clean.replace(/(\.\w+)$/, `-${i}$1`);
+		await writeFile(at('public/media', file), Buffer.from(data, 'base64'));
+		return { url: `/media/${file}` };
 	},
+	'PUT texts': async (_, body) => {
+		// Only values change here: the keys are what the site's code reads.
+		const keys = (o, p = '') => Object.entries(o).flatMap(([k, v]) => (v && typeof v === 'object' && !Array.isArray(v) ? keys(v, `${p}${k}.`) : [`${p}${k}`])).sort().join();
+		if (keys(body) !== keys(await readJson('content/texts.json'))) throw new Error('Los textos no tienen las mismas claves que el sitio');
+		await writeJson('content/texts.json', body);
+	},
+	'POST render': (_, { md, kind, lang }) => {
+		try {
+			// A path like the real file's, so shortcodes link in the right language.
+			const fileURL = `file://${root}/content/${kind}/${lang}/preview.md`;
+			return { html: markdownToHtml(String(md ?? ''), { features: markdownFeatures, mdastPlugins: [shortcodePlugin('')], fileURL }).html };
+		} catch (e) {
+			return { error: e.message };
+		}
+	},
+	'DELETE media': async (name) => {
+		if (!/^[a-z0-9][a-z0-9.-]*$/.test(name)) throw new Error('Nombre inválido');
+		await rm(at('public/media', name));
+	},
+	'POST rename': async (path, { to }) => {
+		const [kind, slug] = path.split('/');
+		if (!['blog', 'pages'].includes(kind) || !slugRe.test(slug)) throw new Error('Nombre inválido');
+		if (!slugRe.test(to ?? '')) throw new Error('El nombre nuevo solo puede tener minúsculas, números y guiones');
+		if (kind === 'pages' && reserved.includes(to)) throw new Error(`/${to}/ ya es una página del sitio`);
+		const exists = await Promise.all(langs.map((l) => stat(at(`content/${kind}/${l}/${to}.md`)).then(() => true, () => false)));
+		if (exists.some(Boolean)) throw new Error(`Ya existe /${to}/`);
+		for (const l of langs) await rename(at(`content/${kind}/${l}/${slug}.md`), at(`content/${kind}/${l}/${to}.md`)).catch((e) => { if (e.code !== 'ENOENT') throw e; });
+		// A game whose landing is this page follows it.
+		if (kind === 'pages')
+			for (const f of await ls('content/games')) {
+				const g = await readJson(`content/games/${f}`);
+				if (g.landing?.trim() === slug) await writeJson(`content/games/${f}`, { ...g, landing: to });
+			}
+	},
+	'POST check': () => check(),
 	'POST sync': () => sh(process.execPath, ['scripts/sync-games.mjs']),
 	'POST publish': (_, body) => publish(String(body?.message ?? '').trim())
 };

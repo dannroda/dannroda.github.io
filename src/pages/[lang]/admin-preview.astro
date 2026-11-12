@@ -1,0 +1,32 @@
+---
+// The admin's live preview: an empty post in the site's own layout that the admin fills as you type.
+// Only exists in `npm run dev` (the admin starts it); the built site has no such page.
+import Base from '../../layouts/Base.astro';
+import { langs, type Lang } from '../../i18n';
+
+export const getStaticPaths = () => (import.meta.env.DEV ? langs.map((lang) => ({ params: { lang } })) : []);
+const lang = Astro.params.lang as Lang;
+---
+
+<Base lang={lang} title="Vista previa" path="">
+	<article class="section">
+		<h1 class="lede-h1" data-p="title"></h1>
+		<p class="small" data-p="meta"></p>
+		<p class="sub" data-p="description"></p>
+		<div class="prose" data-p="html"></div>
+	</article>
+</Base>
+
+<script is:inline>
+	// Only the admin on this machine (another localhost port) may fill it.
+	addEventListener('message', (e) => {
+		if (!/^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(e.origin) || typeof e.data !== 'object') return;
+		for (const el of document.querySelectorAll('[data-p]')) {
+			const v = e.data[el.dataset.p] ?? '';
+			if (el.dataset.p === 'html') el.innerHTML = v;
+			else el.textContent = v;
+			el.hidden = !v;
+		}
+	});
+	parent.postMessage('preview-ready', '*');
+</script>
