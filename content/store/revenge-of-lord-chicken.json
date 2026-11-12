@@ -1,0 +1,78 @@
+{
+	"authors": [
+		{
+			"name": "Sergiogp11",
+			"url": "https://sergiogp11.itch.io"
+		},
+		{
+			"name": "DTO",
+			"url": "https://dannroda.itch.io"
+		},
+		{
+			"name": "emarod",
+			"url": "https://emarod.itch.io"
+		}
+	],
+	"id": 2649089,
+	"images": {
+		"cover": "https://img.itch.zone/aW1nLzE1NzgzMTE2LnBuZw==/original/f3Iqq0.png",
+		"screenshots": []
+	},
+	"info": {
+		"Authors": [
+			"Sergiogp11",
+			"DTO",
+			"emarod"
+		],
+		"Genre": [
+			"Shooter"
+		],
+		"Links": [
+			"Ludum Dare"
+		],
+		"Made with": [
+			"Blender",
+			"Aseprite",
+			"Godot"
+		],
+		"Platforms": [
+			"HTML5",
+			"Windows",
+			"Linux"
+		],
+		"Rating": {
+			"average": 5,
+			"count": 1
+		},
+		"Status": [
+			"Released"
+		],
+		"Tags": [
+			"Chicken",
+			"eggs",
+			"Godot",
+			"Ludum Dare",
+			"Ludum Dare 55",
+			"summoning"
+		]
+	},
+	"jam": null,
+	"local_images": {
+		"cover": "/games/revenge-of-lord-chicken/cover.png",
+		"screenshots": [],
+		"trailer": null
+	},
+	"source": "itch",
+	"synced_at": "2026-11-12T22:38:36.803Z",
+	"tags": [
+		"chicken",
+		"eggs",
+		"godot",
+		"ludum-dare",
+		"ludum-dare-55",
+		"shooter",
+		"summoning"
+	],
+	"title": "Revenge of Lord Chicken",
+	"url": "https://sergiogp11.itch.io/revenge-of-lord-chicken"
+}

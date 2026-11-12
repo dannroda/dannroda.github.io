@@ -2,7 +2,7 @@
 	"archived": false,
 	"created": "2026-10-22",
 	"description": "Run Claude Code and other ACP coding agents inside the Godot 4 editor, with editor tools over MCP.",
-	"homepage": null,
+	"homepage": "https://dann.com.ar/en/godot-agent",
 	"id": 1430263520,
 	"images": {
 		"cover": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/overview.png",
@@ -27,7 +27,7 @@
 	},
 	"source": "github",
 	"stars": 1,
-	"synced_at": "2026-10-27T15:00:27.017Z",
+	"synced_at": "2026-11-12T22:38:37.915Z",
 	"title": "godot-agent",
 	"topics": [
 		"acp",
