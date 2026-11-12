@@ -123,16 +123,16 @@
         "en": "Every action belongs to a group, and each group has a decision per mode. Ask shows a card with the diff; Deny tells the agent why. The matrix lives in <code>project_config.tres</code>, so your team shares it. On top of any of them, a <b>project mode</b> (<code>res://agent_modes/*.json</code>) with its own name, instructions and model limits which files the agent may write, in One-shot too, and never allows more than its base mode. When the task calls for another mode, the agent proposes it on a card with its reason, and you decide."
       },
       "image": {
-        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/permission.png",
-        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/permission.png"
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/modes.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/modes.png"
       },
       "imageAlt": {
-        "es": "Un pedido de permiso en el dock Agent: editar player.gd, con el diff, y los botones para permitir una vez, denegar o permitir siempre en esta sesión.",
-        "en": "A permission request in the Agent dock: Edit player.gd, with the diff, and the buttons Allow once, Deny and Always allow in this session."
+        "es": "El selector de modo del composer abierto: Preguntar, Revisar, Construir, Auto y One-shot, y bajo Modos del proyecto Diseño de niveles (Construir), Shaders (Construir) y Solo tests (Auto), con Diseño de niveles elegido.",
+        "en": "The composer’s mode selector open: Ask, Review, Build, Auto and One-shot, then under Project modes Level design (Build), Shaders (Build) and Tests only (Auto), with Level design picked."
       },
       "caption": {
-        "es": "En Construir, una edición te espera arriba del composer, con su diff.",
-        "en": "In Build, an edit waits for you above the composer, with its diff."
+        "es": "Los modos del proyecto aparecen en el selector debajo de los fijos, con su modo base entre paréntesis.",
+        "en": "Project modes show in the selector under the fixed ones, with their base mode in parentheses."
       },
       "groupLabel": {
         "es": "Grupo",
@@ -256,7 +256,7 @@
           1108
         ],
         "en": [
-          480,
+          485,
           1108
         ]
       }
@@ -1024,6 +1024,33 @@
       ]
     },
     {
+      "id": "b11",
+      "type": "image",
+      "image": {
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/turn-marks.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/turn-marks.png"
+      },
+      "imageSize": {
+        "es": [
+          1920,
+          1200
+        ],
+        "en": [
+          1920,
+          1200
+        ]
+      },
+      "alt": {
+        "es": "spawner.gd en el Script Editor con dos cambios del último turno del agente, cada uno con ✓ y ✗ en el margen, y la barra de estado que dice 2 para revisar.",
+        "en": "spawner.gd in the Script Editor with two changes from the agent’s last turn, each with ✓ and ✗ in the gutter, and the status bar saying 2 to review."
+      },
+      "caption": {
+        "es": "Los cambios del último turno, en el margen del Script Editor: ✓ conserva uno, ✗ deshace solo ese.",
+        "en": "The last turn’s changes in the Script Editor gutter: ✓ keeps one, ✗ undoes just that one."
+      },
+      "wide": true
+    },
+    {
       "id": "b10",
       "type": "cards",
       "anchor": "workflow",
@@ -1041,16 +1068,16 @@
       },
       "style": "grid",
       "image": {
-        "es": "",
-        "en": ""
+        "es": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/es/plan-verified.png",
+        "en": "https://raw.githubusercontent.com/dannroda/godot-agent/main/docs/images/en/plan-verified.png"
       },
       "imageAlt": {
-        "es": "",
-        "en": ""
+        "es": "El mismo plan aprobado: cada criterio con ✓ después de su playtest, y abajo el turno de construir.",
+        "en": "The same plan approved: each criterion marked ✓ after its playtest, followed by the build turn."
       },
       "caption": {
-        "es": "",
-        "en": ""
+        "es": "Un plan aprobado: cada criterio quedó con ✓ después de jugarlo.",
+        "en": "An approved plan: each criterion got its ✓ after being played."
       },
       "items": [
         {
@@ -1225,6 +1252,16 @@
       "note": {
         "es": "",
         "en": ""
+      },
+      "imageSize": {
+        "es": [
+          480,
+          1108
+        ],
+        "en": [
+          480,
+          1108
+        ]
       }
     },
     {
@@ -1721,8 +1758,8 @@
       "notes": [
         {
           "text": {
-            "es": "Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Godot 4.7.2, 4.8-beta3 y Godot .NET 4.7.2, en Linux con Claude Code. Codex, Antigravity, macOS y Windows todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.",
-            "en": "Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Godot 4.7.2, 4.8-beta3 and Godot .NET 4.7.2, on Linux with Claude Code. Codex, Antigravity, macOS and Windows not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider."
+            "es": "Godot 4.7 o más nuevo. Para Claude Code, Node.js con <code>npx</code>. Para C#, Godot .NET y el SDK de .NET. Para GDExtension, un compilador y SCons, CMake o Cargo. Probado en Godot 4.7.2, 4.8-beta3 y Godot .NET 4.7.2, en Linux: Claude Code de punta a punta y Google Antigravity con un recorrido real. Codex, Windows y macOS todavía sin verificar. Interfaz en inglés y español. MIT y gratis: el agente usa tu propia cuenta con su proveedor.",
+            "en": "Godot 4.7 or newer. For Claude Code, Node.js with <code>npx</code>. For C#, Godot .NET and the .NET SDK. For GDExtension, a compiler and SCons, CMake or Cargo. Tested on Godot 4.7.2, 4.8-beta3 and Godot .NET 4.7.2, on Linux: Claude Code end to end and Google Antigravity with a real session walkthrough. Codex, Windows and macOS not verified yet. Interface in English and Spanish. MIT, free: the agent uses your own account with its provider."
           }
         },
         {
