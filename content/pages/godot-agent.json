@@ -556,6 +556,34 @@
             "en": ""
           },
           "wide": false
+        },
+        {
+          "title": {
+            "es": "Reiniciar y seguir",
+            "en": "Restart and resume"
+          },
+          "text": {
+            "es": "Cuando un plugin o un ajuste necesita reiniciar el editor, el agente lo reinicia en cualquier proyecto y dice por qué en la tarjeta de permiso. Cada pestaña vuelve con su sesión, su modo y su nombre, y la que lo pidió sigue. También está en <b>⋯ → Reiniciar y seguir</b>.",
+            "en": "When a plugin or a setting needs an editor restart, the agent restarts it in any project and gives its reason on the permission card. Every tab comes back with its session, mode and name, and the one that asked carries on. It’s also under <b>⋯ → Restart and resume</b>."
+          },
+          "tags": {
+            "es": [
+              "godot.restart_editor"
+            ],
+            "en": [
+              "godot.restart_editor"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
         }
       ],
       "asideHeading": {
@@ -932,8 +960,8 @@
         "en": "The One-shot screen running an asteroid shooter goal, task 2 of 3: quota, time, tokens and playtest bars, the plan, the activity log, the last playtest frame, two passed checks and one pending, and checkpoints cp1 to cp3 with Restore here."
       },
       "caption": {
-        "es": "Se pausa al 90 % de la cuota de tu plan, al terminar una tarea. Si llegás al límite, cambiás de cuenta sin perder la sesión.",
-        "en": "Pauses at 90 % of your plan quota, at the end of a task. Hit the limit and switch accounts without losing the session."
+        "es": "Se pausa al 90 % de la cuota de tu plan, al terminar una tarea, y solo cuenta los límites del modelo que usás: si tu plan tiene una semana aparte para Fable, el panel la muestra como “Semana · Fable”. Si llegás al límite, cambiás de cuenta sin perder la sesión.",
+        "en": "Pauses at 90 % of your plan quota, at the end of a task, counting only the limits of the model in use: if your plan has a separate week for Fable, the panel shows it as “Week · Fable”. Hit the limit and switch accounts without losing the session."
       },
       "imageSize": {
         "es": [
@@ -1764,8 +1792,8 @@
         },
         {
           "text": {
-            "es": "<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Godot 4.8-beta2 y 4.8-beta3 siguen imprimiendo el error; 4.8-beta2 no se cayó en 12 corridas.",
-            "en": "<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. Godot 4.8-beta2 and 4.8-beta3 still print the error; 4.8-beta2 didn’t crash in 12 runs."
+            "es": "<b>Problema conocido en Godot 4.7.2:</b> guardar una escena con Ctrl+S puede hacer que el motor imprima un error (<code>p_I-&gt;data != this</code>), y en sesiones donde un agente estaba cambiando el proyecto el editor a veces se cerró justo después de uno de esos guardados. Esa caída nunca se vio sin el addon; que venga del error del motor es probable, pero no está confirmado. Los guardados del propio addon no usan la vista previa; solo afecta al Ctrl+S del editor. Godot 4.8-beta2 y 4.8-beta3 siguen imprimiendo el error; 4.8-beta2 no se cayó en 12 corridas.",
+            "en": "<b>Known issue on Godot 4.7.2:</b> saving a scene with Ctrl+S can make the engine print an error (<code>p_I-&gt;data != this</code>), and in sessions where an agent was changing the project the editor sometimes crashed right after such a save. That crash was never seen without the addon; that it comes from the engine error is likely but not confirmed. The addon’s own saves skip the preview; only the editor’s Ctrl+S is affected. Godot 4.8-beta2 and 4.8-beta3 still print the error; 4.8-beta2 didn’t crash in 12 runs."
           }
         }
       ],
