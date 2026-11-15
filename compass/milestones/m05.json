@@ -1,9 +1,0 @@
-{
-  "code": "M5",
-  "done_when": [
-    "El sitio responde en el dominio propio con HTTPS."
-  ],
-  "goal": "El sitio en un dominio propio en lugar de github.io.",
-  "order": 5,
-  "title": "Dominio propio"
-}
