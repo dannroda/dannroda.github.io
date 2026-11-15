@@ -9,7 +9,7 @@
   },
   "project": "",
   "image": "/media/godot-manager-projects.en.png",
-  "draft": true,
+  "draft": false,
   "blocks": [
     {
       "id": "b1",
