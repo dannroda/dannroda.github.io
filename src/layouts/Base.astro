@@ -47,6 +47,14 @@ const canonical = new URL(url(`/${lang}/${path}`), Astro.site);
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 		<script is:inline>document.documentElement.classList.add('js');</script>
+		<script is:inline>
+			// A language picked with a switch link (ES/EN, Español · English) is remembered, so the root and paths
+			// without a language (see 404.astro) open in it instead of the system language.
+			document.addEventListener('click', (e) => {
+				const a = e.target.closest?.('a[hreflang]');
+				if (a) try { localStorage.setItem('lang', a.hreflang); } catch {}
+			});
+		</script>
 	</head>
 	<body>
 		{

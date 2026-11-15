@@ -6,10 +6,13 @@ const base = url('/');
 
 <!-- GitHub Pages serves this for any missing path, so it speaks both languages. -->
 <script is:inline define:vars={{ base, langs }}>
-	// A path without a language (/links/) goes to the same path in the system language, like the root does.
+	// A path without a language (/links/) goes to the same path in the language picked on the site, or else the
+	// system language, like the root does.
 	const rest = location.pathname.startsWith(base) ? location.pathname.slice(base.length) : null;
 	if (rest !== null && !langs.some((l) => rest === l || rest.startsWith(`${l}/`))) {
-		const lang = navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
+		let saved = null;
+		try { saved = localStorage.getItem('lang'); } catch {}
+		const lang = langs.includes(saved) ? saved : navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
 		location.replace(`${base}${lang}/${rest}${location.search}${location.hash}`);
 	}
 </script>

@@ -12,10 +12,14 @@ const en = url('/en/');
 		<title>dann</title>
 		<meta http-equiv="refresh" content={`1; url=${es}`} />
 		<script is:inline define:vars={{ es, en }}>
-			location.replace(navigator.language?.toLowerCase().startsWith('es') ? es : en);
+			// The language picked on the site wins over the system language.
+			let saved = null;
+			try { saved = localStorage.getItem('lang'); } catch {}
+			const lang = saved === 'es' || saved === 'en' ? saved : navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
+			location.replace(lang === 'es' ? es : en);
 		</script>
 	</head>
 	<body style="background:#0f1115;color:#eceae4;font-family:system-ui;padding:24px">
-		<a href={es} style="color:inherit">Español</a> · <a href={en} style="color:inherit">English</a>
+		<a href={es} hreflang="es" style="color:inherit" onclick="try{localStorage.setItem('lang','es')}catch{}">Español</a> · <a href={en} hreflang="en" style="color:inherit" onclick="try{localStorage.setItem('lang','en')}catch{}">English</a>
 	</body>
 </html>
