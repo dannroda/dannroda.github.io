@@ -1,0 +1,616 @@
+{
+  "title": {
+    "es": "Godot Manager",
+    "en": "Godot Manager"
+  },
+  "description": {
+    "es": "Un gestor de versiones de Godot para Linux y Windows: instala builds oficiales, .NET, export templates y símbolos de debug, y cada proyecto abre con su versión gracias a un archivo .godot-version.",
+    "en": "A Godot version manager for Linux and Windows: it installs official builds, .NET, export templates and debug symbols, and each project opens with its own version through a .godot-version file."
+  },
+  "project": "",
+  "image": "/media/godot-manager-projects.en.png",
+  "draft": true,
+  "blocks": [
+    {
+      "id": "b1",
+      "type": "hero",
+      "layout": "stacked",
+      "title": {
+        "es": "Cada proyecto de Godot, con <em>su</em> versión.",
+        "en": "Every Godot project, on <em>its own</em> version."
+      },
+      "intro": {
+        "es": "Un gestor de versiones de Godot para Linux y Windows. Instala builds oficiales (stable, dev y .NET), export templates y símbolos de debug, y verifica cada descarga. Un archivo <code>.godot-version</code> en el proyecto dice qué editor usa, y el comando <code>godot</code> abre ese. Es un CLI en Go, con una interfaz opcional parecida al Project Manager de Godot. Gratis y con licencia MIT.",
+        "en": "A Godot version manager for Linux and Windows. It installs official builds (stable, dev and .NET), export templates and debug symbols, and verifies every download. A <code>.godot-version</code> file in the project says which editor it uses, and the <code>godot</code> command opens that one. It’s a CLI written in Go, with an optional GUI that looks like Godot’s Project Manager. Free and MIT licensed."
+      },
+      "buttons": [
+        {
+          "label": {
+            "es": "Descargar para Linux",
+            "en": "Download for Linux"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-manager/releases/latest/download/godot-manager-linux-amd64.tar.gz",
+            "en": "https://github.com/dannroda/godot-manager/releases/latest/download/godot-manager-linux-amd64.tar.gz"
+          },
+          "style": "primary"
+        },
+        {
+          "label": {
+            "es": "Descargar para Windows",
+            "en": "Download for Windows"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-manager/releases/latest/download/godot-manager-windows-amd64.zip",
+            "en": "https://github.com/dannroda/godot-manager/releases/latest/download/godot-manager-windows-amd64.zip"
+          },
+          "style": "plain"
+        },
+        {
+          "label": {
+            "es": "Ver el código",
+            "en": "View the source"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-manager",
+            "en": "https://github.com/dannroda/godot-manager"
+          },
+          "style": "ghost"
+        }
+      ],
+      "game": "",
+      "chips": [
+        {
+          "text": {
+            "es": "Linux y Windows",
+            "en": "Linux & Windows"
+          }
+        },
+        {
+          "text": {
+            "es": ".godot-version",
+            "en": ".godot-version"
+          }
+        },
+        {
+          "text": {
+            "es": "CLI en Go",
+            "en": "Go CLI"
+          }
+        },
+        {
+          "text": {
+            "es": "interfaz opcional",
+            "en": "optional GUI"
+          }
+        }
+      ],
+      "side": "image",
+      "image": {
+        "es": "/media/godot-manager-projects.es.png",
+        "en": "/media/godot-manager-projects.en.png"
+      },
+      "imageMobile": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "La pestaña Proyectos de Godot Manager: cinco proyectos con la versión que usa cada uno (4.8-beta3, 4.5.1-stable y 4.7.2-stable fijadas, Sandbox con la default), Old Jam Game marcado en rojo con 4.3-stable no instalada y un botón Instalar…, y a la derecha Abrir, Correr, Cambiar versión… e Importar de Godot.",
+        "en": "Godot Manager’s Projects tab: five projects with the version each one uses (4.8-beta3, 4.5.1-stable and 4.7.2-stable pinned, Sandbox on the default), Old Jam Game flagged in red with 4.3-stable not installed and an Install… button, and on the right Open, Run, Change version… and Import from Godot."
+      },
+      "caption": {
+        "es": "Cada proyecto con la versión que pide. Si no está instalada, se instala desde ahí.",
+        "en": "Each project with the version it asks for. If it isn’t installed, install it right there."
+      },
+      "imageSize": {
+        "es": [
+          1200,
+          720
+        ],
+        "en": [
+          1200,
+          720
+        ]
+      }
+    },
+    {
+      "id": "b2",
+      "type": "cards",
+      "anchor": "how",
+      "eyebrow": {
+        "es": "godot-manager · godot · interfaz",
+        "en": "godot-manager · godot · GUI"
+      },
+      "heading": {
+        "es": "La versión la elige el proyecto, no vos.",
+        "en": "The project picks the version, not you."
+      },
+      "intro": {
+        "es": "Fijá una versión por proyecto una vez. Después, <code>godot</code> abre la correcta desde cualquier carpeta del proyecto.",
+        "en": "Pin a version per project once. From then on, <code>godot</code> opens the right one from any folder in the project."
+      },
+      "style": "rules",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Un archivo por proyecto",
+            "en": "One file per project"
+          },
+          "text": {
+            "es": "<code>godot-manager set-local 4.8-beta3</code> escribe <code>.godot-version</code>. <code>godot</code> lo encuentra subiendo desde la carpeta actual; si no hay, usa la versión default global.",
+            "en": "<code>godot-manager set-local 4.8-beta3</code> writes <code>.godot-version</code>. <code>godot</code> finds it by walking up from the current folder; if there isn’t one, it uses the global default."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Un CLI sin dependencias",
+            "en": "A CLI with no dependencies"
+          },
+          "text": {
+            "es": "<code>godot-manager</code> está escrito en Go y sus binarios son estáticos: no instala nada más. <code>godot-manager help</code> lista cada comando.",
+            "en": "<code>godot-manager</code> is written in Go and its binaries are static: nothing else to install. <code>godot-manager help</code> lists every command."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Una interfaz opcional",
+            "en": "An optional GUI"
+          },
+          "text": {
+            "es": "Hecha en Godot y parecida al Project Manager, hace todo a través del CLI. Está en inglés y en español, según el idioma del sistema.",
+            "en": "Built in Godot and similar to the Project Manager, it does all its work through the CLI. It’s in English and Spanish, following the system language."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b3",
+      "type": "cards",
+      "anchor": "features",
+      "eyebrow": {
+        "es": "Qué instala",
+        "en": "What it installs"
+      },
+      "heading": {
+        "es": "Builds oficiales, verificados.",
+        "en": "Official builds, verified."
+      },
+      "intro": {
+        "es": "Todo sale de <code>godotengine/godot-builds</code>, y cada descarga se compara con el checksum oficial SHA-512 o SHA-256.",
+        "en": "Everything comes from <code>godotengine/godot-builds</code>, and every download is checked against the official SHA-512 or SHA-256 checksum."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Cualquier release",
+            "en": "Any release"
+          },
+          "text": {
+            "es": "Stable, dev y beta, con el editor normal o el .NET (mono). Con filtros y tamaños en la interfaz.",
+            "en": "Stable, dev and beta, with the standard or the .NET (mono) editor. With filters and sizes in the GUI."
+          },
+          "tags": {
+            "es": [
+              "stable",
+              "dev",
+              ".NET"
+            ],
+            "en": [
+              "stable",
+              "dev",
+              ".NET"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Solo los templates que usás",
+            "en": "Only the templates you use"
+          },
+          "text": {
+            "es": "Export templates de las plataformas que pidas. Lee los archivos directo del <code>.tpz</code> remoto, sin bajar el archivo entero, y los deja donde los busca el editor.",
+            "en": "Export templates for the platforms you ask for. It reads the files straight out of the remote <code>.tpz</code>, without downloading the whole archive, and puts them where the editor looks for them."
+          },
+          "tags": {
+            "es": [
+              "--platforms=web"
+            ],
+            "en": [
+              "--platforms=web"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Símbolos de debug",
+            "en": "Debug symbols"
+          },
+          "text": {
+            "es": "Para el editor y los templates, desde Godot 4.8-beta1.",
+            "en": "For the editor and the templates, from Godot 4.8-beta1 on."
+          },
+          "tags": {
+            "es": [
+              "godot-manager symbols"
+            ],
+            "en": [
+              "godot-manager symbols"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Tus propios builds",
+            "en": "Your own builds"
+          },
+          "text": {
+            "es": "Sumá un editor compilado por vos con <code>godot-manager add</code> y usalo como cualquier otra versión.",
+            "en": "Add an editor you compiled with <code>godot-manager add</code> and use it like any other version."
+          },
+          "tags": {
+            "es": [
+              "godot-manager add"
+            ],
+            "en": [
+              "godot-manager add"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Godot 3.x también",
+            "en": "Godot 3.x too"
+          },
+          "text": {
+            "es": "Los proyectos viejos abren con su versión. En Linux eso incluye el editor, mono y los templates.",
+            "en": "Old projects open on their own version. On Linux that covers the editor, mono and templates."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "JSON para scripts",
+            "en": "JSON for scripts"
+          },
+          "text": {
+            "es": "Con <code>--json</code>, un objeto con el resultado o un evento por línea en las operaciones largas. Los códigos de error no cambian entre versiones.",
+            "en": "With <code>--json</code>, one result object, or one event per line for long operations. Error codes don’t change between versions."
+          },
+          "tags": {
+            "es": [
+              "--json",
+              "--yes"
+            ],
+            "en": [
+              "--json",
+              "--yes"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
+      "id": "b6",
+      "type": "image",
+      "image": {
+        "es": "/media/godot-manager-installed.es.png",
+        "en": "/media/godot-manager-installed.en.png"
+      },
+      "imageSize": {
+        "es": [
+          1200,
+          720
+        ],
+        "en": [
+          1200,
+          720
+        ]
+      },
+      "alt": {
+        "es": "La pestaña Versiones: 4.8-beta3, 4.8-beta2 y 4.8-beta1 con símbolos, 4.7.2-stable marcada con una estrella como default y templates de linux y windows, 4.7.2-stable-mono y 4.5.1-stable, todas en /opt/godot/versions, con botones para abrir el editor, export templates y símbolos de debug.",
+        "en": "The Versions tab: 4.8-beta3, 4.8-beta2 and 4.8-beta1 with symbols, 4.7.2-stable starred as the default with linux and windows templates, 4.7.2-stable-mono and 4.5.1-stable, all under /opt/godot/versions, with buttons to open the editor, add export templates and debug symbols."
+      },
+      "caption": {
+        "es": "Las versiones instaladas, con lo que tiene cada una.",
+        "en": "Installed versions, with what each one has."
+      },
+      "wide": true
+    },
+    {
+      "id": "b4",
+      "type": "panels",
+      "anchor": "gui",
+      "panels": [
+        {
+          "eyebrow": {
+            "es": "Interfaz",
+            "en": "GUI"
+          },
+          "heading": {
+            "es": "Como el Project Manager, con versiones.",
+            "en": "Like the Project Manager, with versions."
+          },
+          "text": {
+            "es": "Tres pestañas: <b>Proyectos</b> (abrir, correr, cambiar la versión o instalar la que falta, e importar la lista del Project Manager), <b>Versiones</b> y <b>Descargar</b>. Antes de instalar, el diálogo muestra el comando exacto que va a correr.",
+            "en": "Three tabs: <b>Projects</b> (open, run, change the version or install a missing one, and import the list from Godot’s Project Manager), <b>Versions</b> and <b>Download</b>. Before installing, the dialog shows the exact command it will run."
+          },
+          "image": {
+            "es": "/media/godot-manager-install-dialog.es.png",
+            "en": "/media/godot-manager-install-dialog.en.png"
+          },
+          "imageAlt": {
+            "es": "La pestaña Descargar con releases stable de 4.7.2 a 4.5, cada una con su fecha y tamaño, y el diálogo Instalar 4.7.1-stable abierto: editor Normal o Mono (.NET), export templates, y abajo el comando que se va a correr, godot-manager --json install 4.7.1-stable, con una descarga de 72.53 MiB.",
+            "en": "The Download tab with stable releases from 4.7.2 to 4.5, each with its date and size, and the Install 4.7.1-stable dialog open: Standard or Mono (.NET) editor, export templates, and below it the command it will run, godot-manager --json install 4.7.1-stable, for a 72.53 MiB download."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        },
+        {
+          "eyebrow": {
+            "es": "CLI",
+            "en": "CLI"
+          },
+          "heading": {
+            "es": "O todo desde la terminal.",
+            "en": "Or all of it from the terminal."
+          },
+          "text": {
+            "es": "Instalar, fijar la versión del proyecto y abrirlo. <code>godot-manager which</code> dice qué binario usaría <code>godot</code> en esa carpeta.",
+            "en": "Install, pin the project’s version and open it. <code>godot-manager which</code> tells you which binary <code>godot</code> would use in that folder."
+          },
+          "image": {
+            "es": "",
+            "en": ""
+          },
+          "imageAlt": {
+            "es": "",
+            "en": ""
+          },
+          "code": {
+            "es": "<span class=\"k\">godot-manager install</span> 4.7.2-stable --mono\n<span class=\"k\">godot-manager set</span> 4.7.2-stable\n<span class=\"ghost\"># default global</span>\n\ncd mi-juego\n<span class=\"k\">godot-manager set-local</span> 4.8-beta3\n<span class=\"ghost\"># escribe .godot-version</span>\n<span class=\"k\">godot</span> -e\n<span class=\"ghost\"># abre 4.8-beta3 acá</span>",
+            "en": "<span class=\"k\">godot-manager install</span> 4.7.2-stable --mono\n<span class=\"k\">godot-manager set</span> 4.7.2-stable\n<span class=\"ghost\"># global default</span>\n\ncd my-game\n<span class=\"k\">godot-manager set-local</span> 4.8-beta3\n<span class=\"ghost\"># writes .godot-version</span>\n<span class=\"k\">godot</span> -e\n<span class=\"ghost\"># opens 4.8-beta3 here</span>"
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": "b5",
+      "type": "band",
+      "anchor": "install",
+      "heading": {
+        "es": "Un archivo, tres pasos.",
+        "en": "One archive, three steps."
+      },
+      "notes": [
+        {
+          "text": {
+            "es": "Linux y Windows en x64: el archivo trae <code>godot-manager</code>, <code>godot</code> y la interfaz. En ARM64, solo el CLI. <code>SHA256SUMS</code> tiene el checksum de cada archivo. En Arch Linux, <code>makepkg -si</code> desde el repo.",
+            "en": "Linux and Windows on x64: the archive has <code>godot-manager</code>, <code>godot</code> and the GUI. On ARM64, the CLI only. <code>SHA256SUMS</code> has each archive’s checksum. On Arch Linux, <code>makepkg -si</code> from the repo."
+          }
+        },
+        {
+          "text": {
+            "es": "En Linux, las versiones van a <code>/opt/godot</code> si existe y, si no, a <code>~/.local/share/godot-manager</code>, sin sudo. En Windows, a <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> las manda a otro lado. Sin token, GitHub permite 60 pedidos por hora; un <code>GITHUB_TOKEN</code> personal, sin permisos, sube ese límite.",
+            "en": "On Linux, versions go to <code>/opt/godot</code> if it exists, otherwise to <code>~/.local/share/godot-manager</code>, no sudo needed. On Windows, to <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> puts them somewhere else. Without a token, GitHub allows 60 requests per hour; a personal <code>GITHUB_TOKEN</code> with no scopes raises that limit."
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "label": {
+            "es": "Todas las descargas (GitHub)",
+            "en": "All downloads (GitHub)"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-manager/releases/latest",
+            "en": "https://github.com/dannroda/godot-manager/releases/latest"
+          },
+          "style": "plain"
+        },
+        {
+          "label": {
+            "es": "Ver el código",
+            "en": "View the source"
+          },
+          "url": {
+            "es": "https://github.com/dannroda/godot-manager",
+            "en": "https://github.com/dannroda/godot-manager"
+          },
+          "style": "ghost"
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "es": "Bajá el archivo de tu sistema y descomprimilo donde quieras.",
+            "en": "Download the archive for your system and extract it anywhere."
+          }
+        },
+        {
+          "text": {
+            "es": "Abrí <code>godot-manager-ui</code> y elegí una versión en <b>Descargar</b>. Usa el <code>godot-manager</code> que tiene al lado: no hay nada más que instalar.",
+            "en": "Open <code>godot-manager-ui</code> and pick a version under <b>Download</b>. It uses the <code>godot-manager</code> next to it: nothing else to install."
+          }
+        },
+        {
+          "text": {
+            "es": "Para usar <code>godot-manager</code> y <code>godot</code> desde la terminal, sumá esa carpeta al <code>PATH</code>.",
+            "en": "To use <code>godot-manager</code> and <code>godot</code> from a terminal, add that folder to your <code>PATH</code>."
+          }
+        }
+      ],
+      "fine": {
+        "es": "Godot Manager · MIT · Linux y Windows, x64 y ARM64 · Interfaz en español e inglés.",
+        "en": "Godot Manager · MIT · Linux and Windows, x64 and ARM64 · Interface in English and Spanish."
+      }
+    }
+  ]
+}

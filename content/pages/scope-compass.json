@@ -20,8 +20,8 @@
         "en": "Your game project, organized <em>in git</em>."
       },
       "intro": {
-        "es": "Un tablero de tareas por hito que se guarda como un JSON por tarea en <code>compass/</code>, dentro de tu proyecto. Una CLI, un hub local con UI web y un dock para el editor de Godot lo hacen cómodo de usar, y un servidor MCP deja que Claude Code lo opere. La app es opcional: los datos se leen y se editan con git y un editor de texto. Gratis y con licencia MIT.",
-        "en": "A task board per milestone, saved as one JSON file per task in <code>compass/</code>, inside your project. A CLI, a local hub with a web UI and a Godot editor dock make it comfortable to use, and an MCP server lets Claude Code work the board. The app is optional: the data reads and edits with git and a text editor. Free and MIT licensed."
+        "es": "Un tablero de tareas por hito que se guarda como un JSON por tarea en git, en un repo propio del tablero o dentro del proyecto. Una CLI, un hub local con UI web y un dock para el editor de Godot lo hacen cómodo de usar, y un servidor MCP deja que Claude Code lo opere. La app es opcional: los datos se leen y se editan con git y un editor de texto. Gratis y con licencia MIT.",
+        "en": "A task board per milestone, saved as one JSON file per task in git, in the board’s own repo or inside your project. A CLI, a local hub with a web UI and a Godot editor dock make it comfortable to use, and an MCP server lets Claude Code work the board. The app is optional: the data reads and edits with git and a text editor. Free and MIT licensed."
       },
       "buttons": [
         {
@@ -69,8 +69,8 @@
         },
         {
           "text": {
-            "es": "Linux y Windows",
-            "en": "Linux & Windows"
+            "es": "Linux",
+            "en": "Linux"
           }
         }
       ],
@@ -97,8 +97,8 @@
       "type": "cards",
       "anchor": "data",
       "eyebrow": {
-        "es": "compass/ · un JSON por tarea",
-        "en": "compass/ · one JSON per task"
+        "es": "git · un JSON por tarea",
+        "en": "git · one JSON per task"
       },
       "heading": {
         "es": "Los datos viven en git. La app es opcional.",
@@ -128,8 +128,8 @@
             "en": "One file per task"
           },
           "text": {
-            "es": "Cada hito y cada tarea es un JSON chico dentro de <code>compass/</code>. Se mira con <code>git diff</code>, se revisa en un PR y se arregla a mano si hace falta.",
-            "en": "Every milestone and every task is a small JSON file inside <code>compass/</code>. Read it with <code>git diff</code>, review it in a PR, fix it by hand if you need to."
+            "es": "Cada hito y cada tarea es un JSON chico. Se mira con <code>git diff</code>, se revisa en un PR y se arregla a mano si hace falta.",
+            "en": "Every milestone and every task is a small JSON file. Read it with <code>git diff</code>, review it in a PR, fix it by hand if you need to."
           },
           "tags": {
             "es": [],
@@ -148,12 +148,12 @@
         },
         {
           "title": {
-            "es": "Una copia legible",
-            "en": "A readable copy"
+            "es": "Su propio repo",
+            "en": "Its own repo"
           },
           "text": {
-            "es": "Cada cambio regenera <code>docs/tareas.md</code>: el plan entero en markdown, para leerlo en GitHub o en cualquier editor.",
-            "en": "Every change regenerates <code>docs/tareas.md</code>: the whole plan in markdown, to read on GitHub or in any editor."
+            "es": "Cada tablero tiene su git en tu carpeta de usuario, y le podés sumar un origin. Si trabajás en equipo, va al proyecto como submódulo.",
+            "en": "Each board has its own git in your user folder, and you can give it an origin. For team work, add it to the project as a submodule."
           },
           "tags": {
             "es": [],
@@ -176,8 +176,8 @@
             "en": "Local first"
           },
           "text": {
-            "es": "El hub escucha en <code>127.0.0.1</code>. Sin cuentas y sin nube. Un mismo proyecto en Linux y en Windows se sincroniza con git.",
-            "en": "The hub listens on <code>127.0.0.1</code>. No accounts, no cloud. The same project on Linux and on Windows syncs through git."
+            "es": "El hub escucha en <code>127.0.0.1</code>. Sin cuentas y sin nube. Entre equipos se sincroniza con git.",
+            "en": "The hub listens on <code>127.0.0.1</code>. No accounts, no cloud. Between machines it syncs through git."
           },
           "tags": {
             "es": [],
@@ -603,8 +603,8 @@
             "en": "The board, next to the Inspector."
           },
           "text": {
-            "es": "El dock Tablero muestra las tareas del hito y, arriba, las del script o la escena que tenés abiertos. Un clic en un archivo de la tarea lo abre en el editor, y las secciones del GDD se leen con el resaltado de GDScript de tu tema. Sin el hub, el dock igual lee <code>compass/</code>.",
-            "en": "The <b>Board</b> dock shows the milestone’s tasks and, on top, the ones for the script or scene you have open. Click a file on a task to open it in the editor, and GDD sections read with your theme’s GDScript highlighting. Without the hub, the dock still reads <code>compass/</code>."
+            "es": "El dock Tablero muestra las tareas del hito y, arriba, las del script o la escena que tenés abiertos. Un clic en un archivo de la tarea lo abre en el editor, y las secciones del GDD se leen con el resaltado de GDScript de tu tema. Sin el hub, el dock igual lee el tablero.",
+            "en": "The <b>Board</b> dock shows the milestone’s tasks and, on top, the ones for the script or scene you have open. Click a file on a task to open it in the editor, and GDD sections read with your theme’s GDScript highlighting. Without the hub, the dock still reads the board."
           },
           "image": {
             "es": "",
@@ -691,8 +691,8 @@
             "en": "Keep your data anywhere else"
           },
           "text": {
-            "es": "No hay base de datos ni copia en la nube: todo está en <code>compass/</code>, en tu repo.",
-            "en": "There’s no database and no cloud copy: everything is in <code>compass/</code>, in your repo."
+            "es": "No hay base de datos ni copia en la nube: todo son archivos JSON en un repo de git, el del tablero o el de tu proyecto.",
+            "en": "There’s no database and no cloud copy: it’s all JSON files in a git repo, the board’s own or your project’s."
           },
           "tags": {
             "es": [],
@@ -802,14 +802,14 @@
       "type": "band",
       "anchor": "install",
       "heading": {
-        "es": "Dos descargas, tres pasos.",
-        "en": "Two downloads, three steps."
+        "es": "Tres pasos hasta el primer tablero.",
+        "en": "Three steps to your first board."
       },
       "notes": [
         {
           "text": {
-            "es": "Cada release trae dos descargas: el binario de <code>scompass</code> (CLI, hub y UI web) y el addon de Godot en un zip. Git para los datos; Godot 4.8 para el addon; Claude Code solo si querés el chat o el MCP. Linux y Windows 10/11. MIT y gratis.",
-            "en": "Each release has two downloads: the <code>scompass</code> binary (CLI, hub and web UI) and the Godot addon as a zip. Git for the data; Godot 4.8 for the addon; Claude Code only if you want the chat or the MCP. Linux and Windows 10/11. Free and MIT licensed."
+            "es": "El binario de <code>scompass</code> (CLI, hub y UI web) trae su propio Node, así que no necesita nada más; el paquete npm pide Node 22 o más nuevo. Git para los datos; Godot 4.8 para el addon; Claude Code solo si querés el chat o el MCP. Linux x64. MIT y gratis.",
+            "en": "The <code>scompass</code> binary (CLI, hub and web UI) brings its own Node, so it needs nothing else; the npm package needs Node 22 or newer. Git for the data; Godot 4.8 for the addon; Claude Code only if you want the chat or the MCP. Linux x64. Free and MIT licensed."
           }
         }
       ],
@@ -840,8 +840,8 @@
       "steps": [
         {
           "text": {
-            "es": "Poné <code>scompass</code> en tu PATH y corré <code>scompass home --tray</code>.",
-            "en": "Put <code>scompass</code> on your PATH and run <code>scompass home --tray</code>."
+            "es": "Bajá el binario y <code>install.sh</code>, y corré <code>sh install.sh</code>: deja <code>scompass</code> en el PATH y <b>Scope Compass</b> en el menú de aplicaciones, que abre el Inicio con un ícono en la bandeja.",
+            "en": "Download the binary and <code>install.sh</code>, and run <code>sh install.sh</code>: it puts <code>scompass</code> on your PATH and <b>Scope Compass</b> in your applications menu, which opens Home with a tray icon."
           }
         },
         {
@@ -852,14 +852,14 @@
         },
         {
           "text": {
-            "es": "En el dock <b>Tablero</b>, tocá <b>Crear compass/</b> y elegí la plantilla Juego.",
-            "en": "In the <b>Board</b> dock, click <b>Create compass/</b> and pick the <b>Game</b> template."
+            "es": "En el dock <b>Tablero</b>, creá el tablero con la plantilla Juego.",
+            "en": "In the <b>Board</b> dock, create the board from the <b>Game</b> template."
           }
         }
       ],
       "fine": {
-        "es": "Scope Compass · MIT · Sin cuentas y sin nube. Interfaz en castellano e inglés.",
-        "en": "Scope Compass · MIT · No accounts, no cloud. Interface in English and Spanish."
+        "es": "Scope Compass · MIT · Sin cuentas y sin nube. Interfaz en castellano.",
+        "en": "Scope Compass · MIT · No accounts, no cloud. Interface in Spanish."
       }
     }
   ]
