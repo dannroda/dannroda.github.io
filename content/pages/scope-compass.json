@@ -8,7 +8,7 @@
     "en": "A game project organizer that keeps its data in git: a board per milestone, design docs, playtests, an MCP server for Claude Code and a Godot dock. Local, no accounts, no cloud."
   },
   "project": "",
-  "image": "",
+  "image": "/media/scope-compass-board.en.png",
   "draft": true,
   "blocks": [
     {
@@ -74,22 +74,32 @@
           }
         }
       ],
-      "side": "none",
+      "side": "image",
       "image": {
-        "es": "",
-        "en": ""
+        "es": "/media/scope-compass-board.es.png",
+        "en": "/media/scope-compass-board.en.png"
       },
       "imageMobile": {
         "es": "",
         "en": ""
       },
       "imageAlt": {
-        "es": "",
-        "en": ""
+        "es": "Tablero de Scope Compass con columnas Pendiente, Pausado, En curso, Revisión y Hecho, y una tarea abierta al costado con pasos y decisiones.",
+        "en": "Scope Compass board with To do, Paused, In progress, Review and Done columns, and a task open on the side with steps and decisions."
       },
       "caption": {
-        "es": "",
-        "en": ""
+        "es": "El tablero en el navegador: cada tarea es un archivo JSON en compass/, y la abierta muestra sus pasos, la prueba y las decisiones del agente.",
+        "en": "The board in the browser: each task is a JSON file in compass/, and the open one shows its steps, its test and the agent's decisions."
+      },
+      "imageSize": {
+        "es": [
+          1920,
+          1200
+        ],
+        "en": [
+          1920,
+          1200
+        ]
       }
     },
     {
@@ -148,12 +158,12 @@
         },
         {
           "title": {
-            "es": "Su propio repo",
-            "en": "Its own repo"
+            "es": "En tu carpeta de usuario",
+            "en": "In your user folder"
           },
           "text": {
-            "es": "Cada tablero tiene su git en tu carpeta de usuario, y le podés sumar un origin. Si trabajás en equipo, va al proyecto como submódulo.",
-            "en": "Each board has its own git in your user folder, and you can give it an origin. For team work, add it to the project as a submodule."
+            "es": "Los tableros viven fuera del proyecto, en un repo de git para todos o uno por tablero, con un origin privado si querés. En el proyecto, <code>compass/</code> es un enlace fuera de su git; para compartir un tablero, va como submódulo.",
+            "en": "Boards live outside the project, in one git repo for all of them or one per board, with a private origin if you want. In the project, <code>compass/</code> is a link kept out of its git; to share a board, add it as a submodule."
           },
           "tags": {
             "es": [],
@@ -402,21 +412,23 @@
         },
         {
           "title": {
-            "es": "Chat con tu Claude Code",
-            "en": "Chat with your Claude Code"
+            "es": "Chat con tu agente",
+            "en": "Chat with your agent"
           },
           "text": {
-            "es": "Un panel corre el <code>claude</code> que ya tenés instalado, con tu cuenta, sobre el proyecto: lee el código y opera el tablero, pero no edita archivos ni corre comandos. Solo aparece en tu equipo.",
-            "en": "A panel runs the <code>claude</code> you already have installed, with your account, on the project: it reads the code and works the board, but doesn’t edit files or run commands. It only shows up on your own machine."
+            "es": "Un panel corre el <code>claude</code> o el <code>agy</code> (Antigravity CLI) que ya tenés instalado, con tu cuenta, sobre el proyecto: lee el código y opera el tablero, pero no edita archivos ni corre comandos. Se usa desde tu equipo o desde un teléfono que vinculaste en la red de casa; el agente corre siempre en tu equipo.",
+            "en": "A panel runs the <code>claude</code> or <code>agy</code> (Antigravity CLI) you already have installed, with your account, on the project: it reads the code and works the board, but doesn’t edit files or run commands. Use it from your machine or from a phone you linked on your home network; the agent always runs on your machine."
           },
           "tags": {
             "es": [
               "opcional",
-              "solo 127.0.0.1"
+              "claude",
+              "agy"
             ],
             "en": [
               "optional",
-              "127.0.0.1 only"
+              "claude",
+              "agy"
             ]
           },
           "command": "",
@@ -445,6 +457,73 @@
         "es": "",
         "en": ""
       }
+    },
+    {
+      "id": "b8",
+      "type": "panels",
+      "anchor": "",
+      "panels": [
+        {
+          "eyebrow": {
+            "es": "Playtests",
+            "en": "Playtests"
+          },
+          "heading": {
+            "es": "Probá lo que está en Revisión, en orden.",
+            "en": "Test what’s in Review, in order."
+          },
+          "text": {
+            "es": "Una sesión de playtest: se prueban las tareas en orden y cada resultado, con su nota, queda en la tarea.",
+            "en": "A playtest session: tasks are tested in order and each result, with its note, is saved in the task."
+          },
+          "image": {
+            "es": "/media/scope-compass-playtest.es.png",
+            "en": "/media/scope-compass-playtest.en.png"
+          },
+          "imageAlt": {
+            "es": "Una sesión de playtest con cuatro tareas marcadas Anda o Falla, con notas, y la tarea que falta probar abierta al costado.",
+            "en": "A playtest session with four tasks marked Works or Fails, with notes, and the task still to test open on the side."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        },
+        {
+          "eyebrow": {
+            "es": "Decisiones",
+            "en": "Decisions"
+          },
+          "heading": {
+            "es": "Lo que decidió el agente, para revisar.",
+            "en": "What the agent decided, to review."
+          },
+          "text": {
+            "es": "Las decisiones que tomó el agente y las preguntas que te hizo, para revisarlas, revertirlas o responderlas en un lugar.",
+            "en": "The decisions the agent made and the questions it asked you, in one place to review, revert or answer."
+          },
+          "image": {
+            "es": "/media/scope-compass-decisions.es.png",
+            "en": "/media/scope-compass-decisions.en.png"
+          },
+          "imageAlt": {
+            "es": "La bandeja de decisiones con una decisión a revertir, una pregunta abierta y una decisión sin revisar.",
+            "en": "The decisions inbox with a decision to revert, an open question and an unreviewed decision."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "id": "b4",
@@ -570,7 +649,7 @@
             "es": "",
             "en": ""
           },
-          "wide": false
+          "wide": true
         }
       ],
       "asideHeading": {
@@ -587,6 +666,73 @@
         "es": "",
         "en": ""
       }
+    },
+    {
+      "id": "b9",
+      "type": "panels",
+      "anchor": "",
+      "panels": [
+        {
+          "eyebrow": {
+            "es": "Inicio",
+            "en": "Home"
+          },
+          "heading": {
+            "es": "Lo de hoy, de todos los proyectos.",
+            "en": "Today, across every project."
+          },
+          "text": {
+            "es": "El Inicio junta todos los proyectos del equipo: lo vencido y lo de hoy, la semana, y las preguntas de los agentes que esperan respuesta.",
+            "en": "Home brings every project on the machine together: what's overdue or due today, the week ahead, and agent questions waiting for an answer."
+          },
+          "image": {
+            "es": "/media/scope-compass-home.es.png",
+            "en": "/media/scope-compass-home.en.png"
+          },
+          "imageAlt": {
+            "es": "El Inicio de Scope Compass: lo de hoy de todos los proyectos, la semana que viene y una tarjeta por proyecto.",
+            "en": "Scope Compass Home: today's items from every project, the coming week and one card per project."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        },
+        {
+          "eyebrow": {
+            "es": "Teléfono · --lan",
+            "en": "Phone · --lan"
+          },
+          "heading": {
+            "es": "El mismo tablero, en el teléfono.",
+            "en": "The same board, on your phone."
+          },
+          "text": {
+            "es": "En el teléfono, con scompass serve --lan: el mismo tablero, para anotar o tildar desde el sillón.",
+            "en": "On the phone, with scompass serve --lan: the same board, to jot things down or tick steps from the couch."
+          },
+          "image": {
+            "es": "/media/scope-compass-phone.es.png",
+            "en": "/media/scope-compass-phone.en.png"
+          },
+          "imageAlt": {
+            "es": "Dos teléfonos: a la izquierda el tablero en columna, a la derecha una tarea con su hito, prioridad y pasos.",
+            "en": "Two phones: on the left the board as a single column, on the right a task with its milestone, priority and steps."
+          },
+          "code": {
+            "es": "",
+            "en": ""
+          },
+          "keys": {
+            "es": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "id": "b5",
@@ -607,12 +753,12 @@
             "en": "The <b>Board</b> dock shows the milestone’s tasks and, on top, the ones for the script or scene you have open. Click a file on a task to open it in the editor, and GDD sections read with your theme’s GDScript highlighting. Without the hub, the dock still reads the board."
           },
           "image": {
-            "es": "",
-            "en": ""
+            "es": "/media/scope-compass-dock.es.png",
+            "en": "/media/scope-compass-dock.en.png"
           },
           "imageAlt": {
-            "es": "",
-            "en": ""
+            "es": "El editor de Godot con una escena 2D y el dock Tablero a la derecha, con las tareas del hito por estado.",
+            "en": "The Godot editor with a 2D scene and the Board dock on the right, listing the milestone's tasks by status."
           },
           "code": {
             "es": "",
@@ -633,8 +779,8 @@
             "en": "Claude Code works the board with tools, not Bash."
           },
           "text": {
-            "es": "Más de 30 herramientas: listar y mostrar tareas, crearlas, moverlas, tildar pasos, vincular archivos, buscar en los documentos, anotar decisiones y cargar resultados de playtest. Las escrituras pasan por el hub, así la web y el dock se enteran al instante.",
-            "en": "More than 30 tools: list and show tasks, create and move them, check off steps, link files, search the docs, log decisions and record playtest results. Writes go through the hub, so the web and the dock see them instantly."
+            "es": "Más de 30 herramientas: listar y mostrar tareas, crearlas, moverlas, tildar pasos, vincular archivos, buscar en los documentos, anotar decisiones y cargar resultados de playtest. Se registra una vez para todos los proyectos, y el plugin de Claude Code le indica al agente la guía del tablero.",
+            "en": "More than 30 tools: list and show tasks, create and move them, check off steps, link files, search the docs, log decisions and record playtest results. Register it once for every project, and the Claude Code plugin points the agent to the board guide."
           },
           "image": {
             "es": "",
@@ -645,8 +791,8 @@
             "en": ""
           },
           "code": {
-            "es": "<span class=\"k\">claude mcp add</span> --scope user scompass -- scompass mcp\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>",
-            "en": "<span class=\"k\">claude mcp add</span> --scope user scompass -- scompass mcp\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>"
+            "es": "<span class=\"k\">scompass mcp install</span>\n<span class=\"ghost\"># en Claude Code:</span>\n/plugin marketplace add dannroda/scope-compass\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>",
+            "en": "<span class=\"k\">scompass mcp install</span>\n<span class=\"ghost\"># in Claude Code:</span>\n/plugin marketplace add dannroda/scope-compass\n\n<span class=\"ghost\"># move_task, check_step, add_decision, search_docs…</span>"
           },
           "keys": {
             "es": "",
@@ -715,8 +861,8 @@
             "en": "Ask you for an account"
           },
           "text": {
-            "es": "No hay registro ni login. El chat usa el login de tu propio Claude Code, y el hub no guarda claves.",
-            "en": "No sign-up, no login. The chat uses your own Claude Code login, and the hub stores no keys."
+            "es": "No hay registro ni login. El chat usa el login de tu propio agente, y el hub no guarda claves.",
+            "en": "No sign-up, no login. The chat uses your own agent’s login, and the hub stores no keys."
           },
           "tags": {
             "es": [],
@@ -739,8 +885,8 @@
             "en": "Listen outside your machine unless you ask"
           },
           "text": {
-            "es": "El hub escucha en <code>127.0.0.1</code>. Solo con <code>--lan</code> se abre a tu red, y aun así el chat sigue solo en tu equipo.",
-            "en": "The hub listens on <code>127.0.0.1</code>. Only <code>--lan</code> opens it to your network, and even then the chat stays on your machine."
+            "es": "El hub escucha en <code>127.0.0.1</code>. Solo con <code>--lan</code> se abre a tu red, y aun así el chat solo llega a un teléfono que vinculaste.",
+            "en": "The hub listens on <code>127.0.0.1</code>. Only <code>--lan</code> opens it to your network, and even then the chat only reaches a phone you linked."
           },
           "tags": {
             "es": [],
@@ -808,8 +954,8 @@
       "notes": [
         {
           "text": {
-            "es": "El binario de <code>scompass</code> (CLI, hub y UI web) trae su propio Node, así que no necesita nada más; el paquete npm pide Node 22 o más nuevo. Git para los datos; Godot 4.8 para el addon; Claude Code solo si querés el chat o el MCP. Linux x64. MIT y gratis.",
-            "en": "The <code>scompass</code> binary (CLI, hub and web UI) brings its own Node, so it needs nothing else; the npm package needs Node 22 or newer. Git for the data; Godot 4.8 for the addon; Claude Code only if you want the chat or the MCP. Linux x64. Free and MIT licensed."
+            "es": "El binario de <code>scompass</code> (CLI, hub y UI web) trae su propio Node y no hace falta ponerlo en el PATH: abrilo una vez y el addon y el MCP lo encuentran. El paquete npm pide Node 22 o más nuevo. Git para los datos; Godot 4.8 para el addon; Claude Code o Antigravity CLI solo si querés el chat, y Claude Code para el MCP. MIT y gratis.",
+            "en": "The <code>scompass</code> binary (CLI, hub and web UI) brings its own Node and doesn’t need to be on your PATH: open it once and the addon and the MCP find it. The npm package needs Node 22 or newer. Git for the data; Godot 4.8 for the addon; Claude Code or Antigravity CLI only if you want the chat, and Claude Code for the MCP. Free and MIT licensed."
           }
         }
       ],
@@ -840,8 +986,8 @@
       "steps": [
         {
           "text": {
-            "es": "Bajá el binario y <code>install.sh</code>, y corré <code>sh install.sh</code>: deja <code>scompass</code> en el PATH y <b>Scope Compass</b> en el menú de aplicaciones, que abre el Inicio con un ícono en la bandeja.",
-            "en": "Download the binary and <code>install.sh</code>, and run <code>sh install.sh</code>: it puts <code>scompass</code> on your PATH and <b>Scope Compass</b> in your applications menu, which opens Home with a tray icon."
+            "es": "Bajá el binario y abrilo una vez: con doble clic levanta el Inicio. En Linux, <code>sh install.sh</code> además lo suma al menú de aplicaciones, con un ícono en la bandeja.",
+            "en": "Download the binary and open it once: a double-click starts Home. On Linux, <code>sh install.sh</code> also adds it to your applications menu, with a tray icon."
           }
         },
         {
@@ -852,14 +998,14 @@
         },
         {
           "text": {
-            "es": "En el dock <b>Tablero</b>, creá el tablero con la plantilla Juego.",
-            "en": "In the <b>Board</b> dock, create the board from the <b>Game</b> template."
+            "es": "En el dock <b>Tablero</b>, creá el tablero con la plantilla Juego. Para Claude Code, <code>scompass mcp install</code>.",
+            "en": "In the <b>Board</b> dock, create the board from the <b>Game</b> template. For Claude Code, <code>scompass mcp install</code>."
           }
         }
       ],
       "fine": {
-        "es": "Scope Compass · MIT · Sin cuentas y sin nube. Interfaz en castellano.",
-        "en": "Scope Compass · MIT · No accounts, no cloud. Interface in Spanish."
+        "es": "Scope Compass · MIT · Sin cuentas y sin nube. Interfaz en castellano e inglés.",
+        "en": "Scope Compass · MIT · No accounts, no cloud. Interface in English and Spanish."
       }
     }
   ]
