@@ -1,13 +1,14 @@
 {
-	"ai": "",
-	"authorship": [],
-	"role": {
-		"en": "",
-		"es": ""
-	},
-	"show": "listed",
-	"summary": {
-		"en": "",
-		"es": ""
-	}
+  "ai": "vibe",
+  "show": "listed",
+  "landing": "godot-manager",
+  "role": {
+    "en": "",
+    "es": ""
+  },
+  "summary": {
+    "en": "",
+    "es": ""
+  },
+  "authorship": []
 }
