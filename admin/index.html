@@ -344,7 +344,23 @@ function sourceOf(g) {
 }
 function pending() {
 	// Listed in sources but with no store data yet: new, private, or failing.
-	return Object.entries(STORES).flatMap(([k]) => (S.sources[k] ?? []).filter((e) => !S.games.some((g) => g.store.source === k && matches[k](e, g.store))).map((e) => [k, e]));
+	// Also every repeat of an earlier entry, even of a game that has data, so it can be removed. Each one keeps its
+	// index in the list, so a repeat is removed on its own.
+	return Object.entries(STORES).flatMap(([k]) => (S.sources[k] ?? []).map((e, i, list) => [k, e, i, list]).filter(([, e, i, list]) =>
+		list.slice(0, i).some((x) => sourceKey(x) === sourceKey(e)) || !S.games.some((g) => g.store.source === k && matches[k](e, g.store))));
+}
+// Same source entry: a URL or repo, compared without case or trailing slash (itch entries are { url, repo }).
+const sourceKey = (e) => String(e?.url ?? e).trim().toLowerCase().replace(/\/+$/, '');
+async function removeSource(k, i) {
+	const e = S.sources[k]?.[i];
+	if (!confirm(`¿Quitar ${String(e?.url ?? e)} de la lista de ${STORES[k]}?`)) return;
+	try {
+		const next = clone(S.sources);
+		next[k].splice(i, 1);
+		await api('PUT', 'sources', next);
+		await reload();
+		toast('Quitado de la lista');
+	} catch (err) { toast(err.message, true); }
 }
 // Removing takes it off the source list and deletes its data and own texts right away; Publicar takes it off the live site.
 async function removeGame(g, src) {
@@ -368,6 +384,7 @@ function gamesView() {
 		const d = detect(add.value);
 		if (!d) return toast('No reconozco ese link', true);
 		const [k, entry] = d;
+		if ((S.sources[k] ?? []).some((e) => sourceKey(e) === sourceKey(entry))) return toast(`Ya está en la lista de ${STORES[k]}`, true);
 		const next = clone(S.sources);
 		(next[k] ??= []).push(entry);
 		await api('PUT', 'sources', next);
@@ -387,7 +404,10 @@ function gamesView() {
 	const list = h('div.list', {}, h('div.list-head', {}, add, h('button', { onclick: addIt }, 'Agregar')),
 		gone.length > 0 && [h('div.group', { style: 'color:var(--danger)' }, 'Quitados de la lista'), gone.map(item)],
 		Object.keys(STORES).map((k) => listed.some((g) => g.store.source === k) && [h('div.group', {}, STORES[k]), listed.filter((g) => g.store.source === k).map(item)]),
-		pend.length > 0 && [h('div.group', {}, 'Sin datos todavía'), pend.map(([k, e]) => h('div.item', {}, h('span.ph'), h('span', { style: 'min-width:0' }, h('div.t', {}, String(e.url ?? e)), h('div.s', {}, `${STORES[k]} · privado o sin sincronizar`))))]
+		pend.length > 0 && [h('div.group', {}, 'Sin datos todavía'), pend.map(([k, e, i]) => h('div.item', {}, h('span.ph'),
+			h('span', { style: 'min-width:0;flex:1' }, h('div.t', {}, String(e.url ?? e)), h('div.s', {}, `${STORES[k]} · privado o sin sincronizar`,
+				S.sources[k].slice(0, i).some((x) => sourceKey(x) === sourceKey(e)) && h('span.tag.off', {}, 'repetido'))),
+			h('button.link', { onclick: () => removeSource(k, i) }, 'Quitar')))]
 	);
 	const g = S.games.find((x) => x.slug === sel);
 	if (!g) return [list, h('div.empty', {}, 'Elegí un juego o proyecto. Los datos de la tienda (título, imágenes, fechas) se traen solos; acá editás lo tuyo.')];
