@@ -1,13 +1,14 @@
 {
-	"ai": "",
-	"authorship": [],
-	"role": {
-		"en": "",
-		"es": ""
-	},
-	"show": "listed",
-	"summary": {
-		"en": "",
-		"es": ""
-	}
+  "ai": "hand",
+  "show": "listed",
+  "landing": "",
+  "role": {
+    "en": "",
+    "es": ""
+  },
+  "summary": {
+    "en": "",
+    "es": ""
+  },
+  "authorship": []
 }
