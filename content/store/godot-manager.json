@@ -1,0 +1,32 @@
+{
+	"archived": false,
+	"created": "2026-11-15",
+	"description": "Version manager for Godot on Linux and Windows",
+	"homepage": "https://dann.com.ar/en/godot-manager/",
+	"id": 1458321841,
+	"images": {
+		"cover": "https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/projects.png",
+		"screenshots": [
+			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/installed.png",
+			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/download.png",
+			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/install-dialog.png"
+		]
+	},
+	"language": "GDScript",
+	"license": "MIT",
+	"local_images": {
+		"cover": "/games/godot-manager/cover.png",
+		"screenshots": [
+			"/games/godot-manager/shot-1.png",
+			"/games/godot-manager/shot-2.png",
+			"/games/godot-manager/shot-3.png"
+		],
+		"trailer": null
+	},
+	"source": "github",
+	"stars": 0,
+	"synced_at": "2026-11-15T03:34:34.379Z",
+	"title": "godot-manager",
+	"topics": [],
+	"url": "https://github.com/dannroda/godot-manager"
+}

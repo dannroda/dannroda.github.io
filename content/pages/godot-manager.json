@@ -542,6 +542,160 @@
       ]
     },
     {
+      "id": "b7",
+      "type": "cards",
+      "anchor": "projects",
+      "eyebrow": {
+        "es": "Desde v2.3",
+        "en": "Since v2.3"
+      },
+      "heading": {
+        "es": "Cuando un proyecto no abre.",
+        "en": "When a project won’t open."
+      },
+      "intro": {
+        "es": "Un plugin roto o una versión que falta ya no te dejan afuera del editor.",
+        "en": "A broken plugin or a missing version no longer locks you out of the editor."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Plugins de cada proyecto",
+            "en": "Project plugins"
+          },
+          "text": {
+            "es": "<code>godot-manager plugins</code> lista los plugins de editor y marca los que tienen problemas. <code>plugins disable</code> desactiva uno sin abrir el editor, y en la interfaz el botón <b>Detalles…</b> los muestra con interruptores. Godot 3 y 4.",
+            "en": "<code>godot-manager plugins</code> lists a project’s editor plugins and flags broken ones. <code>plugins disable</code> turns one off without opening the editor, and in the GUI the <b>Details…</b> button shows them with toggles. Godot 3 and 4."
+          },
+          "tags": {
+            "es": [
+              "plugins disable",
+              "plugins remove"
+            ],
+            "en": [
+              "plugins disable",
+              "plugins remove"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": true
+        },
+        {
+          "title": {
+            "es": "La versión que falta",
+            "en": "The missing version"
+          },
+          "text": {
+            "es": "Si un proyecto pide una versión que no está instalada, la interfaz ofrece instalarla, elegir otra o usar la default, y después abre el proyecto.",
+            "en": "If a project asks for a version that isn’t installed, the GUI offers to install it, pick another one or use the default, then opens the project."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Se actualiza solo",
+            "en": "It updates itself"
+          },
+          "text": {
+            "es": "<code>godot-manager self-update</code> actualiza el CLI, <code>godot</code> y la interfaz, verificados contra <code>SHA256SUMS</code>. La interfaz se fija una vez por día y ofrece <b>Actualizar</b>; se apaga en Ajustes. El paquete de Arch se actualiza por el gestor de paquetes.",
+            "en": "<code>godot-manager self-update</code> updates the CLI, <code>godot</code> and the GUI, checked against <code>SHA256SUMS</code>. The GUI checks once a day and offers <b>Update</b>; turn it off in Settings. The Arch package updates through the package manager."
+          },
+          "tags": {
+            "es": [
+              "self-update",
+              "--check"
+            ],
+            "en": [
+              "self-update",
+              "--check"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Clic derecho",
+            "en": "Right-click"
+          },
+          "text": {
+            "es": "Proyectos, versiones instaladas y releases tienen un menú contextual con las mismas acciones que los botones. También con la tecla Menú o Shift+F10.",
+            "en": "Projects, installed versions and releases have a context menu with the same actions as the buttons. Also with the Menu key or Shift+F10."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
       "id": "b5",
       "type": "band",
       "anchor": "install",
@@ -560,6 +714,12 @@
           "text": {
             "es": "En Linux, las versiones van a <code>/opt/godot</code> si existe y, si no, a <code>~/.local/share/godot-manager</code>, sin sudo. En Windows, a <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> las manda a otro lado. Sin token, GitHub permite 60 pedidos por hora; un <code>GITHUB_TOKEN</code> personal, sin permisos, sube ese límite.",
             "en": "On Linux, versions go to <code>/opt/godot</code> if it exists, otherwise to <code>~/.local/share/godot-manager</code>, no sudo needed. On Windows, to <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> puts them somewhere else. Without a token, GitHub allows 60 requests per hour; a personal <code>GITHUB_TOKEN</code> with no scopes raises that limit."
+          }
+        },
+        {
+          "text": {
+            "es": "¿Tenés la 2.2.0? Esa no se actualiza sola: bajá el archivo de nuevo y reemplazá la carpeta por única vez. Desde la 2.3.0 se encarga <code>godot-manager self-update</code>.",
+            "en": "On 2.2.0? It can’t update itself: download the archive again and replace your folder, just this once. From 2.3.0 on, <code>godot-manager self-update</code> takes care of it."
           }
         }
       ],

@@ -27,7 +27,8 @@
     "dannroda/scope-compass",
     "dannroda/project-epiphany",
     "lonewolftechnology/godot-dojo",
-    "dannroda/scope-compass"
+    "dannroda/scope-compass",
+    "dannroda/godot-manager"
   ],
   "assetlib": [],
   "wikis": []
