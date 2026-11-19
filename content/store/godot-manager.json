@@ -9,7 +9,8 @@
 		"screenshots": [
 			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/installed.png",
 			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/download.png",
-			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/install-dialog.png"
+			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/install-dialog.png",
+			"https://raw.githubusercontent.com/dannroda/godot-manager/main/docs/screenshots/plugins.png"
 		]
 	},
 	"language": "GDScript",
@@ -19,13 +20,14 @@
 		"screenshots": [
 			"/games/godot-manager/shot-1.png",
 			"/games/godot-manager/shot-2.png",
-			"/games/godot-manager/shot-3.png"
+			"/games/godot-manager/shot-3.png",
+			"/games/godot-manager/shot-4.png"
 		],
 		"trailer": null
 	},
 	"source": "github",
 	"stars": 0,
-	"synced_at": "2026-11-15T03:34:34.379Z",
+	"synced_at": "2026-11-19T17:48:30.848Z",
 	"title": "godot-manager",
 	"topics": [],
 	"url": "https://github.com/dannroda/godot-manager"

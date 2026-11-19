@@ -5,8 +5,9 @@
 	"homepage": null,
 	"id": 1394648374,
 	"images": {
-		"cover": "https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/board.png",
+		"cover": "https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/banner.png",
 		"screenshots": [
+			"https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/board.png",
 			"https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/home.png",
 			"https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/playtest.png",
 			"https://raw.githubusercontent.com/dannroda/scope-compass/main/docs/images/en/decisions.png",
@@ -23,13 +24,14 @@
 			"/games/scope-compass/shot-2.png",
 			"/games/scope-compass/shot-3.png",
 			"/games/scope-compass/shot-4.png",
-			"/games/scope-compass/shot-5.png"
+			"/games/scope-compass/shot-5.png",
+			"/games/scope-compass/shot-6.png"
 		],
 		"trailer": null
 	},
 	"source": "github",
 	"stars": 0,
-	"synced_at": "2026-11-18T17:40:03.453Z",
+	"synced_at": "2026-11-19T17:48:28.422Z",
 	"title": "scope-compass",
 	"topics": [],
 	"url": "https://github.com/dannroda/scope-compass"
