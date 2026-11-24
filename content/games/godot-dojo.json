@@ -1,6 +1,7 @@
 {
   "ai": "hand",
   "show": "listed",
+  "paid": true,
   "role": {
     "es": "",
     "en": ""

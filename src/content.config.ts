@@ -70,6 +70,8 @@ const games = defineCollection({
 		// The admin writes '' for "not set"; everything downstream sees null.
 		ai: z.enum(aiLevels).or(z.literal('')).nullish().transform((v) => v || null),
 		show: z.enum(shows).default('listed'),
+		// I was paid to develop it: only these go under Work.
+		paid: z.boolean().default(false),
 		// its landing page: a page of this site without the language ("godot-agent") or a full https:// link
 		landing: z.string().trim().nullish(),
 		role: text,

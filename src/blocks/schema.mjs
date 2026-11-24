@@ -47,7 +47,12 @@ export const blocks = [
 	},
 	{
 		type: 'works', label: 'Trabajos', group: 'Juegos',
-		help: 'Los juegos publicados, otros juegos y proyectos, con el filtro por uso de IA. Se arma solo con los juegos del sitio.',
+		help: 'Lo que me pagaron por desarrollar (marcado en cada juego), con el conteo y el filtro por uso de IA. Se arma solo.',
+		fields: [{ key: 'heading', label: 'Título', type: 'text' }]
+	},
+	{
+		type: 'other', label: 'Otros juegos', group: 'Juegos',
+		help: 'Los juegos y proyectos que no son pagos, ni de jam, ni del Lab. Se arma solo.',
 		fields: [{ key: 'heading', label: 'Título', type: 'text' }]
 	},
 	{

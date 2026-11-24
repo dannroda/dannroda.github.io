@@ -89,6 +89,14 @@
     },
     {
       "id": "b4",
+      "type": "other",
+      "heading": {
+        "es": "Otros juegos",
+        "en": "More games"
+      }
+    },
+    {
+      "id": "b5",
       "type": "lab",
       "heading": {
         "es": "Lab",

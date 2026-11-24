@@ -112,12 +112,15 @@ export function itchInfo(html) {
 	return info;
 }
 
-// path like "56/little-eyes"; taken from the itch page's own ldjam.com link, since titles collide between entries.
+// path like "56/little-eyes", or "55/$392372" when the page links the entry by its node id; taken from the itch page's
+// own ldjam.com link, since titles collide between entries.
 async function ludumDare(path) {
-	const walk = await get(`https://api.ldjam.com/vx/node2/walk/1/events/ludum-dare/${path}`);
-	if (walk.extra.length) throw new Error(`ldjam: no entry at ${path}`);
 	const node = async (id) => (await get(`https://api.ldjam.com/vx/node2/get/${id}`)).node[0];
-	const [game, event] = [await node(walk.node_id), await node(walk.path.at(-2))];
+	const byId = path.match(/\/\$(\d+)$/)?.[1];
+	const walk = !byId && (await get(`https://api.ldjam.com/vx/node2/walk/1/events/ludum-dare/${path}`));
+	if (walk && walk.extra.length) throw new Error(`ldjam: no entry at ${path}`);
+	const game = await node(byId ?? walk.node_id);
+	const event = await node(byId ? game.parent : walk.path.at(-2));
 	const results = {};
 	for (const [k, label] of Object.entries(event.meta)) {
 		const rank = game.magic?.[`${k}-result`];
@@ -137,7 +140,7 @@ async function ludumDare(path) {
 async function itch(url, repo) {
 	const [data, page] = [await get(`${url}/data.json`), await get(url, 'text')];
 	const jamUrl = page.match(/href="(https:\/\/itch\.io\/jam\/[^"/]+)\/rate\/\d+"/)?.[1] ?? null;
-	const ldPath = page.match(/ldjam\.com\/events\/ludum-dare\/(\d+\/[a-z0-9-]+)/)?.[1];
+	const ldPath = page.match(/ldjam\.com\/events\/ludum-dare\/(\d+\/(?:[a-z0-9-]+|\$\d+))/)?.[1];
 	const cover = ogImage(page) || data.cover_image || null;
 	return {
 		source: 'itch',

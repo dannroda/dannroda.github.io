@@ -411,7 +411,7 @@ function gamesView() {
 	);
 	const g = S.games.find((x) => x.slug === sel);
 	if (!g) return [list, h('div.empty', {}, 'Elegí un juego o proyecto. Los datos de la tienda (título, imágenes, fechas) se traen solos; acá editás lo tuyo.')];
-	draft ??= { own: { ai: '', show: 'listed', landing: '', role: { es: '', en: '' }, summary: { es: '', en: '' }, authorship: [], ...clone(g.own) }, repo: sourceOf(g)?.entry?.repo ?? '' };
+	draft ??= { own: { ai: '', show: 'listed', paid: false, landing: '', role: { es: '', en: '' }, summary: { es: '', en: '' }, authorship: [], ...clone(g.own) }, repo: sourceOf(g)?.entry?.repo ?? '' };
 	const o = draft.own;
 	const src = sourceOf(g);
 	const linked = Object.entries(S.pages).filter(([, p]) => p.project === g.slug).map(([slug]) => ({ slug }));
@@ -450,6 +450,7 @@ function gamesView() {
 		h('div.bar', {}, h('h1.grow', {}, g.store.title), h('button.primary', { id: 'save', onclick: () => save().catch((e) => toast(e.message, true)) }, 'Guardar')),
 		h('div.bar', { style: 'color:var(--muted)' }, h('a', { href: g.store.url, target: '_blank' }, `${STORES[g.store.source]} ↗`), g.store.jam && h('span', {}, `· ${g.store.jam}`), h('span', {}, `· datos del ${g.store.synced_at?.slice(0, 10)}`)),
 		field('Visibilidad', seg('show', SHOW, o.show, (v) => set(o, 'show', v)), 'Destacado sale en el primer pantallazo de la home (varios hacen un carrusel) y primero en su lista. Oculto no sale en ningún lado.'),
+		h('label.check', {}, h('input', { type: 'checkbox', checked: !!o.paid, onchange: (e) => set(o, 'paid', e.target.checked) }), 'Me pagaron por desarrollarlo', h('span.hint', {}, '(sale en Trabajos; si no, en Game jams u Otros juegos)')),
 		field('Uso de IA', seg('ai', AI, o.ai, (v) => set(o, 'ai', v)), 'Vibe-coded va al Lab, sea de la tienda que sea.'),
 		h('fieldset', {}, h('legend', {}, 'Texto propio'), h('span.hint', {}, 'Vacío: se usa el de la tienda (gris).'),
 			untranslated(o.summary) && missing(), area(o, `summary.${lang}`, { rows: 4, 'aria-label': `Texto propio (${LANGS[lang]})`, placeholder: g.store.text?.[lang] || g.store.text?.en || '' })),

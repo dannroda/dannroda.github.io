@@ -14,13 +14,13 @@ export async function games() {
 	// Vibe-coded work only shows in the Lab, whatever its source.
 	const lab = all.filter((g) => g.own?.ai === 'vibe');
 	const rest = all.filter((g) => g.own?.ai !== 'vibe');
+	const unpaid = rest.filter((g) => !g.own?.paid);
 	return {
 		all,
 		lab,
-		published: rest.filter((g) => g.data.source === 'steam'),
-		jams: rest.filter((g) => g.data.source === 'itch' && g.data.jam),
-		other: rest.filter((g) => g.data.source === 'itch' && !g.data.jam),
-		projects: rest.filter((g) => g.data.source === 'github' || g.data.source === 'assetlib')
+		work: rest.filter((g) => g.own?.paid),
+		jams: unpaid.filter((g) => g.data.jam),
+		other: unpaid.filter((g) => !g.data.jam)
 	};
 }
 

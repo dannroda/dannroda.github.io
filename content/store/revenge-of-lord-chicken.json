@@ -56,14 +56,50 @@
 			"summoning"
 		]
 	},
-	"jam": null,
+	"jam": {
+		"entries": 1679,
+		"format": "jam",
+		"name": "Ludum Dare 55",
+		"results": {
+			"Fun": {
+				"average": 3.237,
+				"rank": 793
+			},
+			"Graphics": {
+				"average": 3.821,
+				"rank": 507
+			},
+			"Humor": {
+				"average": 3.527,
+				"rank": 309
+			},
+			"Innovation": {
+				"average": 2.908,
+				"rank": 980
+			},
+			"Mood": {
+				"average": 3.27,
+				"rank": 869
+			},
+			"Overall": {
+				"average": 3.342,
+				"rank": 838
+			},
+			"Theme": {
+				"average": 3.368,
+				"rank": 815
+			}
+		},
+		"theme": "Summoning",
+		"url": "https://ldjam.com/events/ludum-dare/55/revenge-of-lord-chicken"
+	},
 	"local_images": {
 		"cover": "/games/revenge-of-lord-chicken/cover.png",
 		"screenshots": [],
 		"trailer": null
 	},
 	"source": "itch",
-	"synced_at": "2026-11-12T22:38:36.803Z",
+	"synced_at": "2026-11-15T13:54:12.992Z",
 	"tags": [
 		"chicken",
 		"eggs",

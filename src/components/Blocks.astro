@@ -18,7 +18,7 @@ import Panels from '../blocks/Panels.astro';
 import Band from '../blocks/Band.astro';
 import type { Lang } from '../i18n';
 
-const components: Record<string, any> = { hero: Hero, works: Works, jams: Jams, lab: Lab, text: Text, image: Image, gallery: Gallery, video: Video, game: Game, buttons: Buttons, cards: Cards, table: Table, steps: Steps, panels: Panels, band: Band };
+const components: Record<string, any> = { hero: Hero, works: Works, other: Works, jams: Jams, lab: Lab, text: Text, image: Image, gallery: Gallery, video: Video, game: Game, buttons: Buttons, cards: Cards, table: Table, steps: Steps, panels: Panels, band: Band };
 const { blocks, lang } = Astro.props as { blocks: { id: string; type: string }[]; lang: Lang };
 // In `npm run dev` each block is tagged, so a click in the admin's preview opens it; the built site has no wrapper.
 const dev = import.meta.env.DEV;

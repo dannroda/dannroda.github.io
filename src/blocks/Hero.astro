@@ -6,9 +6,9 @@ import { tx, img, link, pill, size, type Item } from './util';
 
 const { b, lang } = Astro.props as { b: Item; lang: Lang };
 const s = t[lang];
-const { published, jams, other, projects, lab, all } = await games();
+const { all } = await games();
 // The first screen shows what the admin marks as featured: nothing, one work, or a carousel of several.
-const featured = b.side === 'featured' ? [...published, ...other, ...projects, ...jams, ...lab].filter((g) => g.own?.show === 'featured') : [];
+const featured = b.side === 'featured' ? all.filter((g) => g.own?.show === 'featured') : [];
 const game = b.game ? all.find((g) => g.id === b.game) : null;
 const href = (g: Game) => url(`/${lang}/games/${g.id}/`);
 const year = (g: Game) => (g.data.release_date ?? g.data.created)?.match(/\d{4}/)?.[0];
