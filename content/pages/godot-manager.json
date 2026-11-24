@@ -546,16 +546,16 @@
       "type": "cards",
       "anchor": "projects",
       "eyebrow": {
-        "es": "Desde v2.3",
-        "en": "Since v2.3"
+        "es": "Proyectos",
+        "en": "Projects"
       },
       "heading": {
         "es": "Cuando un proyecto no abre.",
         "en": "When a project won’t open."
       },
       "intro": {
-        "es": "Un plugin roto o una versión que falta ya no te dejan afuera del editor.",
-        "en": "A broken plugin or a missing version no longer locks you out of the editor."
+        "es": "Un plugin roto o una versión que falta no te dejan afuera del editor.",
+        "en": "A broken plugin or a missing version doesn’t lock you out of the editor."
       },
       "style": "grid",
       "image": {
@@ -631,8 +631,8 @@
             "en": "It updates itself"
           },
           "text": {
-            "es": "<code>godot-manager self-update</code> actualiza el CLI, <code>godot</code> y la interfaz, verificados contra <code>SHA256SUMS</code>. La interfaz se fija una vez por día y ofrece <b>Actualizar</b>; se apaga en Ajustes. El paquete de Arch se actualiza por el gestor de paquetes.",
-            "en": "<code>godot-manager self-update</code> updates the CLI, <code>godot</code> and the GUI, checked against <code>SHA256SUMS</code>. The GUI checks once a day and offers <b>Update</b>; turn it off in Settings. The Arch package updates through the package manager."
+            "es": "<code>godot-manager self-update</code> actualiza el CLI, <code>godot</code> y la interfaz, verificados contra <code>SHA256SUMS</code>. La interfaz se fija una vez por día y se actualiza sola; <b>Reiniciar</b> abre la versión nueva, y <b>Buscar ahora</b> en Ajustes busca a mano. Con el PKGBUILD de Arch, se actualiza con <code>makepkg</code>.",
+            "en": "<code>godot-manager self-update</code> updates the CLI, <code>godot</code> and the GUI, checked against <code>SHA256SUMS</code>. The GUI checks once a day and updates itself; <b>Restart</b> opens the new version, and <b>Check now</b> in Settings checks by hand. With the Arch PKGBUILD, update through <code>makepkg</code>."
           },
           "tags": {
             "es": [
@@ -696,6 +696,152 @@
       }
     },
     {
+      "id": "b8",
+      "type": "cards",
+      "anchor": "plugins",
+      "eyebrow": {
+        "es": "Asset Store",
+        "en": "Asset Store"
+      },
+      "heading": {
+        "es": "Plugins y assets, desde el proyecto.",
+        "en": "Plugins and assets, from the project."
+      },
+      "intro": {
+        "es": "Buscá en el Asset Store sin abrir el editor y manejá lo que ya instalaste.",
+        "en": "Search the Asset Store without opening the editor, and manage what you already installed."
+      },
+      "style": "grid",
+      "image": {
+        "es": "",
+        "en": ""
+      },
+      "imageAlt": {
+        "es": "",
+        "en": ""
+      },
+      "caption": {
+        "es": "",
+        "en": ""
+      },
+      "items": [
+        {
+          "title": {
+            "es": "Agregar plugin",
+            "en": "Add plugin"
+          },
+          "text": {
+            "es": "La ventana arranca con sugeridos: Godot Agent, Scope Compass y lo mejor puntuado del Asset Store que es compatible con la versión del proyecto. Cada resultado es una tarjeta con imagen, autor, licencia, puntaje, tags y un enlace al Store o a GitHub.",
+            "en": "The window opens with suggestions: Godot Agent, Scope Compass and the top-rated Asset Store entries that work with the project’s Godot version. Each result is a card with image, author, license, rating, tags and a link to the Store or GitHub."
+          },
+          "tags": {
+            "es": [
+              "plugins search"
+            ],
+            "en": [
+              "plugins search"
+            ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": true
+        },
+        {
+          "title": {
+            "es": "Assets también",
+            "en": "Assets too"
+          },
+          "text": {
+            "es": "Lo que no es un plugin, como música o sprites, aparece como <b>Assets</b> en los detalles del proyecto: se puede actualizar, fijar o desinstalar.",
+            "en": "Anything that isn’t a plugin, like music or sprites, shows up as <b>Assets</b> in the project details: update, pin or uninstall it."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Proyecto nuevo",
+            "en": "New project"
+          },
+          "text": {
+            "es": "Igual que el Project Manager de Godot: carpeta en kebab-case, <code>icon.svg</code> y <code>.editorconfig</code>.",
+            "en": "Same as Godot’s Project Manager: a kebab-case folder, <code>icon.svg</code> and <code>.editorconfig</code>."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Ventanas nativas",
+            "en": "Native windows"
+          },
+          "text": {
+            "es": "Diálogos en ventanas propias y el selector de archivos del sistema. Ajustes agrupado en secciones, con <b>Restaurar</b>.",
+            "en": "Dialogs in their own windows and the system file picker. Settings grouped into sections, with <b>Restore</b>."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        }
+      ],
+      "asideHeading": {
+        "es": "",
+        "en": ""
+      },
+      "asideText": {
+        "es": "",
+        "en": ""
+      },
+      "commands": [],
+      "buttons": [],
+      "note": {
+        "es": "",
+        "en": ""
+      }
+    },
+    {
       "id": "b5",
       "type": "band",
       "anchor": "install",
@@ -706,20 +852,14 @@
       "notes": [
         {
           "text": {
-            "es": "Linux y Windows en x64: el archivo trae <code>godot-manager</code>, <code>godot</code> y la interfaz. En ARM64, solo el CLI. <code>SHA256SUMS</code> tiene el checksum de cada archivo. En Arch Linux, <code>makepkg -si</code> desde el repo.",
-            "en": "Linux and Windows on x64: the archive has <code>godot-manager</code>, <code>godot</code> and the GUI. On ARM64, the CLI only. <code>SHA256SUMS</code> has each archive’s checksum. On Arch Linux, <code>makepkg -si</code> from the repo."
+            "es": "Linux y Windows en x64: el archivo trae <code>godot-manager</code>, <code>godot</code> y la interfaz. En ARM64, solo el CLI. <code>SHA256SUMS</code> tiene el checksum de cada archivo. En Arch Linux, <code>makepkg -si</code> con el PKGBUILD de <code>packaging/arch</code>. En Windows, también hay un bucket de Scoop en el repo.",
+            "en": "Linux and Windows on x64: the archive has <code>godot-manager</code>, <code>godot</code> and the GUI. On ARM64, the CLI only. <code>SHA256SUMS</code> has each archive’s checksum. On Arch Linux, <code>makepkg -si</code> with the PKGBUILD in <code>packaging/arch</code>. On Windows, there’s also a Scoop bucket in the repo."
           }
         },
         {
           "text": {
             "es": "En Linux, las versiones van a <code>/opt/godot</code> si existe y, si no, a <code>~/.local/share/godot-manager</code>, sin sudo. En Windows, a <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> las manda a otro lado. Sin token, GitHub permite 60 pedidos por hora; un <code>GITHUB_TOKEN</code> personal, sin permisos, sube ese límite.",
             "en": "On Linux, versions go to <code>/opt/godot</code> if it exists, otherwise to <code>~/.local/share/godot-manager</code>, no sudo needed. On Windows, to <code>%LOCALAPPDATA%\\godot-manager</code>. <code>GODOT_DIR</code> puts them somewhere else. Without a token, GitHub allows 60 requests per hour; a personal <code>GITHUB_TOKEN</code> with no scopes raises that limit."
-          }
-        },
-        {
-          "text": {
-            "es": "¿Tenés la 2.2.0? Esa no se actualiza sola: bajá el archivo de nuevo y reemplazá la carpeta por única vez. Desde la 2.3.0 se encarga <code>godot-manager self-update</code>.",
-            "en": "On 2.2.0? It can’t update itself: download the archive again and replace your folder, just this once. From 2.3.0 on, <code>godot-manager self-update</code> takes care of it."
           }
         }
       ],

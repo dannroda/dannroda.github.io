@@ -115,8 +115,8 @@
         "en": "godot.* · permission policy"
       },
       "heading": {
-        "es": "Cinco modos. Vos decidís qué puede tocar cada uno.",
-        "en": "Five modes. You decide what each one may touch."
+        "es": "Seis modos. Vos decidís qué puede tocar cada uno.",
+        "en": "Six modes. You decide what each one may touch."
       },
       "intro": {
         "es": "Cada acción pertenece a un grupo, y cada grupo tiene una decisión por modo. Preguntar muestra una tarjeta con el diff; Denegar le explica al agente por qué. La matriz vive en <code>project_config.tres</code>, así que tu equipo la comparte. Sobre cualquiera de ellos, un <b>modo del proyecto</b> (<code>res://agent_modes/*.json</code>) con su nombre, sus instrucciones y su modelo limita qué archivos puede escribir el agente, también en One-shot, y nunca permite más que su modo base. Si la tarea pide otro modo, el agente lo propone en una tarjeta con el motivo y vos decidís.",
@@ -151,6 +151,16 @@
         },
         {
           "name": {
+            "es": "Plan",
+            "en": "Plan"
+          },
+          "what": {
+            "es": "Cada mensaje pide un plan. Solo lee.",
+            "en": "Every message asks for a plan. Reads only."
+          }
+        },
+        {
+          "name": {
             "es": "Revisar",
             "en": "Review"
           },
@@ -165,8 +175,8 @@
             "en": "Build"
           },
           "what": {
-            "es": "Edita y corre, preguntando antes.",
-            "en": "Edits and runs, asking first."
+            "es": "Edita y corre; pregunta por la shell y el Asset Store.",
+            "en": "Edits and runs; asks for the shell and the Asset Store."
           }
         },
         {
@@ -196,42 +206,42 @@
             "es": "Leer y diagnósticos",
             "en": "Read & diagnostics"
           },
-          "cells": "allow, allow, allow, allow, allow"
+          "cells": "allow, allow, allow, allow, allow, allow"
         },
         {
           "label": {
             "es": "Editar escenas y archivos",
             "en": "Edit scenes & files"
           },
-          "cells": "deny, deny, ask, allow, allow"
+          "cells": "deny, deny, deny, allow, allow, allow"
         },
         {
           "label": {
             "es": "Correr el juego",
             "en": "Run the game"
           },
-          "cells": "deny, ask, ask, allow, allow"
+          "cells": "deny, deny, ask, allow, allow, allow"
         },
         {
           "label": {
             "es": "Comandos de shell",
             "en": "Shell commands"
           },
-          "cells": "deny, deny, ask, ask*, ask"
+          "cells": "deny, deny, deny, ask, ask*, ask"
         },
         {
           "label": {
             "es": "Ajustes del proyecto y exportación",
             "en": "Project settings & export"
           },
-          "cells": "deny, deny, ask, allow, allow"
+          "cells": "deny, deny, deny, allow, allow, allow"
         },
         {
           "label": {
             "es": "Instalar desde el Asset Store",
             "en": "Install from the Asset Store"
           },
-          "cells": "deny, deny, ask, ask, ask"
+          "cells": "deny, deny, deny, ask, ask, ask"
         }
       ],
       "allow": {
@@ -247,8 +257,8 @@
         "en": "Deny"
       },
       "note": {
-        "es": "* En Auto, los comandos de lectura y compilación de la lista permitida corren solos; <code>rm</code>, <code>git push</code>, <code>curl</code> y los instaladores siempre preguntan. En cualquier modo, escribir un <code>.tscn</code> a mano o un archivo del proyecto desde la shell se rechaza: las escenas solo cambian a través del editor.",
-        "en": "* In Auto, read-only and build commands on the allowlist run on their own; <code>rm</code>, <code>git push</code>, <code>curl</code> and installers always ask. In any mode, writing a <code>.tscn</code> by hand or a project file from the shell is rejected: scenes change only through the editor."
+        "es": "* En Auto, los comandos de lectura y compilación de la lista permitida corren solos; <code>rm</code>, <code>git push</code>, <code>curl</code> y los instaladores siempre preguntan. En cualquier modo, escribir un <code>.tscn</code> a mano o un archivo del proyecto desde la shell se rechaza: las escenas solo cambian a través del editor. Los comandos de solo lectura (<code>cat</code>, <code>grep</code>, <code>ls</code>…) se rechazan sin tarjeta: el agente usa las herramientas del editor.",
+        "en": "* In Auto, read-only and build commands on the allowlist run on their own; <code>rm</code>, <code>git push</code>, <code>curl</code> and installers always ask. In any mode, writing a <code>.tscn</code> by hand or a project file from the shell is rejected: scenes change only through the editor. Read-only commands (<code>cat</code>, <code>grep</code>, <code>ls</code>…) are refused without a card: the agent uses the editor’s tools."
       },
       "imageSize": {
         "es": [
@@ -297,8 +307,8 @@
             "en": "Read the project"
           },
           "text": {
-            "es": "Árboles de escena con sus propiedades, un nodo en detalle, el estado del editor y la API de cualquier clase en tu versión exacta de Godot.",
-            "en": "Scene trees with non-default properties, one node in detail, editor state, and the API of any class in your exact Godot version."
+            "es": "Árboles de escena con las propiedades que no son default, un nodo en detalle, el estado del editor con el Inspector y la salida de Output, dependencias, funciones, símbolos y referencias, y la API de cualquier clase en tu versión exacta de Godot. El agente también puede apretar los botones del Inspector.",
+            "en": "Scene trees with non-default properties, one node in detail, editor state with the Inspector and the Output panel, dependencies, functions, symbols and references, and the API of any class in your exact Godot version. The agent can also press Inspector buttons."
           },
           "tags": {
             "es": [
@@ -401,8 +411,8 @@
             "en": "Check the work"
           },
           "text": {
-            "es": "Valida scripts sin correr el juego, compila C# con dotnet y detecta cuerpos sin forma o tiles sin colisión. Compila tu GDExtension con SCons, CMake o Cargo, con los errores por archivo y línea, y la prueba en un Godot headless aparte, así un crash nunca tira abajo el editor.",
-            "en": "Parse scripts without running, build C# with dotnet, and catch bodies without shapes or tiles without collision. Build your GDExtension with SCons, CMake or Cargo, with errors by file and line, and test it in a separate headless Godot, so a crash never takes down the editor."
+            "es": "Valida scripts sin correr el juego, compila C# con dotnet y detecta cuerpos sin forma o tiles sin colisión. Compila tu GDExtension con SCons, CMake o Cargo, con los errores por archivo y línea, y la prueba en un Godot headless aparte, así un crash nunca tira abajo el editor. <code>run_tests</code> corre GUT o gdUnit4 headless, sin la shell.",
+            "en": "Parse scripts without running, build C# with dotnet, and catch bodies without shapes or tiles without collision. Build your GDExtension with SCons, CMake or Cargo, with errors by file and line, and test it in a separate headless Godot, so a crash never takes down the editor. <code>run_tests</code> runs GUT or gdUnit4 headless, without the shell."
           },
           "tags": {
             "es": [
@@ -453,6 +463,30 @@
               "tilemap_paint_terrain",
               "animation_set_track"
             ]
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Modelos 3D",
+            "en": "3D models"
+          },
+          "text": {
+            "es": "<code>import_model</code> trae un .glb o .gltf verificado, <code>preview_model</code> lo renderiza desde 1 a 8 ángulos y deja en el chat una tarjeta 3D para orbitar y hacer zoom, e <code>instantiate_scene</code> lo pone en la escena con posición, rotación y escala. La receta Blender → GLB → escena está en la wiki.",
+            "en": "<code>import_model</code> brings in a checked .glb or .gltf, <code>preview_model</code> renders it from 1 to 8 angles and leaves a 3D card in the chat to orbit and zoom, and <code>instantiate_scene</code> places it in the scene with position, rotation and scale. The Blender → GLB → scene recipe is in the wiki."
+          },
+          "tags": {
+            "es": [],
+            "en": []
           },
           "command": "",
           "linkLabel": {
@@ -583,7 +617,7 @@
             "es": "",
             "en": ""
           },
-          "wide": false
+          "wide": true
         }
       ],
       "asideHeading": {
@@ -1091,8 +1125,8 @@
         "en": "Plans checked by playing."
       },
       "intro": {
-        "es": "Pedí un plan con <code>/plan</code>, editalo o aprobalo, y el agente lo construye en Construir.",
-        "en": "Ask for a plan with <code>/plan</code>, edit or approve it, and the agent builds it in Build."
+        "es": "Elegí el modo <b>Plan</b> (o <code>/plan</code>), editá o aprobá el plan, y <b>Aprobar y construir</b> pasa a Construir. Plan puede usar su propio modelo. Con Claude Code, lo que escribís mientras el agente trabaja entra en el turno en curso.",
+        "en": "Pick <b>Plan</b> mode (or <code>/plan</code>), edit or approve the plan, and <b>Approve and build</b> switches to Build. Plan can use its own model. With Claude Code, what you type while the agent works goes into the running turn."
       },
       "style": "grid",
       "image": {

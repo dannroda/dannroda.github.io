@@ -30,8 +30,8 @@
             "en": "Download (GitHub)"
           },
           "url": {
-            "es": "https://github.com/dannroda/scope-compass/releases/latest",
-            "en": "https://github.com/dannroda/scope-compass/releases/latest"
+            "es": "https://github.com/dannroda/scope-compass/releases",
+            "en": "https://github.com/dannroda/scope-compass/releases"
           },
           "style": "primary"
         },
@@ -69,8 +69,8 @@
         },
         {
           "text": {
-            "es": "Linux",
-            "en": "Linux"
+            "es": "Linux y Windows",
+            "en": "Linux & Windows"
           }
         }
       ],
@@ -188,6 +188,30 @@
           "text": {
             "es": "El hub escucha en <code>127.0.0.1</code>. Sin cuentas y sin nube. Entre equipos se sincroniza con git.",
             "en": "The hub listens on <code>127.0.0.1</code>. No accounts, no cloud. Between machines it syncs through git."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": false
+        },
+        {
+          "title": {
+            "es": "Tableros que se mueven",
+            "en": "Boards that move"
+          },
+          "text": {
+            "es": "Un tablero existente se vincula a un proyecto que no tiene <code>compass/</code> desde Inicio › Agregar proyecto › Vincular tablero o desde el dock, y se cambia por otro con <code>scompass board link &lt;tablero&gt; --replace</code>. <code>scompass board list</code> muestra cada tablero y los proyectos que lo usan.",
+            "en": "Link an existing board to a project with no <code>compass/</code> from Home › Add project › Link board or from the dock, and swap it for another with <code>scompass board link &lt;board&gt; --replace</code>. <code>scompass board list</code> shows every board and the projects that use it."
           },
           "tags": {
             "es": [],
@@ -650,6 +674,30 @@
             "en": ""
           },
           "wide": true
+        },
+        {
+          "title": {
+            "es": "Se actualiza solo",
+            "en": "It updates itself"
+          },
+          "text": {
+            "es": "El Inicio se fija una vez por día y muestra <b>Actualizar</b> en la página y en la bandeja; desde la terminal, <code>scompass upgrade</code>. Canal <code>stable</code> por defecto o <code>beta</code> con <code>--channel beta</code>; el addon tiene su propio canal en la Configuración del editor.",
+            "en": "Home checks once a day and shows <b>Update</b> on the page and in the tray; from a terminal, <code>scompass upgrade</code>. The <code>stable</code> channel by default, or <code>beta</code> with <code>--channel beta</code>; the addon has its own channel in Editor Settings."
+          },
+          "tags": {
+            "es": [],
+            "en": []
+          },
+          "command": "",
+          "linkLabel": {
+            "es": "",
+            "en": ""
+          },
+          "linkUrl": {
+            "es": "",
+            "en": ""
+          },
+          "wide": true
         }
       ],
       "asideHeading": {
@@ -954,8 +1002,20 @@
       "notes": [
         {
           "text": {
-            "es": "El binario de <code>scompass</code> (CLI, hub y UI web) trae su propio Node y no hace falta ponerlo en el PATH: abrilo una vez y el addon y el MCP lo encuentran. El paquete npm pide Node 22 o más nuevo. Git para los datos; Godot 4.8 para el addon; Claude Code o Antigravity CLI solo si querés el chat, y Claude Code para el MCP. MIT y gratis.",
-            "en": "The <code>scompass</code> binary (CLI, hub and web UI) brings its own Node and doesn’t need to be on your PATH: open it once and the addon and the MCP find it. The npm package needs Node 22 or newer. Git for the data; Godot 4.8 for the addon; Claude Code or Antigravity CLI only if you want the chat, and Claude Code for the MCP. Free and MIT licensed."
+            "es": "<b>Linux</b> (va a <code>~/.local/bin</code>):<br><code>curl -fsSL https://raw.githubusercontent.com/dannroda/scope-compass/main/tools/install.sh | sh</code>",
+            "en": "<b>Linux</b> (installs to <code>~/.local/bin</code>):<br><code>curl -fsSL https://raw.githubusercontent.com/dannroda/scope-compass/main/tools/install.sh | sh</code>"
+          }
+        },
+        {
+          "text": {
+            "es": "<b>Windows</b> (lo suma al PATH y al menú Inicio):<br><code>irm https://raw.githubusercontent.com/dannroda/scope-compass/main/tools/install.ps1 | iex</code>",
+            "en": "<b>Windows</b> (adds it to your PATH and the Start menu):<br><code>irm https://raw.githubusercontent.com/dannroda/scope-compass/main/tools/install.ps1 | iex</code>"
+          }
+        },
+        {
+          "text": {
+            "es": "Bajan la última versión y la verifican contra <code>SHA256SUMS</code>; con <code>SCOMPASS_CHANNEL=beta</code>, del canal beta. El binario trae su propio Node y también anda portable. Git para los datos; Godot 4.8 para el addon; Claude Code o Antigravity CLI solo si querés el chat, y Claude Code para el MCP. MIT y gratis.",
+            "en": "They download the latest release and check it against <code>SHA256SUMS</code>; with <code>SCOMPASS_CHANNEL=beta</code>, from the beta channel. The binary brings its own Node and also runs portable. Git for the data; Godot 4.8 for the addon; Claude Code or Antigravity CLI only if you want the chat, and Claude Code for the MCP. Free and MIT licensed."
           }
         }
       ],
@@ -966,8 +1026,8 @@
             "en": "Download (GitHub)"
           },
           "url": {
-            "es": "https://github.com/dannroda/scope-compass/releases/latest",
-            "en": "https://github.com/dannroda/scope-compass/releases/latest"
+            "es": "https://github.com/dannroda/scope-compass/releases",
+            "en": "https://github.com/dannroda/scope-compass/releases"
           },
           "style": "plain"
         },
@@ -986,8 +1046,8 @@
       "steps": [
         {
           "text": {
-            "es": "Bajá el binario y abrilo una vez: con doble clic levanta el Inicio. En Linux, <code>sh install.sh</code> además lo suma al menú de aplicaciones, con un ícono en la bandeja.",
-            "en": "Download the binary and open it once: a double-click starts Home. On Linux, <code>sh install.sh</code> also adds it to your applications menu, with a tray icon."
+            "es": "Instalalo con el comando de tu sistema y abrí <code>scompass</code>: levanta el Inicio, con un ícono en la bandeja. Después se actualiza solo.",
+            "en": "Install it with the command for your system and open <code>scompass</code>: it starts Home, with a tray icon. After that it updates itself."
           }
         },
         {
@@ -998,8 +1058,8 @@
         },
         {
           "text": {
-            "es": "En el dock <b>Tablero</b>, creá el tablero con la plantilla Juego. Para Claude Code, <code>scompass mcp install</code>.",
-            "en": "In the <b>Board</b> dock, create the board from the <b>Game</b> template. For Claude Code, <code>scompass mcp install</code>."
+            "es": "En el dock <b>Tablero</b>, creá el tablero con la plantilla Juego o vinculá uno que ya tengas. Para Claude Code, <code>scompass mcp install</code>.",
+            "en": "In the <b>Board</b> dock, create the board from the <b>Game</b> template or link one you already have. For Claude Code, <code>scompass mcp install</code>."
           }
         }
       ],
