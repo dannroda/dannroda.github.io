@@ -51,7 +51,7 @@ export const blocks = [
 		fields: [{ key: 'heading', label: 'Título', type: 'text' }]
 	},
 	{
-		type: 'other', label: 'Otros juegos', group: 'Juegos',
+		type: 'other', label: 'Otros proyectos', group: 'Juegos',
 		help: 'Los juegos y proyectos que no son pagos, ni de jam, ni del Lab. Se arma solo.',
 		fields: [{ key: 'heading', label: 'Título', type: 'text' }]
 	},
